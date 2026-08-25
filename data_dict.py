@@ -1,15 +1,22 @@
-import pandas as pd
+"""
+Zamboanga del Norte Economic Analytics Dictionary Constants
+"""
 
-# Sample economic data in dictionary format
-data_dict = {
-    'date': ['2022-01-01', '2022-02-01', '2022-03-01', '2022-04-01'],
-    'GDP': [1000000, 1010000, 1020500, 1031500],
-    'establishment_revenue': [50000, 51000, 52000, 53000],
-    'employment_rate': [60, 61, 62, 63]
+PROVINCE_METADATA = {
+    'name': 'Province of Zamboanga del Norte',
+    'region': 'Zamboanga Peninsula (Region IX)',
+    'capital': 'Dipolog City',
+    'base_year': '2018 Constant Prices',
+    'unit': 'In thousand Philippine Pesos (PHP 000)',
+    'latest_data_year': 2024,
+    'source': 'Philippine Statistics Authority (PSA) - Provincial Product Accounts (PPA)'
 }
 
-# Create DataFrame
-data = pd.DataFrame(data_dict)
+SECTORS = ['Agriculture', 'Industry', 'Services']
 
-# Print the DataFrame to verify
-print(data)
+def get_sample_data():
+    from Data_Collection import load_data
+    return load_data()
+
+if __name__ == '__main__':
+    print("Province Metadata:", PROVINCE_METADATA)

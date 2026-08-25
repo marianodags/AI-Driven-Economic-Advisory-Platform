@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zamboanga Del Norte AI-Powered Economic Analytics & Forecasts</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen">
+
+    <!-- Top Navigation Header -->
+    <header class="bg-slate-800/90 border-b border-slate-700 backdrop-blur sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col md:flex-row items-center justify-between gap-4">
+            <div class="flex items-center space-x-3">
+                <div class="bg-indigo-600 text-white p-2.5 rounded-xl shadow-lg shadow-indigo-500/30">
+                    <i class="fa-solid me-0 fa-chart-line text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-extrabold tracking-tight text-white">Zamboanga Del Norte Economic Intelligence Dashboard</h1>
+                    <p class="text-xs text-slate-400 font-medium">Zamboanga Del Norte AI-Powered Economic Analytics & Forecasts</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-3">
+                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 mr-2 animate-pulse"></span> PSA PPA Live Data (2018–2024)
+                </span>
+                <span class="text-xs text-slate-400 bg-slate-700/50 px-3 py-1 rounded-lg border border-slate-600/50">
+                    Unit: PHP '000 (Constant 2018 Prices)
+                </span>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+
+        <!-- Key Metrics Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div class="bg-slate-800 border border-slate-700/60 rounded-2xl p-6 shadow-xl relative overflow-hidden group hover:border-indigo-500/50 transition">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">2024 Gross Domestic Product</p>
+                        <h3 class="text-2xl font-black text-white mt-1" id="metric-gdp-2024">Loading...</h3>
+                        <p class="text-xs text-emerald-400 mt-2 font-semibold flex items-center">
+                            <i class="fa-solid fa-arrow-trend-up mr-1"></i> <span id="metric-growth-2024">--</span> YoY Growth
+                        </p>
+                    </div>
+                    <div class="p-3 bg-indigo-500/10 text-indigo-400 rounded-xl">
+                        <i class="fa-solid fa-coins text-xl"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-slate-800 border border-slate-700/60 rounded-2xl p-6 shadow-xl relative overflow-hidden group hover:border-indigo-500/50 transition">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">2025 Projected GDP (AI)</p>
+                        <h3 class="text-2xl font-black text-white mt-1" id="metric-gdp-2025">Loading...</h3>
+                        <p class="text-xs text-indigo-400 mt-2 font-semibold flex items-center">
+                            <i class="fa-solid fa-robot mr-1"></i> Forecasted Growth
+                        </p>
+                    </div>
+                    <div class="p-3 bg-emerald-500/10 text-emerald-400 rounded-xl">
+                        <i class="fa-solid fa-chart-pie text-xl"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-slate-800 border border-slate-700/60 rounded-2xl p-6 shadow-xl relative overflow-hidden group hover:border-indigo-500/50 transition">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Leading Economic Sector</p>
+                        <h3 class="text-2xl font-black text-white mt-1">Services</h3>
+                        <p class="text-xs text-slate-400 mt-2">PHP 62.3 Billion (50.1% Share)</p>
+                    </div>
+                    <div class="p-3 bg-cyan-500/10 text-cyan-400 rounded-xl">
+                        <i class="fa-solid fa-store text-xl"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-slate-800 border border-slate-700/60 rounded-2xl p-6 shadow-xl relative overflow-hidden group hover:border-indigo-500/50 transition">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Model Precision (R² Score)</p>
+                        <h3 class="text-2xl font-black text-white mt-1" id="metric-r2">Loading...</h3>
+                        <p class="text-xs text-emerald-400 mt-2 font-semibold">Econometric Regression Fit</p>
+                    </div>
+                    <div class="p-3 bg-purple-500/10 text-purple-400 rounded-xl">
+                        <i class="fa-solid fa-bullseye text-xl"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- AI Executive Summary & Advisory Banner -->
+        <div class="bg-gradient-to-r from-indigo-900/40 via-slate-800 to-slate-800 border border-indigo-500/30 rounded-2xl p-6 shadow-xl">
+            <div class="flex items-center gap-3 mb-3">
+                <div class="p-2 bg-indigo-500/20 text-indigo-400 rounded-lg">
+                    <i class="fa-solid fa-brain text-lg"></i>
+                </div>
+                <h2 class="text-lg font-bold text-white">AI Executive Advisory & Economic Intelligence</h2>
+            </div>
+            <p class="text-slate-300 text-sm leading-relaxed" id="executive-summary">Loading AI Executive Analysis...</p>
+        </div>
+
+        <!-- Charts Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- GDP Trajectory & AI Forecast (2018 - 2027) -->
+            <div class="lg:col-span-2 bg-slate-800 border border-slate-700/60 rounded-2xl p-6 shadow-xl">
+                <div class="flex justify-between items-center mb-6">
+                    <div>
+                        <h3 class="text-base font-bold text-white">Zamboanga del Norte GDP Trajectory & AI Forecast</h3>
+                        <p class="text-xs text-slate-400">Historical PPA Data (2018–2024) & AI Predictions (2025–2027)</p>
+                    </div>
+                </div>
+                <div class="h-80">
+                    <canvas id="gdpForecastChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Sector Distribution Doughnut -->
+            <div class="bg-slate-800 border border-slate-700/60 rounded-2xl p-6 shadow-xl flex flex-col justify-between">
+                <div>
+                    <h3 class="text-base font-bold text-white mb-1">2024 Sectoral Distribution</h3>
+                    <p class="text-xs text-slate-400 mb-6">Breakdown of Provincial Product Accounts</p>
+                    <div class="h-64 flex items-center justify-center">
+                        <canvas id="sectorChart"></canvas>
+                    </div>
+                </div>
+                <div class="mt-4 pt-4 border-t border-slate-700/50 grid grid-cols-3 text-center text-xs">
+                    <div>
+                        <span class="text-amber-400 font-bold block">14.8%</span>
+                        <span class="text-slate-400">Agriculture</span>
+                    </div>
+                    <div>
+                        <span class="text-indigo-400 font-bold block">35.3%</span>
+                        <span class="text-slate-400">Industry</span>
+                    </div>
+                    <div>
+                        <span class="text-emerald-400 font-bold block">49.9%</span>
+                        <span class="text-slate-400">Services</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Industry Performance Table & Recommendations -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Industry Breakdown Table -->
+            <div class="lg:col-span-2 bg-slate-800 border border-slate-700/60 rounded-2xl p-6 shadow-xl">
+                <h3 class="text-base font-bold text-white mb-4">Detailed Gross Domestic Product by Industry (PHP '000)</h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs text-slate-300">
+                        <thead class="bg-slate-700/50 text-slate-400 uppercase font-semibold">
+                            <tr>
+                                <th class="p-3">Industry Name</th>
+                                <th class="p-3">Category</th>
+                                <th class="p-3 text-right">2023</th>
+                                <th class="p-3 text-right">2024</th>
+                                <th class="p-3 text-right">2025 (AI FC)</th>
+                                <th class="p-3 text-right">YoY Growth</th>
+                            </tr>
+                        </thead>
+                        <tbody id="industry-table-body" class="divide-y divide-slate-700/40">
+                            <!-- Filled dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Strategic Policy Recommendations -->
+            <div class="bg-slate-800 border border-slate-700/60 rounded-2xl p-6 shadow-xl">
+                <div class="flex items-center gap-2 mb-4">
+                    <i class="fa-solid fa-lightbulb text-amber-400 text-lg"></i>
+                    <h3 class="text-base font-bold text-white">Actionable Policy Recommendations</h3>
+                </div>
+                <div class="space-y-4" id="recommendations-container">
+                    <!-- Filled dynamically -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Interactive AI Predict Simulation Endpoint Section -->
+        <div class="bg-slate-800 border border-slate-700/60 rounded-2xl p-6 shadow-xl">
+            <h3 class="text-base font-bold text-white mb-2">Simulate Custom Economic Scenario</h3>
+            <p class="text-xs text-slate-400 mb-6">Input target year to estimate provincial GDP via AI model</p>
+            <form id="sim-form" class="flex flex-col sm:flex-row items-center gap-4 max-w-lg">
+                <input type="number" id="sim-year" min="2025" max="2035" value="2028" class="bg-slate-900 border border-slate-700 text-white rounded-xl px-4 py-2.5 text-sm w-full sm:w-48 focus:outline-none focus:border-indigo-500">
+                <button type="submit" class="bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-sm px-6 py-2.5 rounded-xl shadow-lg shadow-indigo-600/30 transition w-full sm:w-auto">
+                    Run Simulation
+                </button>
+            </form>
+            <div id="sim-result" class="mt-4 hidden p-4 bg-indigo-950/40 border border-indigo-500/30 rounded-xl text-sm text-indigo-200">
+                <!-- Result displayed here -->
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-slate-950 border-t border-slate-800 py-6 mt-12 text-center text-xs text-slate-500">
+        <p>Zamboanga Del Norte AI-Powered Economic Analytics & Forecasts Platform &copy; 2024. All rights reserved.</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                const res = await fetch('/api/data');
+                const data = await res.json();
+
+                // Format numbers
+                const fmt = (num) => new Intl.NumberFormat('en-PH', { maximumFractionDigits: 0 }).format(num);
+
+                // Set key metrics
+                document.getElementById('metric-gdp-2024').innerText = 'PHP ' + fmt(data.processed.latest_gdp_2024) + ' K';
+                document.getElementById('metric-growth-2024').innerText = data.processed.latest_growth_2024.toFixed(2) + '%';
+
+                const fc2025 = data.forecast.forecast_total['2025'] || data.forecast.forecast_total[2025];
+                document.getElementById('metric-gdp-2025').innerText = 'PHP ' + fmt(fc2025) + ' K';
+                document.getElementById('metric-r2').innerText = (data.metrics.r2 * 100).toFixed(1) + '%';
+
+                // Executive Summary
+                document.getElementById('executive-summary').innerText = data.insights.executive_summary;
+
+                // Render Chart: GDP Trajectory & Forecast
+                const yearsHist = data.processed.yearly_df.map(d => d.year);
+                const gdpHist = data.processed.yearly_df.map(d => d.gdp);
+
+                const fcYears = [2025, 2026, 2027];
+                const fcValues = fcYears.map(y => data.forecast.forecast_total[y]);
+
+                const allYears = [...yearsHist, ...fcYears];
+                const actualDataPoints = [...gdpHist, null, null, null];
+                const forecastDataPoints = [...Array(yearsHist.length - 1).fill(null), gdpHist[gdpHist.length - 1], ...fcValues];
+
+                const ctxForecast = document.getElementById('gdpForecastChart').getContext('2d');
+                new Chart(ctxForecast, {
+                    type: 'line',
+                    data: {
+                        labels: allYears,
+                        datasets: [
+                            {
+                                label: 'Actual GDP (2018-2024)',
+                                data: actualDataPoints,
+                                borderColor: '#6366f1',
+                                backgroundColor: 'rgba(99, 102, 241, 0.1)',
+                                fill: true,
+                                tension: 0.3,
+                                borderWidth: 3
+                            },
+                            {
+                                label: 'AI Forecasted GDP (2025-2027)',
+                                data: forecastDataPoints,
+                                borderColor: '#10b981',
+                                borderDash: [6, 6],
+                                backgroundColor: 'rgba(16, 185, 129, 0.05)',
+                                fill: true,
+                                tension: 0.3,
+                                borderWidth: 3
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { labels: { color: '#94a3b8' } }
+                        },
+                        scales: {
+                            x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#94a3b8' } },
+                            y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#94a3b8' } }
+                        }
+                    }
+                });
+
+                // Render Chart: Sector Distribution
+                const sector2024 = data.processed.sector_gdp;
+                const ctxSector = document.getElementById('sectorChart').getContext('2d');
+                new Chart(ctxSector, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Agriculture', 'Industry', 'Services'],
+                        datasets: [{
+                            data: [sector2024.Agriculture['2024'], sector2024.Industry['2024'], sector2024.Services['2024']],
+                            backgroundColor: ['#f59e0b', '#6366f1', '#10b981'],
+                            borderWidth: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false }
+                        }
+                    }
+                });
+
+                // Industry Table
+                const tbody = document.getElementById('industry-table-body');
+                tbody.innerHTML = '';
+                data.forecast.industry_forecasts.forEach(ind => {
+                    const row = document.createElement('tr');
+                    const growth = (ind.growth_2023_2024 !== null && ind.growth_2023_2024 !== undefined)
+                        ? ind.growth_2023_2024
+                        : (ind['2023'] ? (((ind['2024_actual'] - ind['2023']) / ind['2023']) * 100) : null);
+
+                    const growthBadge = (growth !== null && growth !== undefined && !isNaN(growth))
+                        ? (growth >= 0
+                            ? `<span class="text-emerald-400">+${growth.toFixed(1)}%</span>`
+                            : `<span class="text-rose-400">${growth.toFixed(1)}%</span>`)
+                        : `<span class="text-slate-400">N/A</span>`;
+
+                    row.innerHTML = `
+                        <td class="p-3 font-medium text-white">${ind.industry}</td>
+                        <td class="p-3 text-slate-400">${ind.category}</td>
+                        <td class="p-3 text-right">${ind['2023'] ? fmt(ind['2023']) : 'N/A'}</td>
+                        <td class="p-3 text-right font-semibold text-white">${fmt(ind['2024_actual'])}</td>
+                        <td class="p-3 text-right text-indigo-300 font-medium">${fmt(ind['2025'])}</td>
+                        <td class="p-3 text-right font-semibold">${growthBadge}</td>
+                    `;
+                    tbody.appendChild(row);
+                });
+
+                // Recommendations
+                const recContainer = document.getElementById('recommendations-container');
+                recContainer.innerHTML = '';
+                data.insights.strategic_recommendations.forEach(rec => {
+                    const card = document.createElement('div');
+                    card.className = 'p-4 rounded-xl bg-slate-900/60 border border-slate-700/50 hover:border-indigo-500/40 transition';
+                    card.innerHTML = `
+                        <span class="text-xs font-bold text-indigo-400 uppercase tracking-wider">${rec.sector}</span>
+                        <h4 class="text-sm font-bold text-white mt-0.5">${rec.action}</h4>
+                        <p class="text-xs text-slate-300 mt-1.5 leading-relaxed">${rec.description}</p>
+                    `;
+                    recContainer.appendChild(card);
+                });
+
+            } catch (err) {
+                console.error('Error fetching dashboard data:', err);
+            }
+        });
+
+        // Simulation Form
+        document.getElementById('sim-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const year = parseInt(document.getElementById('sim-year').value);
+            const res = await fetch('/api/predict', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ year: year })
+            });
+            const data = await res.json();
+            const resDiv = document.getElementById('sim-result');
+            resDiv.classList.remove('hidden');
+            resDiv.innerHTML = `
+                <div class="font-bold text-white">Projected GDP for ${year}: PHP ${new Intl.NumberFormat('en-PH').format(data.predicted_gdp)} Thousand</div>
+                <div class="text-xs text-indigo-300 mt-1">Based on Linear Econometric Model trained on Zamboanga del Norte PPA data (2018-2024).</div>
+            `;
+        });
+    </script>
+</body>
+</html>
