@@ -573,7 +573,7 @@
                 renderOverview(dbData);
                 renderForecasts(dbData);
                 renderMatrixView(activeMatrixKey);
-                renderIndustryTable(dbData.processed.industry_rows, dbData.processed.years, dbData.processed.latest_year, dbData.processed.prev_year);
+                renderIndustryTable(dbData.processed.industry_rows, dbData.processed.years, dbData.processed.latest_year, dbData.processed.prev_year, dbData.selected_year);
                 renderLguChart();
                 updateSimulation();
             } catch (err) {
@@ -583,7 +583,7 @@
 
         function populateYearFilterDropdown(years) {
             const select = document.getElementById('globalYearFilter');
-            const currVal = select.value;
+            const currVal = dbData && dbData.selected_year ? dbData.selected_year : (select.value || 'all');
             select.innerHTML = '<option value="all">All Years</option>';
             years.forEach(y => {
                 const opt = document.createElement('option');
@@ -592,6 +592,9 @@
                 if (y === currVal) opt.selected = true;
                 select.appendChild(opt);
             });
+            if (currVal === 'all') {
+                select.value = 'all';
+            }
         }
 
         function onYearFilterChange() {
@@ -609,7 +612,8 @@
         function renderMatrixView(key) {
             if (!dbData || !dbData.processed) return;
             const proc = dbData.processed;
-            const years = proc.years;
+            const selectedY = dbData.selected_year;
+            const years = selectedY ? [selectedY] : proc.years;
             const majorData = proc.major_analytics || {};
             const allData = proc.all_ind_analytics || {};
 
@@ -799,47 +803,54 @@
         function renderOverview(data) {
             const proc = data.processed;
             const sec = proc.sector_gdp;
-            const latestY = proc.latest_year;
-            const prevY = proc.prev_year;
+            const selectedY = data.selected_year;
+            const activeY = selectedY || proc.latest_year;
 
-            const totalLatest = proc.total_gdp[latestY];
-            const growthLatest = proc.latest_growth_2024;
-            const servLatest = sec.Services[latestY];
-            const indLatest = sec.Industry[latestY];
-            const agriLatest = sec.Agriculture[latestY];
+            const idx = proc.years.indexOf(activeY);
+            const prevY = idx > 0 ? proc.years[idx - 1] : activeY;
 
-            const servGrowth = sec.Services[prevY] ? (((sec.Services[latestY] - sec.Services[prevY]) / sec.Services[prevY]) * 100) : 0;
-            const indGrowth = sec.Industry[prevY] ? (((sec.Industry[latestY] - sec.Industry[prevY]) / sec.Industry[prevY]) * 100) : 0;
-            const agriGrowth = sec.Agriculture[prevY] ? (((sec.Agriculture[latestY] - sec.Agriculture[prevY]) / sec.Agriculture[prevY]) * 100) : 0;
+            const totalLatest = proc.total_gdp[activeY] || 0;
+            const prevTotal = proc.total_gdp[prevY] || 0;
+            const growthLatest = (prevTotal > 0 && activeY !== prevY)
+                ? (((totalLatest - prevTotal) / prevTotal) * 100)
+                : proc.latest_growth_2024;
 
-            document.getElementById('labelLatestYearGdp').innerText = `${latestY} TOTAL GROSS PRODUCT`;
-            document.getElementById('titleGdpTrajectory').innerText = `Gross Domestic Product Growth Trajectory (2018–${latestY})`;
-            document.getElementById('titleSectorDistribution').innerText = `${latestY} Sectoral Distribution`;
-            document.getElementById('labelBaselineGdpCard').innerText = `Baseline ${latestY} GDP`;
+            const servLatest = sec.Services[activeY] || 0;
+            const indLatest = sec.Industry[activeY] || 0;
+            const agriLatest = sec.Agriculture[activeY] || 0;
+
+            const servGrowth = (sec.Services[prevY] && activeY !== prevY) ? (((sec.Services[activeY] - sec.Services[prevY]) / sec.Services[prevY]) * 100) : 0;
+            const indGrowth = (sec.Industry[prevY] && activeY !== prevY) ? (((sec.Industry[activeY] - sec.Industry[prevY]) / sec.Industry[prevY]) * 100) : 0;
+            const agriGrowth = (sec.Agriculture[prevY] && activeY !== prevY) ? (((sec.Agriculture[activeY] - sec.Agriculture[prevY]) / sec.Agriculture[prevY]) * 100) : 0;
+
+            document.getElementById('labelLatestYearGdp').innerText = `${activeY} TOTAL GROSS PRODUCT`;
+            document.getElementById('titleGdpTrajectory').innerText = selectedY ? `Gross Domestic Product Growth Trajectory (up to ${activeY})` : `Gross Domestic Product Growth Trajectory (2018–${proc.latest_year})`;
+            document.getElementById('titleSectorDistribution').innerText = `${activeY} Sectoral Distribution`;
+            document.getElementById('labelBaselineGdpCard').innerText = `Baseline ${activeY} GDP`;
 
             document.getElementById('cardTotalGdp').innerText = formatCurrencyBillion(totalLatest);
-            document.getElementById('cardTotalGrowth').innerHTML = `<i data-lucide="${growthLatest >= 0 ? 'arrow-up-right' : 'arrow-down-right'}" class="w-4 h-4 mr-1"></i> ${growthLatest >= 0 ? '+' : ''}${growthLatest.toFixed(2)}% from ${prevY}`;
+            document.getElementById('cardTotalGrowth').innerHTML = `<i data-lucide="${growthLatest >= 0 ? 'arrow-up-right' : 'arrow-down-right'}" class="w-4 h-4 mr-1"></i> ${growthLatest >= 0 ? '+' : ''}${growthLatest.toFixed(2)}% ${activeY !== prevY ? 'from ' + prevY : ''}`;
 
-            document.getElementById('cardServicesShare').innerText = ((servLatest / totalLatest) * 100).toFixed(2) + '%';
+            document.getElementById('cardServicesShare').innerText = totalLatest ? ((servLatest / totalLatest) * 100).toFixed(2) + '%' : '0%';
             document.getElementById('cardServicesTotal').innerText = formatCurrencyBillion(servLatest) + ' total';
 
             document.getElementById('cardIndustryTotal').innerText = formatCurrencyBillion(indLatest);
             document.getElementById('cardIndustryGrowth').innerHTML = `<i data-lucide="${indGrowth >= 0 ? 'arrow-up-right' : 'arrow-down-right'}" class="w-4 h-4 mr-1"></i> ${indGrowth >= 0 ? '+' : ''}${indGrowth.toFixed(2)}% growth`;
 
             document.getElementById('cardAgriTotal').innerText = formatCurrencyBillion(agriLatest);
-            document.getElementById('cardAgriGrowth').innerHTML = `<i data-lucide="${agriGrowth >= 0 ? 'arrow-up-right' : 'arrow-down-right'}" class="w-4 h-4 mr-1"></i> ${agriGrowth >= 0 ? '+' : ''}${agriGrowth.toFixed(2)}% from ${prevY}`;
+            document.getElementById('cardAgriGrowth').innerHTML = `<i data-lucide="${agriGrowth >= 0 ? 'arrow-up-right' : 'arrow-down-right'}" class="w-4 h-4 mr-1"></i> ${agriGrowth >= 0 ? '+' : ''}${agriGrowth.toFixed(2)}% ${activeY !== prevY ? 'from ' + prevY : ''}`;
 
             lucide.createIcons();
 
-            const years = proc.years;
-            const totalGdpData = years.map(y => proc.total_gdp[y] / 1000000);
+            const chartYears = selectedY ? proc.years.slice(0, idx + 1) : proc.years;
+            const totalGdpData = chartYears.map(y => proc.total_gdp[y] / 1000000);
 
             const ctxOverview = document.getElementById('overviewGdpChart').getContext('2d');
             if (overviewGdpChart) overviewGdpChart.destroy();
             overviewGdpChart = new Chart(ctxOverview, {
                 type: 'line',
                 data: {
-                    labels: years,
+                    labels: chartYears,
                     datasets: [{
                         label: 'Gross Domestic Product (in Billions PHP)',
                         data: totalGdpData,
@@ -928,11 +939,16 @@
             }
         }
 
-        function renderIndustryTable(rows, years, latestYear, prevYear) {
+        function renderIndustryTable(rows, years, latestYear, prevYear, selectedYear) {
             const thead = document.getElementById('industryTableHeader');
             const tbody = document.getElementById('industryTableBody');
 
-            const displayYears = years.length > 4 ? years.slice(-4) : years;
+            const activeYear = selectedYear || latestYear;
+            const idx = years.indexOf(activeYear);
+            const activePrevYear = idx > 0 ? years[idx - 1] : activeYear;
+
+            const displayYears = selectedYear ? [selectedYear] : (years.length > 4 ? years.slice(-4) : years);
+
             let headerHtml = `
                 <tr>
                     <th class="p-3">Code</th>
@@ -942,14 +958,14 @@
             displayYears.forEach(y => {
                 headerHtml += `<th class="p-3 text-right">${y}</th>`;
             });
-            headerHtml += `<th class="p-3 text-right">YoY Growth</th><th class="p-3 text-center">Actions (CRUD)</th></tr>`;
+            headerHtml += `<th class="p-3 text-right">YoY Growth (${activeYear})</th><th class="p-3 text-center">Actions (CRUD)</th></tr>`;
             thead.innerHTML = headerHtml;
 
             tbody.innerHTML = '';
             rows.forEach(row => {
-                const prevVal = row[prevYear];
-                const latestVal = row[latestYear];
-                const growth = (prevVal && latestVal) ? (((latestVal - prevVal) / prevVal) * 100) : 0;
+                const prevVal = row[activePrevYear];
+                const latestVal = row[activeYear];
+                const growth = (prevVal && latestVal && activeYear !== activePrevYear) ? (((latestVal - prevVal) / prevVal) * 100) : 0;
                 const isPositive = growth >= 0;
 
                 const tr = document.createElement('tr');
@@ -967,13 +983,13 @@
                 `;
 
                 displayYears.forEach(y => {
-                    const isLatest = y === latestYear;
+                    const isLatest = y === activeYear;
                     rowHtml += `<td class="p-3 text-right ${isLatest ? 'font-semibold text-white' : ''}">${formatNumber(row[y])}</td>`;
                 });
 
                 rowHtml += `
                     <td class="p-3 text-right ${isPositive ? 'text-emerald-400' : 'text-rose-400'} font-semibold">
-                        ${isPositive ? '+' : ''}${growth.toFixed(2)}%
+                        ${(activeYear !== activePrevYear) ? (isPositive ? '+' : '') + growth.toFixed(2) + '%' : '-'}
                     </td>
                     <td class="p-3 text-center">
                         <div class="flex items-center justify-center space-x-2">
@@ -1124,10 +1140,10 @@
 
             if (dbData && dbData.processed && dbData.processed.sector_gdp) {
                 const sec = dbData.processed.sector_gdp;
-                const latestY = dbData.processed.latest_year;
-                baseAgri = sec.Agriculture[latestY] / 1000000;
-                baseInd = sec.Industry[latestY] / 1000000;
-                baseServ = sec.Services[latestY] / 1000000;
+                const activeY = dbData.selected_year || dbData.processed.latest_year;
+                baseAgri = (sec.Agriculture[activeY] || 0) / 1000000;
+                baseInd = (sec.Industry[activeY] || 0) / 1000000;
+                baseServ = (sec.Services[activeY] || 0) / 1000000;
             }
 
             const baseTotal = baseAgri + baseInd + baseServ;
