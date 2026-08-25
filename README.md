@@ -84,12 +84,22 @@ To seed the SQLite database (`gdp_database.db`) from CSV files and execute the m
 python3 main_2.py
 ```
 
+or
+
+```bash
+python main_2.py
+```
+
 ### 3. Launch REST API Server
 
 Start the Flask REST API server and interactive dashboard:
 
 ```bash
 python3 main.py
+```
+or
+```bash
+python main.py
 ```
 
 The application will be accessible at `http://localhost:5000`.
@@ -101,6 +111,11 @@ To execute the data ingestion, ML forecasting, and database refresh sequence aut
 ```bash
 python3 -c "import database, Data_Collection, Data_Processing, Model_Development; database.init_db(); df = Data_Collection.load_data(); Data_Processing.process_data(df)"
 ```
+or 
+
+```bash
+python -c "import database, Data_Collection, Data_Processing, Model_Development; database.init_db(); df = Data_Collection.load_data(); Data_Processing.process_data(df)"
+```
 
 ### 5. Run Test Suite
 
@@ -109,7 +124,11 @@ Run the pytest suite to verify all pipeline components, database operations, and
 ```bash
 PYTHONPATH=. pytest tests/test_pipeline.py
 ```
+or
 
+```bash
+set PYTHONPATH=.& pytest tests/test_pipeline.py
+```
 ---
 
 ## API Endpoints Reference
