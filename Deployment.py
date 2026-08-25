@@ -67,8 +67,11 @@ def create_app():
                     ind[latest_y] = float(matching_row[latest_y].values[0])
             ind_forecasts.append(ind)
 
+        actual_selected_year = selected_year if (selected_year and selected_year in processed['years']) else None
+
         payload = {
             'metadata': PROVINCE_METADATA,
+            'selected_year': actual_selected_year,
             'processed': {
                 'years': processed['years'],
                 'latest_year': processed['latest_year'],
