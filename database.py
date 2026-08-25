@@ -78,14 +78,12 @@ def import_df_to_db(df, db_path=DB_PATH):
         industry = str(row['industry'])
         category = str(row['category'])
 
-        # Check if code exists
         cursor.execute("SELECT COUNT(*) FROM gdp_by_industry WHERE code = ?", (code,))
         exists = cursor.fetchone()[0] > 0
 
         if not exists:
             cursor.execute("INSERT INTO gdp_by_industry (code, industry, category) VALUES (?, ?, ?)", (code, industry, category))
 
-        # Update columns
         for col in df_cols:
             if col in ['code', 'industry', 'category']:
                 continue
@@ -95,6 +93,92 @@ def import_df_to_db(df, db_path=DB_PATH):
 
     conn.commit()
     conn.close()
+
+def create_industry(code, industry, category, year_values=None, db_path=DB_PATH):
+    """
+    CREATE: Adds a new industry record to the database.
+    """
+    init_db(db_path)
+    conn = sqlite3.connect(db_path)
+    cursor = conn.cursor()
+
+    # Dynamic year columns check
+    if year_values:
+        cursor.execute("PRAGMA table_info(gdp_by_industry)")
+        existing_cols = [row[1] for row in cursor.fetchall()]
+        for yr in year_values.keys():
+            yr_str = str(yr)
+            if yr_str not in existing_cols and yr_str.isdigit():
+                cursor.execute(f'ALTER TABLE gdp_by_industry ADD COLUMN "{yr_str}" REAL')
+        conn.commit()
+
+    cursor.execute("INSERT INTO gdp_by_industry (code, industry, category) VALUES (?, ?, ?)", (code, industry, category))
+
+    if year_values:
+        for yr, val in year_values.items():
+            if str(yr).isdigit():
+                cursor.execute(f'UPDATE gdp_by_industry SET "{yr}" = ? WHERE code = ?', (float(val) if val is not None else None, code))
+
+    conn.commit()
+    conn.close()
+    return True
+
+def get_industry_by_code(code, db_path=DB_PATH):
+    """
+    READ: Retrieves a single industry record by code.
+    """
+    init_db(db_path)
+    conn = sqlite3.connect(db_path)
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM gdp_by_industry WHERE code = ?", (code,))
+    row = cursor.fetchone()
+    conn.close()
+    if row:
+        return dict(row)
+    return None
+
+def update_industry(code, industry=None, category=None, year_values=None, db_path=DB_PATH):
+    """
+    UPDATE: Updates an existing industry record details and yearly GDP figures.
+    """
+    init_db(db_path)
+    conn = sqlite3.connect(db_path)
+    cursor = conn.cursor()
+
+    if industry is not None:
+        cursor.execute("UPDATE gdp_by_industry SET industry = ? WHERE code = ?", (industry, code))
+    if category is not None:
+        cursor.execute("UPDATE gdp_by_industry SET category = ? WHERE code = ?", (category, code))
+
+    if year_values:
+        cursor.execute("PRAGMA table_info(gdp_by_industry)")
+        existing_cols = [row[1] for row in cursor.fetchall()]
+        for yr in year_values.keys():
+            yr_str = str(yr)
+            if yr_str not in existing_cols and yr_str.isdigit():
+                cursor.execute(f'ALTER TABLE gdp_by_industry ADD COLUMN "{yr_str}" REAL')
+        conn.commit()
+
+        for yr, val in year_values.items():
+            if str(yr).isdigit():
+                cursor.execute(f'UPDATE gdp_by_industry SET "{yr}" = ? WHERE code = ?', (float(val) if val is not None else None, code))
+
+    conn.commit()
+    conn.close()
+    return True
+
+def delete_industry(code, db_path=DB_PATH):
+    """
+    DELETE: Removes an industry record by code.
+    """
+    init_db(db_path)
+    conn = sqlite3.connect(db_path)
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM gdp_by_industry WHERE code = ?", (code,))
+    conn.commit()
+    conn.close()
+    return True
 
 def export_db_to_csv(db_path=DB_PATH):
     """

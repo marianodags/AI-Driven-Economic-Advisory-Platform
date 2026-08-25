@@ -3,7 +3,10 @@ import math
 import pandas as pd
 import numpy as np
 import io
-from database import export_db_to_csv, import_df_to_db, fetch_gdp_by_industry_db
+from database import (
+    export_db_to_csv, import_df_to_db, fetch_gdp_by_industry_db,
+    create_industry, get_industry_by_code, update_industry, delete_industry
+)
 from Data_Collection import load_data
 from Data_Processing import process_data
 from Model_Development import train_and_forecast
@@ -27,7 +30,7 @@ def convert_types(obj):
 def create_app():
     """
     Flask Application Factory for Zamboanga del Norte Economic Advisory Platform.
-    Fetches GDP data dynamically from SQLite database and supports CSV upload, import, and export.
+    Fetches GDP data dynamically from SQLite database and supports full CRUD & CSV upload/export.
     """
     app = Flask(__name__)
 
@@ -37,6 +40,7 @@ def create_app():
 
     @app.route('/api/data', methods=['GET'])
     def get_dashboard_data():
+        selected_year = request.args.get('year', None)
         raw_df = load_data()
         processed = process_data(raw_df)
         forecast = train_and_forecast(processed)
@@ -45,6 +49,14 @@ def create_app():
 
         yearly_dict = processed['yearly_df'].to_dict(orient='records')
         industry_rows = raw_df.to_dict(orient='records')
+
+        if selected_year and selected_year in processed['years']:
+            yr_str = str(selected_year)
+            total_yr_gdp = processed['total_gdp'].get(yr_str, 0)
+            for row in industry_rows:
+                gva = row.get(yr_str, 0)
+                row['selected_year_gva'] = gva
+                row['selected_year_share'] = (gva / total_yr_gdp * 100) if total_yr_gdp else 0
 
         ind_forecasts = []
         for ind in forecast['industry_forecasts']:
@@ -66,7 +78,9 @@ def create_app():
                 'yearly_df': yearly_dict,
                 'industry_rows': industry_rows,
                 'latest_gdp_2024': processed['latest_gdp_2024'],
-                'latest_growth_2024': processed['latest_growth_2024']
+                'latest_growth_2024': processed['latest_growth_2024'],
+                'major_analytics': processed.get('major_analytics', {}),
+                'all_ind_analytics': processed.get('all_ind_analytics', {})
             },
             'forecast': {
                 'forecast_total': forecast['forecast_total'],
@@ -78,6 +92,59 @@ def create_app():
         }
 
         return jsonify(convert_types(payload))
+
+    # CRUD API Endpoints
+    @app.route('/api/gdp', methods=['POST'])
+    def api_create_gdp():
+        """CREATE: Adds a new industry sector record."""
+        data = request.get_json() or {}
+        code = data.get('code')
+        industry = data.get('industry')
+        category = data.get('category')
+        year_values = data.get('year_values', {})
+
+        if not code or not industry or not category:
+            return jsonify({'error': 'Missing required fields: code, industry, category'}), 400
+
+        existing = get_industry_by_code(code)
+        if existing:
+            return jsonify({'error': f'Industry record with code {code} already exists'}), 400
+
+        create_industry(code, industry, category, year_values)
+        return jsonify({'message': f'Industry {code} created successfully'}), 201
+
+    @app.route('/api/gdp/<code_id>', methods=['GET'])
+    def api_read_gdp(code_id):
+        """READ: Gets a single industry sector record."""
+        row = get_industry_by_code(code_id)
+        if not row:
+            return jsonify({'error': f'Industry record with code {code_id} not found'}), 404
+        return jsonify(convert_types(row))
+
+    @app.route('/api/gdp/<code_id>', methods=['PUT'])
+    def api_update_gdp(code_id):
+        """UPDATE: Modifies an existing industry sector record and yearly figures."""
+        data = request.get_json() or {}
+        existing = get_industry_by_code(code_id)
+        if not existing:
+            return jsonify({'error': f'Industry record with code {code_id} not found'}), 404
+
+        industry = data.get('industry')
+        category = data.get('category')
+        year_values = data.get('year_values', {})
+
+        update_industry(code_id, industry=industry, category=category, year_values=year_values)
+        return jsonify({'message': f'Industry {code_id} updated successfully'})
+
+    @app.route('/api/gdp/<code_id>', methods=['DELETE'])
+    def api_delete_gdp(code_id):
+        """DELETE: Deletes an industry sector record."""
+        existing = get_industry_by_code(code_id)
+        if not existing:
+            return jsonify({'error': f'Industry record with code {code_id} not found'}), 404
+
+        delete_industry(code_id)
+        return jsonify({'message': f'Industry {code_id} deleted successfully'})
 
     @app.route('/api/upload', methods=['POST'])
     def upload_data():
@@ -102,7 +169,6 @@ def create_app():
             else:
                 return jsonify({'error': 'No CSV file or JSON body provided'}), 400
 
-            # Validate required columns
             required_cols = {'code', 'industry', 'category'}
             if not required_cols.issubset(df.columns):
                 return jsonify({'error': f'Dataset missing required columns: {required_cols - set(df.columns)}'}), 400
