@@ -79,21 +79,33 @@
                 <p class="text-sm text-slate-400 mt-1">Real-time macro-economic data, predictive modeling, and sectoral breakdown (Constant 2018 Prices in ₱'000)</p>
             </div>
             <div class="flex items-center space-x-3">
-                <span class="px-3 py-1 bg-blue-950 border border-blue-800 text-blue-400 rounded-full text-xs font-semibold">Base Year: 2018</span>
-                <span class="px-3 py-1 bg-emerald-950 border border-emerald-800 text-emerald-400 rounded-full text-xs font-semibold">Live Model: Active</span>
+                <button onclick="triggerFileUpload()" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-500 text-white rounded-lg text-xs font-semibold flex items-center space-x-1.5 transition">
+                    <i data-lucide="upload" class="w-4 h-4"></i>
+                    <span>Import/Upload CSV</span>
+                </button>
+                <button onclick="exportData('csv')" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 rounded-lg text-xs font-semibold flex items-center space-x-1.5 transition">
+                    <i data-lucide="download" class="w-4 h-4"></i>
+                    <span>Export CSV</span>
+                </button>
+                <span id="dataStatusBadge" class="px-3 py-1.5 bg-emerald-950 border border-emerald-800 text-emerald-400 rounded-full text-xs font-semibold flex items-center">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 mr-1.5"></span> Database Live
+                </span>
+                <input type="file" id="csvFileInput" accept=".csv" class="hidden" onchange="handleFileUpload(event)">
             </div>
         </header>
+
+        <div id="toastNotification" class="hidden mb-6 p-4 rounded-xl text-sm font-medium flex items-center justify-between transition-all"></div>
 
         <section id="overview" class="tab-content active space-y-6">
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
                     <div class="flex justify-between items-start">
-                        <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">2024 Total Gross Product</span>
+                        <span id="labelLatestYearGdp" class="text-xs font-semibold text-slate-400 uppercase tracking-wider">2024 Total Gross Product</span>
                         <div class="p-2 bg-blue-500/10 text-blue-400 rounded-lg"><i data-lucide="coins" class="w-5 h-5"></i></div>
                     </div>
                     <div class="mt-4">
-                        <h3 class="text-2xl font-bold text-white">₱124.89B</h3>
-                        <p class="text-xs text-emerald-400 mt-1 flex items-center font-medium">
+                        <h3 id="cardTotalGdp" class="text-2xl font-bold text-white">₱124.89B</h3>
+                        <p id="cardTotalGrowth" class="text-xs text-emerald-400 mt-1 flex items-center font-medium">
                             <i data-lucide="arrow-up-right" class="w-4 h-4 mr-1"></i> +3.89% from 2023
                         </p>
                     </div>
@@ -105,8 +117,8 @@
                         <div class="p-2 bg-emerald-500/10 text-emerald-400 rounded-lg"><i data-lucide="shopping-bag" class="w-5 h-5"></i></div>
                     </div>
                     <div class="mt-4">
-                        <h3 class="text-2xl font-bold text-white">49.89%</h3>
-                        <p class="text-xs text-slate-400 mt-1">₱62.31 Billion total</p>
+                        <h3 id="cardServicesShare" class="text-2xl font-bold text-white">49.89%</h3>
+                        <p id="cardServicesTotal" class="text-xs text-slate-400 mt-1">₱62.31 Billion total</p>
                     </div>
                 </div>
 
@@ -116,8 +128,8 @@
                         <div class="p-2 bg-purple-500/10 text-purple-400 rounded-lg"><i data-lucide="building-2" class="w-5 h-5"></i></div>
                     </div>
                     <div class="mt-4">
-                        <h3 class="text-2xl font-bold text-white">₱44.12B</h3>
-                        <p class="text-xs text-emerald-400 mt-1 flex items-center font-medium">
+                        <h3 id="cardIndustryTotal" class="text-2xl font-bold text-white">₱44.12B</h3>
+                        <p id="cardIndustryGrowth" class="text-xs text-emerald-400 mt-1 flex items-center font-medium">
                             <i data-lucide="arrow-up-right" class="w-4 h-4 mr-1"></i> +4.29% growth
                         </p>
                     </div>
@@ -129,8 +141,8 @@
                         <div class="p-2 bg-amber-500/10 text-amber-400 rounded-lg"><i data-lucide="sprout" class="w-5 h-5"></i></div>
                     </div>
                     <div class="mt-4">
-                        <h3 class="text-2xl font-bold text-white">₱18.46B</h3>
-                        <p class="text-xs text-rose-400 mt-1 flex items-center font-medium">
+                        <h3 id="cardAgriTotal" class="text-2xl font-bold text-white">₱18.46B</h3>
+                        <p id="cardAgriGrowth" class="text-xs text-rose-400 mt-1 flex items-center font-medium">
                             <i data-lucide="arrow-down-right" class="w-4 h-4 mr-1"></i> -1.86% from 2023
                         </p>
                     </div>
@@ -139,13 +151,13 @@
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <div class="lg:col-span-2 bg-slate-900 border border-slate-800 rounded-xl p-6">
-                    <h3 class="text-lg font-bold text-white mb-4">Gross Domestic Product Growth Trajectory (2018–2024)</h3>
+                    <h3 id="titleGdpTrajectory" class="text-lg font-bold text-white mb-4">Gross Domestic Product Growth Trajectory</h3>
                     <div class="h-72">
                         <canvas id="overviewGdpChart"></canvas>
                     </div>
                 </div>
                 <div class="bg-slate-900 border border-slate-800 rounded-xl p-6">
-                    <h3 class="text-lg font-bold text-white mb-4">2024 Sectoral Distribution</h3>
+                    <h3 id="titleSectorDistribution" class="text-lg font-bold text-white mb-4">Sectoral Distribution</h3>
                     <div class="h-72 flex items-center justify-center">
                         <canvas id="overviewShareChart"></canvas>
                     </div>
@@ -158,10 +170,10 @@
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
                     <div>
                         <h3 class="text-lg font-bold text-white">AI Predictive Macroeconomic Model (2026–2030)</h3>
-                        <p class="text-sm text-slate-400">Projections powered by Holt-Winters exponential smoothing based on 2018-2024 PPA trends.</p>
+                        <p class="text-sm text-slate-400">Projections powered by Holt-Winters exponential smoothing based on database PPA trends.</p>
                     </div>
                     <div class="mt-3 md:mt-0 px-4 py-2 bg-blue-900/40 border border-blue-700/50 rounded-lg text-xs text-blue-300">
-                        Estimated CAGR: <span class="font-bold text-white">5.42%</span>
+                        Estimated CAGR: <span id="cagrValue" class="font-bold text-white">5.42%</span>
                     </div>
                 </div>
                 <div class="h-80">
@@ -172,17 +184,17 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
                     <span class="text-xs text-slate-400 font-semibold uppercase">2026 Forecast Target</span>
-                    <h4 class="text-xl font-bold text-blue-400 mt-2">₱138.2 Billion</h4>
+                    <h4 id="forecastTarget2026" class="text-xl font-bold text-blue-400 mt-2">₱138.2 Billion</h4>
                     <p class="text-xs text-slate-400 mt-1">Driven by service sector stabilization and industrial infrastructure recovery.</p>
                 </div>
                 <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
                     <span class="text-xs text-slate-400 font-semibold uppercase">2028 Forecast Target</span>
-                    <h4 class="text-xl font-bold text-blue-400 mt-2">₱153.8 Billion</h4>
+                    <h4 id="forecastTarget2028" class="text-xl font-bold text-blue-400 mt-2">₱153.8 Billion</h4>
                     <p class="text-xs text-slate-400 mt-1">Projected increase in agro-industrial modernization and tech integration.</p>
                 </div>
                 <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
                     <span class="text-xs text-slate-400 font-semibold uppercase">2030 Vision Target</span>
-                    <h4 class="text-xl font-bold text-emerald-400 mt-2">₱171.1 Billion</h4>
+                    <h4 id="forecastTarget2030" class="text-xl font-bold text-emerald-400 mt-2">₱171.1 Billion</h4>
                     <p class="text-xs text-slate-400 mt-1">Potential milestone achieving sustained double-digit growth in services.</p>
                 </div>
             </div>
@@ -190,76 +202,29 @@
 
         <section id="sectors" class="tab-content space-y-6">
             <div class="bg-slate-900 border border-slate-800 rounded-xl p-6">
-                <h3 class="text-lg font-bold text-white mb-4">Historical Performance by Sub-Industry (In '000 PHP)</h3>
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-3">
+                    <div>
+                        <h3 class="text-lg font-bold text-white">Historical Performance by Sub-Industry (Fetched from SQLite Database)</h3>
+                        <p class="text-xs text-slate-400">Constant 2018 Prices in ₱'000. Upload new PSA datasets (e.g. 2025 data) to update calculations automatically.</p>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <button onclick="triggerFileUpload()" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-500 text-white rounded-lg text-xs font-semibold flex items-center space-x-1 transition">
+                            <i data-lucide="upload-cloud" class="w-4 h-4"></i>
+                            <span>Upload PSA Data</span>
+                        </button>
+                        <button onclick="exportData('csv')" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 rounded-lg text-xs font-semibold flex items-center space-x-1 transition">
+                            <i data-lucide="download" class="w-4 h-4"></i>
+                            <span>Export</span>
+                        </button>
+                    </div>
+                </div>
                 <div class="overflow-x-auto">
                     <table class="w-full text-left text-sm text-slate-300">
-                        <thead class="bg-slate-950 text-xs uppercase text-slate-400 border-b border-slate-800">
-                            <tr>
-                                <th class="p-3">Industry / Sector</th>
-                                <th class="p-3 text-right">2021</th>
-                                <th class="p-3 text-right">2022</th>
-                                <th class="p-3 text-right">2023</th>
-                                <th class="p-3 text-right">2024</th>
-                                <th class="p-3 text-right">YoY Growth</th>
-                            </tr>
+                        <thead id="industryTableHeader" class="bg-slate-950 text-xs uppercase text-slate-400 border-b border-slate-800">
+                            <!-- Dynamically generated year headers -->
                         </thead>
-                        <tbody class="divide-y divide-slate-800">
-                            <tr class="hover:bg-slate-800/50">
-                                <td class="p-3 font-semibold text-amber-400">Agriculture, Forestry, & Fishing</td>
-                                <td class="p-3 text-right">17,374,858</td>
-                                <td class="p-3 text-right">17,432,561</td>
-                                <td class="p-3 text-right">18,806,745</td>
-                                <td class="p-3 text-right">18,457,242</td>
-                                <td class="p-3 text-right text-rose-400">-1.86%</td>
-                            </tr>
-                            <tr class="hover:bg-slate-800/50">
-                                <td class="p-3 font-semibold text-purple-400">Industry Sector Total</td>
-                                <td class="p-3 text-right">38,153,720</td>
-                                <td class="p-3 text-right">41,846,536</td>
-                                <td class="p-3 text-right">42,308,644</td>
-                                <td class="p-3 text-right">44,124,527</td>
-                                <td class="p-3 text-right text-emerald-400">+4.29%</td>
-                            </tr>
-                            <tr class="hover:bg-slate-800/50">
-                                <td class="p-3 pl-6 text-slate-400">— Manufacturing</td>
-                                <td class="p-3 text-right">22,534,272</td>
-                                <td class="p-3 text-right">23,213,610</td>
-                                <td class="p-3 text-right">21,139,584</td>
-                                <td class="p-3 text-right">22,343,564</td>
-                                <td class="p-3 text-right text-emerald-400">+5.70%</td>
-                            </tr>
-                            <tr class="hover:bg-slate-800/50">
-                                <td class="p-3 pl-6 text-slate-400">— Construction</td>
-                                <td class="p-3 text-right">14,186,003</td>
-                                <td class="p-3 text-right">17,223,742</td>
-                                <td class="p-3 text-right">19,757,593</td>
-                                <td class="p-3 text-right">20,268,202</td>
-                                <td class="p-3 text-right text-emerald-400">+2.58%</td>
-                            </tr>
-                            <tr class="hover:bg-slate-800/50">
-                                <td class="p-3 font-semibold text-blue-400">Services Sector Total</td>
-                                <td class="p-3 text-right">51,429,247</td>
-                                <td class="p-3 text-right">55,300,362</td>
-                                <td class="p-3 text-right">59,093,391</td>
-                                <td class="p-3 text-right">62,306,775</td>
-                                <td class="p-3 text-right text-emerald-400">+5.44%</td>
-                            </tr>
-                            <tr class="hover:bg-slate-800/50">
-                                <td class="p-3 pl-6 text-slate-400">— Wholesale & Retail Trade</td>
-                                <td class="p-3 text-right">21,581,253</td>
-                                <td class="p-3 text-right">22,677,794</td>
-                                <td class="p-3 text-right">24,125,124</td>
-                                <td class="p-3 text-right">25,123,193</td>
-                                <td class="p-3 text-right text-emerald-400">+4.14%</td>
-                            </tr>
-                            <tr class="hover:bg-slate-800/50">
-                                <td class="p-3 pl-6 text-slate-400">— Transportation & Storage</td>
-                                <td class="p-3 text-right">2,153,161</td>
-                                <td class="p-3 text-right">2,609,020</td>
-                                <td class="p-3 text-right">2,910,086</td>
-                                <td class="p-3 text-right">3,268,885</td>
-                                <td class="p-3 text-right text-emerald-400">+12.33%</td>
-                            </tr>
+                        <tbody id="industryTableBody" class="divide-y divide-slate-800">
+                            <tr><td colspan="8" class="p-4 text-center text-slate-500">Loading industry data from database...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -360,8 +325,8 @@
                         </div>
                         <div class="grid grid-cols-2 gap-4 mb-6">
                             <div class="bg-slate-950 p-4 rounded-lg border border-slate-800">
-                                <span class="text-xs text-slate-400">Baseline 2026 Projection</span>
-                                <p class="text-xl font-bold text-slate-300 mt-1">₱131.62 Billion</p>
+                                <span id="labelBaselineGdpCard" class="text-xs text-slate-400">Baseline GDP</span>
+                                <p id="baselineGdpText" class="text-xl font-bold text-slate-300 mt-1">₱124.89 Billion</p>
                             </div>
                             <div class="bg-slate-950 p-4 rounded-lg border border-slate-800">
                                 <span class="text-xs text-slate-400">Simulated Target GDP</span>
@@ -375,7 +340,7 @@
                             <i data-lucide="sparkles" class="w-4 h-4 mr-1"></i> AI Executive Recommendation
                         </h4>
                         <p id="aiRecommendationText" class="text-xs text-slate-300 leading-relaxed">
-                            Prioritizing a 10% Services push combined with an 8% Industrial infrastructure investment yields optimal employment and gross output returns. Rebalancing agriculture through technology investments offsets recent raw-material supply dips.
+                            Loading recommendations...
                         </p>
                     </div>
                 </div>
@@ -385,10 +350,8 @@
     </main>
 
     <script>
-        // Initialize Lucide Icons
         lucide.createIcons();
 
-        // Navigation Tab Switching
         function switchTab(tabId, element) {
             document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
             document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
@@ -397,112 +360,290 @@
             element.classList.add('active');
         }
 
-        // --- Chart Configurations ---
+        let dbData = null;
+        let overviewGdpChart = null;
+        let overviewShareChart = null;
+        let forecastChart = null;
+        let lguBarChart = null;
 
-        // Data derived from provided PPA Dataset
-        const years = ['2018', '2019', '2020', '2021', '2022', '2023', '2024'];
-        const totalGdpData = [104783326, 106871429, 109441263, 106957825, 114579459, 120208780, 124888544].map(v => v / 1000000); // converting to billions
+        function formatCurrencyBillion(valInThousands) {
+            return '₱' + (valInThousands / 1000000).toFixed(2) + 'B';
+        }
 
-        // 1. Overview GDP Line Chart
-        const ctxOverview = document.getElementById('overviewGdpChart').getContext('2d');
-        new Chart(ctxOverview, {
-            type: 'line',
-            data: {
-                labels: years,
-                datasets: [{
-                    label: 'Gross Domestic Product (in Billions PHP)',
-                    data: totalGdpData,
-                    borderColor: '#3B82F6',
-                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
-                    fill: true,
-                    tension: 0.3,
-                    borderWidth: 3,
-                    pointBackgroundColor: '#60A5FA'
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { labels: { color: '#94A3B8' } } },
-                scales: {
-                    x: { ticks: { color: '#64748B' }, grid: { color: '#1E293B' } },
-                    y: { ticks: { color: '#64748B' }, grid: { color: '#1E293B' } }
+        function formatNumber(val) {
+            if (val === undefined || val === null) return '-';
+            return new Intl.NumberFormat('en-US').format(Math.round(val));
+        }
+
+        function showNotification(message, isError = false) {
+            const toast = document.getElementById('toastNotification');
+            toast.className = `mb-6 p-4 rounded-xl text-sm font-medium flex items-center justify-between border ${
+                isError ? 'bg-rose-950/80 border-rose-800 text-rose-200' : 'bg-emerald-950/80 border-emerald-800 text-emerald-200'
+            }`;
+            toast.innerHTML = `<span>${message}</span><button onclick="this.parentElement.classList.add('hidden')" class="ml-4 opacity-75 hover:opacity-100">✕</button>`;
+            toast.classList.remove('hidden');
+            setTimeout(() => toast.classList.add('hidden'), 5000);
+        }
+
+        function triggerFileUpload() {
+            document.getElementById('csvFileInput').click();
+        }
+
+        async function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const formData = new FormData();
+            formData.append('file', file);
+
+            try {
+                const response = await fetch('/api/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+                const res = await response.json();
+                if (response.ok) {
+                    showNotification(res.message);
+                    await loadDashboardData();
+                } else {
+                    showNotification(res.error || 'Failed to upload dataset', true);
                 }
+            } catch (err) {
+                showNotification('Upload request error: ' + err.message, true);
             }
-        });
+            event.target.value = '';
+        }
 
-        // 2. Overview Share Doughnut Chart (2024)
-        const ctxShare = document.getElementById('overviewShareChart').getContext('2d');
-        new Chart(ctxShare, {
-            type: 'doughnut',
-            data: {
-                labels: ['Services', 'Industry', 'Agriculture'],
-                datasets: [{
-                    data: [62306775, 44124527, 18457242],
-                    backgroundColor: ['#3B82F6', '#A855F7', '#F59E0B'],
-                    borderWidth: 0
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { position: 'bottom', labels: { color: '#94A3B8' } } }
+        function exportData(format = 'csv') {
+            window.location.href = `/api/export?format=${format}`;
+        }
+
+        async function loadDashboardData() {
+            try {
+                const response = await fetch('/api/data');
+                dbData = await response.json();
+                renderOverview(dbData);
+                renderForecasts(dbData);
+                renderIndustryTable(dbData.processed.industry_rows, dbData.processed.years, dbData.processed.latest_year, dbData.processed.prev_year);
+                renderLguChart();
+                updateSimulation();
+            } catch (err) {
+                console.error("Failed to load backend dynamic data:", err);
             }
-        });
+        }
 
-        // 3. Forecasts Chart (2024-2030)
-        const ctxForecast = document.getElementById('forecastChart').getContext('2d');
-        new Chart(ctxForecast, {
-            type: 'line',
-            data: {
-                labels: ['2024', '2025 (P)', '2026 (F)', '2027 (F)', '2028 (F)', '2029 (F)', '2030 (F)'],
-                datasets: [{
-                    label: 'Projected GDP Trajectory (Billions PHP)',
-                    data: [124.89, 131.20, 138.20, 145.80, 153.80, 162.10, 171.10],
-                    borderColor: '#10B981',
-                    borderDash: [5, 5],
-                    backgroundColor: 'rgba(16, 185, 129, 0.05)',
-                    fill: true,
-                    tension: 0.3,
-                    pointBackgroundColor: '#34D399'
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { labels: { color: '#94A3B8' } } },
-                scales: {
-                    x: { ticks: { color: '#64748B' }, grid: { color: '#1E293B' } },
-                    y: { ticks: { color: '#64748B' }, grid: { color: '#1E293B' } }
+        function renderOverview(data) {
+            const proc = data.processed;
+            const sec = proc.sector_gdp;
+            const latestY = proc.latest_year;
+            const prevY = proc.prev_year;
+
+            const totalLatest = proc.total_gdp[latestY];
+            const growthLatest = proc.latest_growth_2024;
+            const servLatest = sec.Services[latestY];
+            const indLatest = sec.Industry[latestY];
+            const agriLatest = sec.Agriculture[latestY];
+
+            const servGrowth = sec.Services[prevY] ? (((sec.Services[latestY] - sec.Services[prevY]) / sec.Services[prevY]) * 100) : 0;
+            const indGrowth = sec.Industry[prevY] ? (((sec.Industry[latestY] - sec.Industry[prevY]) / sec.Industry[prevY]) * 100) : 0;
+            const agriGrowth = sec.Agriculture[prevY] ? (((sec.Agriculture[latestY] - sec.Agriculture[prevY]) / sec.Agriculture[prevY]) * 100) : 0;
+
+            document.getElementById('labelLatestYearGdp').innerText = `${latestY} TOTAL GROSS PRODUCT`;
+            document.getElementById('titleGdpTrajectory').innerText = `Gross Domestic Product Growth Trajectory (2018–${latestY})`;
+            document.getElementById('titleSectorDistribution').innerText = `${latestY} Sectoral Distribution`;
+            document.getElementById('labelBaselineGdpCard').innerText = `Baseline ${latestY} GDP`;
+
+            document.getElementById('cardTotalGdp').innerText = formatCurrencyBillion(totalLatest);
+            document.getElementById('cardTotalGrowth').innerHTML = `<i data-lucide="${growthLatest >= 0 ? 'arrow-up-right' : 'arrow-down-right'}" class="w-4 h-4 mr-1"></i> ${growthLatest >= 0 ? '+' : ''}${growthLatest.toFixed(2)}% from ${prevY}`;
+
+            document.getElementById('cardServicesShare').innerText = ((servLatest / totalLatest) * 100).toFixed(2) + '%';
+            document.getElementById('cardServicesTotal').innerText = formatCurrencyBillion(servLatest) + ' total';
+
+            document.getElementById('cardIndustryTotal').innerText = formatCurrencyBillion(indLatest);
+            document.getElementById('cardIndustryGrowth').innerHTML = `<i data-lucide="${indGrowth >= 0 ? 'arrow-up-right' : 'arrow-down-right'}" class="w-4 h-4 mr-1"></i> ${indGrowth >= 0 ? '+' : ''}${indGrowth.toFixed(2)}% growth`;
+
+            document.getElementById('cardAgriTotal').innerText = formatCurrencyBillion(agriLatest);
+            document.getElementById('cardAgriGrowth').innerHTML = `<i data-lucide="${agriGrowth >= 0 ? 'arrow-up-right' : 'arrow-down-right'}" class="w-4 h-4 mr-1"></i> ${agriGrowth >= 0 ? '+' : ''}${agriGrowth.toFixed(2)}% from ${prevY}`;
+
+            lucide.createIcons();
+
+            const years = proc.years;
+            const totalGdpData = years.map(y => proc.total_gdp[y] / 1000000);
+
+            const ctxOverview = document.getElementById('overviewGdpChart').getContext('2d');
+            if (overviewGdpChart) overviewGdpChart.destroy();
+            overviewGdpChart = new Chart(ctxOverview, {
+                type: 'line',
+                data: {
+                    labels: years,
+                    datasets: [{
+                        label: 'Gross Domestic Product (in Billions PHP)',
+                        data: totalGdpData,
+                        borderColor: '#3B82F6',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        fill: true,
+                        tension: 0.3,
+                        borderWidth: 3,
+                        pointBackgroundColor: '#60A5FA'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { labels: { color: '#94A3B8' } } },
+                    scales: {
+                        x: { ticks: { color: '#64748B' }, grid: { color: '#1E293B' } },
+                        y: { ticks: { color: '#64748B' }, grid: { color: '#1E293B' } }
+                    }
                 }
-            }
-        });
+            });
 
-        // 4. LGU Bar Chart
-        const ctxLgu = document.getElementById('lguBarChart').getContext('2d');
-        new Chart(ctxLgu, {
-            type: 'bar',
-            data: {
-                labels: ['Dipolog City', 'Dapitan City', 'Sindangan', 'Liloy', 'Labason', 'Siocon'],
-                datasets: [{
-                    label: 'Economic Share Output Weight (Index)',
-                    data: [85, 62, 58, 44, 38, 42],
-                    backgroundColor: '#3B82F6',
-                    borderRadius: 6
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { display: false } },
-                scales: {
-                    x: { ticks: { color: '#64748B' }, grid: { display: false } },
-                    y: { ticks: { color: '#64748B' }, grid: { color: '#1E293B' } }
+            const ctxShare = document.getElementById('overviewShareChart').getContext('2d');
+            if (overviewShareChart) overviewShareChart.destroy();
+            overviewShareChart = new Chart(ctxShare, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Services', 'Industry', 'Agriculture'],
+                    datasets: [{
+                        data: [servLatest, indLatest, agriLatest],
+                        backgroundColor: ['#3B82F6', '#A855F7', '#F59E0B'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'bottom', labels: { color: '#94A3B8' } } }
                 }
-            }
-        });
+            });
+        }
 
-        // Simulator Logic
+        function renderForecasts(data) {
+            const fTotal = data.forecast.forecast_total;
+            const forecastYears = Object.keys(fTotal).sort();
+            const latestY = data.processed.latest_year;
+            const labels = [latestY, ...forecastYears.map(y => y + ' (F)')];
+
+            const baseLatest = data.processed.latest_gdp_2024 / 1000000;
+            const values = [baseLatest, ...forecastYears.map(y => fTotal[y] / 1000000)];
+
+            if (fTotal['2026']) document.getElementById('forecastTarget2026').innerText = '₱' + (fTotal['2026'] / 1000000).toFixed(2) + ' Billion';
+            if (fTotal['2028']) document.getElementById('forecastTarget2028').innerText = '₱' + (fTotal['2028'] / 1000000).toFixed(2) + ' Billion';
+            if (fTotal['2030']) document.getElementById('forecastTarget2030').innerText = '₱' + (fTotal['2030'] / 1000000).toFixed(2) + ' Billion';
+
+            const ctxForecast = document.getElementById('forecastChart').getContext('2d');
+            if (forecastChart) forecastChart.destroy();
+            forecastChart = new Chart(ctxForecast, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Projected GDP Trajectory (Billions PHP)',
+                        data: values,
+                        borderColor: '#10B981',
+                        borderDash: [5, 5],
+                        backgroundColor: 'rgba(16, 185, 129, 0.05)',
+                        fill: true,
+                        tension: 0.3,
+                        pointBackgroundColor: '#34D399'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { labels: { color: '#94A3B8' } } },
+                    scales: {
+                        x: { ticks: { color: '#64748B' }, grid: { color: '#1E293B' } },
+                        y: { ticks: { color: '#64748B' }, grid: { color: '#1E293B' } }
+                    }
+                }
+            });
+
+            if (data.insights && data.insights.key_recommendations) {
+                document.getElementById('aiRecommendationText').innerText = data.insights.key_recommendations.join(' ');
+            }
+        }
+
+        function renderIndustryTable(rows, years, latestYear, prevYear) {
+            const thead = document.getElementById('industryTableHeader');
+            const tbody = document.getElementById('industryTableBody');
+
+            const displayYears = years.length > 4 ? years.slice(-4) : years;
+            let headerHtml = `
+                <tr>
+                    <th class="p-3">Code</th>
+                    <th class="p-3">Industry / Sector</th>
+                    <th class="p-3">Category</th>
+            `;
+            displayYears.forEach(y => {
+                headerHtml += `<th class="p-3 text-right">${y}</th>`;
+            });
+            headerHtml += `<th class="p-3 text-right">YoY Growth (${prevYear.slice(-2)}-${latestYear.slice(-2)})</th></tr>`;
+            thead.innerHTML = headerHtml;
+
+            tbody.innerHTML = '';
+            rows.forEach(row => {
+                const prevVal = row[prevYear];
+                const latestVal = row[latestYear];
+                const growth = (prevVal && latestVal) ? (((latestVal - prevVal) / prevVal) * 100) : 0;
+                const isPositive = growth >= 0;
+
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-slate-800/50 transition';
+
+                let categoryBadge = '';
+                if (row.category === 'Agriculture') categoryBadge = '<span class="text-amber-400 font-semibold">Agriculture</span>';
+                else if (row.category === 'Industry') categoryBadge = '<span class="text-purple-400 font-semibold">Industry</span>';
+                else categoryBadge = '<span class="text-blue-400 font-semibold">Services</span>';
+
+                let rowHtml = `
+                    <td class="p-3 font-mono text-xs text-slate-400">${row.code}</td>
+                    <td class="p-3 font-medium text-white">${row.industry}</td>
+                    <td class="p-3">${categoryBadge}</td>
+                `;
+
+                displayYears.forEach(y => {
+                    const isLatest = y === latestYear;
+                    rowHtml += `<td class="p-3 text-right ${isLatest ? 'font-semibold text-white' : ''}">${formatNumber(row[y])}</td>`;
+                });
+
+                rowHtml += `
+                    <td class="p-3 text-right ${isPositive ? 'text-emerald-400' : 'text-rose-400'} font-semibold">
+                        ${isPositive ? '+' : ''}${growth.toFixed(2)}%
+                    </td>
+                `;
+
+                tr.innerHTML = rowHtml;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function renderLguChart() {
+            const ctxLgu = document.getElementById('lguBarChart').getContext('2d');
+            if (lguBarChart) lguBarChart.destroy();
+            lguBarChart = new Chart(ctxLgu, {
+                type: 'bar',
+                data: {
+                    labels: ['Dipolog City', 'Dapitan City', 'Sindangan', 'Liloy', 'Labason', 'Siocon'],
+                    datasets: [{
+                        label: 'Economic Share Output Weight (Index)',
+                        data: [85, 62, 58, 44, 38, 42],
+                        backgroundColor: '#3B82F6',
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: { ticks: { color: '#64748B' }, grid: { display: false } },
+                        y: { ticks: { color: '#64748B' }, grid: { color: '#1E293B' } }
+                    }
+                }
+            });
+        }
+
         function updateSimulation() {
             const agri = parseFloat(document.getElementById('agriSlider').value);
             const ind = parseFloat(document.getElementById('indSlider').value);
@@ -512,14 +653,26 @@
             document.getElementById('indVal').innerText = ind + '%';
             document.getElementById('servVal').innerText = serv + '%';
 
-            // Baseline calculations based on 2024 sectoral figures
-            const baseAgri = 18.46;
-            const baseInd = 44.12;
-            const baseServ = 62.31;
+            let baseAgri = 18.46;
+            let baseInd = 44.12;
+            let baseServ = 62.31;
+
+            if (dbData && dbData.processed && dbData.processed.sector_gdp) {
+                const sec = dbData.processed.sector_gdp;
+                const latestY = dbData.processed.latest_year;
+                baseAgri = sec.Agriculture[latestY] / 1000000;
+                baseInd = sec.Industry[latestY] / 1000000;
+                baseServ = sec.Services[latestY] / 1000000;
+            }
+
+            const baseTotal = baseAgri + baseInd + baseServ;
+            document.getElementById('baselineGdpText').innerText = '₱' + baseTotal.toFixed(2) + ' Billion';
 
             const simGdp = (baseAgri * (1 + agri/100)) + (baseInd * (1 + ind/100)) + (baseServ * (1 + serv/100));
             document.getElementById('simulatedGdp').innerText = '₱' + simGdp.toFixed(2) + ' Billion';
         }
+
+        document.addEventListener('DOMContentLoaded', loadDashboardData);
     </script>
 </body>
 </html>

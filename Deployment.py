@@ -1,7 +1,9 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, Response
 import math
 import pandas as pd
 import numpy as np
+import io
+from database import export_db_to_csv, import_df_to_db, fetch_gdp_by_industry_db
 from Data_Collection import load_data
 from Data_Processing import process_data
 from Model_Development import train_and_forecast
@@ -25,15 +27,9 @@ def convert_types(obj):
 def create_app():
     """
     Flask Application Factory for Zamboanga del Norte Economic Advisory Platform.
+    Fetches GDP data dynamically from SQLite database and supports CSV upload, import, and export.
     """
     app = Flask(__name__)
-
-    # Pre-compute pipeline data
-    raw_df = load_data()
-    processed = process_data(raw_df)
-    forecast = train_and_forecast(processed)
-    metrics = evaluate_model(forecast['model'], forecast['X_hist'], forecast['y_hist'])
-    insights = generate_economic_advisory(processed, forecast)
 
     @app.route('/')
     def index():
@@ -41,23 +37,34 @@ def create_app():
 
     @app.route('/api/data', methods=['GET'])
     def get_dashboard_data():
-        yearly_dict = processed['yearly_df'].to_dict(orient='records')
+        raw_df = load_data()
+        processed = process_data(raw_df)
+        forecast = train_and_forecast(processed)
+        metrics = evaluate_model(forecast['model'], forecast['X_hist'], forecast['y_hist'])
+        insights = generate_economic_advisory(processed, forecast)
 
-        # Add 2023 values to industry forecasts if missing
+        yearly_dict = processed['yearly_df'].to_dict(orient='records')
+        industry_rows = raw_df.to_dict(orient='records')
+
         ind_forecasts = []
         for ind in forecast['industry_forecasts']:
-            matching_row = processed['raw_df'][processed['raw_df']['code'] == ind['code']]
+            matching_row = raw_df[raw_df['code'] == ind['code']]
             if not matching_row.empty:
-                ind['2023'] = float(matching_row['2023'].values[0])
+                latest_y = processed['latest_year']
+                if latest_y in matching_row.columns:
+                    ind[latest_y] = float(matching_row[latest_y].values[0])
             ind_forecasts.append(ind)
 
         payload = {
             'metadata': PROVINCE_METADATA,
             'processed': {
                 'years': processed['years'],
+                'latest_year': processed['latest_year'],
+                'prev_year': processed['prev_year'],
                 'total_gdp': processed['total_gdp'],
                 'sector_gdp': processed['sector_gdp'],
                 'yearly_df': yearly_dict,
+                'industry_rows': industry_rows,
                 'latest_gdp_2024': processed['latest_gdp_2024'],
                 'latest_growth_2024': processed['latest_growth_2024']
             },
@@ -72,8 +79,65 @@ def create_app():
 
         return jsonify(convert_types(payload))
 
+    @app.route('/api/upload', methods=['POST'])
+    def upload_data():
+        """
+        Endpoint to upload and import new/updated GDP CSV dataset into SQLite database.
+        Supports adding future years (e.g. 2025 data).
+        """
+        try:
+            if 'file' in request.files:
+                file = request.files['file']
+                if file.filename == '':
+                    return jsonify({'error': 'No file selected'}), 400
+                df = pd.read_csv(file)
+            elif request.is_json:
+                json_data = request.get_json()
+                if isinstance(json_data, list):
+                    df = pd.DataFrame(json_data)
+                elif isinstance(json_data, dict) and 'rows' in json_data:
+                    df = pd.DataFrame(json_data['rows'])
+                else:
+                    return jsonify({'error': 'Invalid JSON structure'}), 400
+            else:
+                return jsonify({'error': 'No CSV file or JSON body provided'}), 400
+
+            # Validate required columns
+            required_cols = {'code', 'industry', 'category'}
+            if not required_cols.issubset(df.columns):
+                return jsonify({'error': f'Dataset missing required columns: {required_cols - set(df.columns)}'}), 400
+
+            import_df_to_db(df)
+            return jsonify({
+                'message': 'Database updated successfully with imported dataset.',
+                'rows_imported': len(df),
+                'columns': list(df.columns)
+            })
+        except Exception as e:
+            return jsonify({'error': f'Failed to process upload: {str(e)}'}), 500
+
+    @app.route('/api/export', methods=['GET'])
+    def export_data():
+        """
+        Endpoint to export database GDP data as CSV download or JSON.
+        """
+        fmt = request.args.get('format', 'csv')
+        if fmt == 'json':
+            df = fetch_gdp_by_industry_db()
+            return jsonify(convert_types(df.to_dict(orient='records')))
+        else:
+            csv_content = export_db_to_csv()
+            return Response(
+                csv_content,
+                mimetype="text/csv",
+                headers={"Content-disposition": "attachment; filename=zamboanga_del_norte_gdp_export.csv"}
+            )
+
     @app.route('/api/predict', methods=['POST'])
     def predict():
+        raw_df = load_data()
+        processed = process_data(raw_df)
+        forecast = train_and_forecast(processed)
         data = request.get_json() or {}
         year = data.get('year', 2028)
         try:
@@ -85,10 +149,17 @@ def create_app():
 
     @app.route('/api/forecast', methods=['GET'])
     def get_forecast():
+        raw_df = load_data()
+        processed = process_data(raw_df)
+        forecast = train_and_forecast(processed)
         return jsonify(convert_types(forecast['forecast_total']))
 
     @app.route('/api/insights', methods=['GET'])
     def get_insights():
+        raw_df = load_data()
+        processed = process_data(raw_df)
+        forecast = train_and_forecast(processed)
+        insights = generate_economic_advisory(processed, forecast)
         return jsonify(convert_types(insights))
 
     return app

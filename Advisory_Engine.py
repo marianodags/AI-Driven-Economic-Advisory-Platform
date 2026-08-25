@@ -3,45 +3,51 @@ def generate_economic_advisory(processed_data, forecast_data):
     Generates AI economic advisory, policy feedback, performance evaluation,
     and strategic recommendations tailored exclusively for Zamboanga del Norte.
     """
-    total_2024 = processed_data['latest_gdp_2024']
-    growth_2024 = processed_data['latest_growth_2024']
+    total_latest = processed_data['latest_gdp_2024']
+    growth_latest = processed_data['latest_growth_2024']
+    latest_year = processed_data['latest_year']
     sector_gdp = processed_data['sector_gdp']
 
-    agri_2024 = sector_gdp['Agriculture']['2024']
-    ind_2024 = sector_gdp['Industry']['2024']
-    serv_2024 = sector_gdp['Services']['2024']
+    agri_latest = sector_gdp['Agriculture'][latest_year]
+    ind_latest = sector_gdp['Industry'][latest_year]
+    serv_latest = sector_gdp['Services'][latest_year]
 
-    services_share = (serv_2024 / total_2024) * 100
-    industry_share = (ind_2024 / total_2024) * 100
-    agri_share = (agri_2024 / total_2024) * 100
+    services_share = (serv_latest / total_latest) * 100 if total_latest > 0 else 0
+    industry_share = (ind_latest / total_latest) * 100 if total_latest > 0 else 0
+    agri_share = (agri_latest / total_latest) * 100 if total_latest > 0 else 0
 
-    fc_2025 = forecast_data['forecast_total'][2025]
-    fc_2027 = forecast_data['forecast_total'][2027]
-    projected_growth_2025 = ((fc_2025 - total_2024) / total_2024) * 100
+    forecast_dict = forecast_data.get('forecast_total', {})
+    fc_years = sorted(list(forecast_dict.keys()))
+    first_fc_year = fc_years[0] if fc_years else 2026
+    last_fc_year = fc_years[-1] if fc_years else 2030
+
+    fc_first_val = forecast_dict.get(first_fc_year, total_latest * 1.04)
+    fc_last_val = forecast_dict.get(last_fc_year, total_latest * 1.20)
+    projected_growth = ((fc_first_val - total_latest) / total_latest) * 100 if total_latest > 0 else 0
 
     executive_summary = (
-        f"Zamboanga del Norte recorded a total Gross Domestic Product (GDP) of PHP {total_2024:,.0f} thousand in 2024, "
-        f"representing a growth rate of {growth_2024:.2f}%. The economy is heavily service-driven ({services_share:.1f}% share), "
+        f"Zamboanga del Norte recorded a total Gross Domestic Product (GDP) of PHP {total_latest:,.0f} thousand in {latest_year}, "
+        f"representing a growth rate of {growth_latest:.2f}%. The economy is heavily service-driven ({services_share:.1f}% share), "
         f"followed by Industry ({industry_share:.1f}% share) and Agriculture, Forestry, and Fishing ({agri_share:.1f}% share). "
-        f"AI econometric forecasting projects GDP to reach PHP {fc_2025:,.0f} thousand in 2025 ({projected_growth_2025:.2f}% YoY growth) "
-        f"and PHP {fc_2027:,.0f} thousand by 2027."
+        f"AI econometric forecasting projects GDP to reach PHP {fc_first_val:,.0f} thousand in {first_fc_year} ({projected_growth:.2f}% growth) "
+        f"and PHP {fc_last_val:,.0f} thousand by {last_fc_year}."
     )
 
     key_insights = [
         {
             'title': 'Services Sector Dominance & Retail Expansion',
             'status': 'Strong Growth',
-            'detail': f"Services contributes PHP {serv_2024:,.0f} thousand ({services_share:.1f}% of total economy). Wholesale and retail trade, repair of motor vehicles, and education are key drivers."
+            'detail': f"Services contributes PHP {serv_latest:,.0f} thousand ({services_share:.1f}% of total economy). Wholesale and retail trade, repair of motor vehicles, and education are key drivers."
         },
         {
             'title': 'Manufacturing & Construction Resurgence',
             'status': 'Expanding',
-            'detail': f"Industry accounts for PHP {ind_2024:,.0f} thousand ({industry_share:.1f}% share). Manufacturing recovered to PHP 22.3B in 2024, supported by robust public and private construction activities (PHP 20.2B)."
+            'detail': f"Industry accounts for PHP {ind_latest:,.0f} thousand ({industry_share:.1f}% share). Manufacturing recovered strongly, supported by robust public and private construction activities."
         },
         {
             'title': 'Agricultural Output Stabilization',
             'status': 'Needs Modernization',
-            'detail': f"Agriculture, forestry, and fishing generated PHP {agri_2024:,.0f} thousand ({agri_share:.1f}% share). While a critical employer, output contracted slightly (-1.86% in 2024), highlighting climate and supply chain risks."
+            'detail': f"Agriculture, forestry, and fishing generated PHP {agri_latest:,.0f} thousand ({agri_share:.1f}% share). While a critical employer, output requires climate resilience and supply chain modernization."
         }
     ]
 
