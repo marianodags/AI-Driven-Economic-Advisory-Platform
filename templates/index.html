@@ -116,7 +116,7 @@
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
                     <div class="flex justify-between items-start">
-                        <span id="labelLatestYearGdp" class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Total Gross Product</span>
+                        <span id="labelLatestYearGdp" class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Gross Domestic Product (GDP)</span>
                         <div class="p-2 bg-blue-500/10 text-blue-400 rounded-lg"><i data-lucide="coins" class="w-5 h-5"></i></div>
                     </div>
                     <div class="mt-4">
@@ -129,18 +129,18 @@
 
                 <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
                     <div class="flex justify-between items-start">
-                        <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Services Sector Share</span>
+                        <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Services Share of GDP</span>
                         <div class="p-2 bg-emerald-500/10 text-emerald-400 rounded-lg"><i data-lucide="shopping-bag" class="w-5 h-5"></i></div>
                     </div>
                     <div class="mt-4">
                         <h3 id="cardServicesShare" class="text-2xl font-bold text-white">49.89%</h3>
-                        <p id="cardServicesTotal" class="text-xs text-slate-400 mt-1">₱62.31 Billion total</p>
+                        <p id="cardServicesTotal" class="text-xs text-slate-400 mt-1">₱62.31B GVA</p>
                     </div>
                 </div>
 
                 <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
                     <div class="flex justify-between items-start">
-                        <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Industrial Output</span>
+                        <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Industry GVA</span>
                         <div class="p-2 bg-purple-500/10 text-purple-400 rounded-lg"><i data-lucide="building-2" class="w-5 h-5"></i></div>
                     </div>
                     <div class="mt-4">
@@ -153,7 +153,7 @@
 
                 <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
                     <div class="flex justify-between items-start">
-                        <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Agri, Forestry & Fishing</span>
+                        <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Agri, Forestry & Fishing GVA</span>
                         <div class="p-2 bg-amber-500/10 text-amber-400 rounded-lg"><i data-lucide="sprout" class="w-5 h-5"></i></div>
                     </div>
                     <div class="mt-4">
@@ -279,10 +279,39 @@
                 </div>
 
                 <div class="border-t border-slate-800 pt-4">
-                    <div class="flex justify-between items-center mb-3">
-                        <h4 id="matrixTitle" class="text-sm font-bold text-white">1. YoY Growth Rate by Major Industry by Year</h4>
-                        <span id="matrixUnitBadge" class="text-xs text-slate-400">Unit: Percentage (%)</span>
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
+                        <div>
+                            <h4 id="matrixTitle" class="text-sm font-bold text-white">1. YoY Growth Rate by Major Industry by Year</h4>
+                            <span id="matrixUnitBadge" class="text-xs text-slate-400">Unit: Percentage (%)</span>
+                        </div>
                     </div>
+
+                    <!-- All Industries Sorting & Ranking Controls -->
+                    <div id="allIndSortBar" class="flex flex-wrap items-center gap-2 mb-4 hidden bg-slate-950/80 p-3 rounded-lg border border-slate-800">
+                        <span class="text-xs text-slate-400 font-semibold uppercase mr-1 flex items-center">
+                            <i data-lucide="arrow-up-down" class="w-3.5 h-3.5 mr-1 text-blue-400"></i> Top Rankings:
+                        </span>
+                        <button id="btnSortGrowth" onclick="setMatrixSort('growth_rate', 'growth_all')" class="px-2.5 py-1 bg-emerald-950/80 border border-emerald-800 text-emerald-300 hover:bg-emerald-900 rounded text-xs font-semibold transition flex items-center gap-1">
+                            <i data-lucide="trending-up" class="w-3.5 h-3.5"></i> Top Growth Rate
+                        </button>
+                        <button id="btnSortContrib" onclick="setMatrixSort('contribution_to_growth', 'contrib_all')" class="px-2.5 py-1 bg-purple-950/80 border border-purple-800 text-purple-300 hover:bg-purple-900 rounded text-xs font-semibold transition flex items-center gap-1">
+                            <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> Top Contributors
+                        </button>
+                        <button id="btnSortShare" onclick="setMatrixSort('share_in_gdp', 'share_all')" class="px-2.5 py-1 bg-blue-950/80 border border-blue-800 text-blue-300 hover:bg-blue-900 rounded text-xs font-semibold transition flex items-center gap-1">
+                            <i data-lucide="pie-chart" class="w-3.5 h-3.5"></i> Top GDP Share
+                        </button>
+                        <button onclick="setMatrixSort('default')" class="px-2.5 py-1 bg-slate-800 border border-slate-700 text-slate-300 hover:bg-slate-700 rounded text-xs font-semibold transition flex items-center gap-1">
+                            <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i> Reset Sort
+                        </button>
+                        <div class="ml-auto flex items-center space-x-1.5 text-xs text-slate-400">
+                            <span>Order:</span>
+                            <select id="matrixSortOrderSelect" onchange="toggleMatrixSortOrder(this.value)" class="bg-slate-900 border border-slate-800 text-white rounded px-2 py-0.5 focus:outline-none">
+                                <option value="desc">Highest to Lowest (Top)</option>
+                                <option value="asc">Lowest to Highest</option>
+                            </select>
+                        </div>
+                    </div>
+
                     <div class="overflow-x-auto">
                         <table class="w-full text-left text-sm text-slate-300">
                             <thead id="matrixTableHeader" class="bg-slate-950 text-xs uppercase text-slate-400 border-b border-slate-800">
@@ -493,11 +522,29 @@
 
         let dbData = null;
         let activeMatrixKey = 'growth_major';
+        let currentSortMetric = null;
+        let currentSortOrder = 'desc';
         let overviewGdpChart = null;
         let overviewShareChart = null;
         let forecastChart = null;
         let lguBarChart = null;
         let matrixAnalyticsChart = null;
+
+        function setMatrixSort(metricKey, targetViewKey = null) {
+            if (targetViewKey) {
+                activeMatrixKey = targetViewKey;
+                document.querySelectorAll('.matrix-btn').forEach(b => b.classList.remove('active'));
+                const btn = document.querySelector(`button[onclick*="'${targetViewKey}'"]`);
+                if (btn) btn.classList.add('active');
+            }
+            currentSortMetric = metricKey === 'default' ? null : metricKey;
+            renderMatrixView(activeMatrixKey);
+        }
+
+        function toggleMatrixSortOrder(order) {
+            currentSortOrder = order;
+            renderMatrixView(activeMatrixKey);
+        }
 
         function formatCurrencyBillion(valInThousands) {
             return '₱' + (valInThousands / 1000000).toFixed(2) + 'B';
@@ -617,6 +664,13 @@
             const majorData = proc.major_analytics || {};
             const allData = proc.all_ind_analytics || {};
 
+            const sortBar = document.getElementById('allIndSortBar');
+            if (key.endsWith('_all')) {
+                sortBar.classList.remove('hidden');
+            } else {
+                sortBar.classList.add('hidden');
+            }
+
             const thead = document.getElementById('matrixTableHeader');
             const tbody = document.getElementById('matrixTableBody');
             const titleEl = document.getElementById('matrixTitle');
@@ -627,13 +681,12 @@
                 headerHtml = '<tr><th class="p-3">Code</th><th class="p-3">Industry Sector</th><th class="p-3">Category</th>';
             }
             years.forEach(y => {
-                headerHtml += `<th class="p-3 text-right">${y}</th>`;
+                headerHtml += `<th class="p-3 text-right cursor-pointer hover:text-blue-400" onclick="setMatrixSort('${getMetricKeyForView(key)}')" title="Sort by ${y}">${y}</th>`;
             });
             headerHtml += '</tr>';
             thead.innerHTML = headerHtml;
 
             let rows = [];
-            let isPct = true;
 
             switch (key) {
                 case 'growth_major':
@@ -680,6 +733,15 @@
 
             tbody.innerHTML = rows.join('');
             renderMatrixChart(key, years, majorData, allData);
+            lucide.createIcons();
+        }
+
+        function getMetricKeyForView(key) {
+            if (key.startsWith('growth_')) return 'growth_rate';
+            if (key.startsWith('share_')) return 'share_in_gdp';
+            if (key.startsWith('contrib_')) return 'contribution_to_growth';
+            if (key.startsWith('pct_')) return 'percentage_share';
+            return 'growth_rate';
         }
 
         function renderMatrixChart(key, years, majorData, allData) {
@@ -782,17 +844,37 @@
         }
 
         function buildAllIndMatrixRows(allData, metricKey, years, isPct) {
-            return Object.keys(allData).map(code => {
+            let codes = Object.keys(allData);
+            const sortMetric = currentSortMetric || metricKey;
+
+            if (sortMetric) {
+                const sortYear = years[years.length - 1];
+                codes.sort((a, b) => {
+                    const valA = (allData[a][sortMetric] && allData[a][sortMetric][sortYear] !== undefined && allData[a][sortMetric][sortYear] !== null) ? allData[a][sortMetric][sortYear] : -999999;
+                    const valB = (allData[b][sortMetric] && allData[b][sortMetric][sortYear] !== undefined && allData[b][sortMetric][sortYear] !== null) ? allData[b][sortMetric][sortYear] : -999999;
+                    return currentSortOrder === 'desc' ? valB - valA : valA - valB;
+                });
+            }
+
+            return codes.map((code, index) => {
                 const item = allData[code];
                 let categoryBadge = '';
                 if (item.category === 'Agriculture') categoryBadge = '<span class="text-amber-400 font-semibold">Agriculture</span>';
                 else if (item.category === 'Industry') categoryBadge = '<span class="text-purple-400 font-semibold">Industry</span>';
                 else categoryBadge = '<span class="text-blue-400 font-semibold">Services</span>';
 
+                let rankBadge = '';
+                if (currentSortMetric || metricKey) {
+                    const rankNum = index + 1;
+                    if (rankNum === 1) rankBadge = '<span class="ml-2 px-1.5 py-0.5 bg-amber-500/20 text-amber-300 border border-amber-500/30 rounded text-[10px] font-bold">#1 Top</span>';
+                    else if (rankNum === 2) rankBadge = '<span class="ml-2 px-1.5 py-0.5 bg-slate-400/20 text-slate-200 border border-slate-400/30 rounded text-[10px] font-bold">#2</span>';
+                    else if (rankNum === 3) rankBadge = '<span class="ml-2 px-1.5 py-0.5 bg-amber-700/20 text-amber-400 border border-amber-700/30 rounded text-[10px] font-bold">#3</span>';
+                }
+
                 let html = `
                     <tr class="hover:bg-slate-800/50 transition">
                         <td class="p-3 font-mono text-xs text-slate-400">${code}</td>
-                        <td class="p-3 font-medium text-white">${item.industry}</td>
+                        <td class="p-3 font-medium text-white flex items-center">${item.industry}${rankBadge}</td>
                         <td class="p-3">${categoryBadge}</td>
                 `;
                 years.forEach(y => {
@@ -829,7 +911,7 @@
             const indGrowth = (sec.Industry[prevY] && activeY !== prevY) ? (((sec.Industry[activeY] - sec.Industry[prevY]) / sec.Industry[prevY]) * 100) : 0;
             const agriGrowth = (sec.Agriculture[prevY] && activeY !== prevY) ? (((sec.Agriculture[activeY] - sec.Agriculture[prevY]) / sec.Agriculture[prevY]) * 100) : 0;
 
-            document.getElementById('labelLatestYearGdp').innerText = `${activeY} TOTAL GROSS PRODUCT`;
+            document.getElementById('labelLatestYearGdp').innerText = `${activeY} GROSS DOMESTIC PRODUCT (GDP)`;
             document.getElementById('titleGdpTrajectory').innerText = selectedY ? `Gross Domestic Product Growth Trajectory (up to ${activeY})` : `Gross Domestic Product Growth Trajectory (2018–${proc.latest_year})`;
             document.getElementById('titleSectorDistribution').innerText = `${activeY} Sectoral Distribution`;
             document.getElementById('labelBaselineGdpCard').innerText = `Baseline ${activeY} GDP`;
@@ -838,7 +920,7 @@
             document.getElementById('cardTotalGrowth').innerHTML = `<i data-lucide="${growthLatest >= 0 ? 'arrow-up-right' : 'arrow-down-right'}" class="w-4 h-4 mr-1"></i> ${growthLatest >= 0 ? '+' : ''}${growthLatest.toFixed(2)}% ${activeY !== prevY ? 'from ' + prevY : ''}`;
 
             document.getElementById('cardServicesShare').innerText = totalLatest ? ((servLatest / totalLatest) * 100).toFixed(2) + '%' : '0%';
-            document.getElementById('cardServicesTotal').innerText = formatCurrencyBillion(servLatest) + ' total';
+            document.getElementById('cardServicesTotal').innerText = formatCurrencyBillion(servLatest) + ' GVA';
 
             document.getElementById('cardIndustryTotal').innerText = formatCurrencyBillion(indLatest);
             document.getElementById('cardIndustryGrowth').innerHTML = `<i data-lucide="${indGrowth >= 0 ? 'arrow-up-right' : 'arrow-down-right'}" class="w-4 h-4 mr-1"></i> ${indGrowth >= 0 ? '+' : ''}${indGrowth.toFixed(2)}% growth`;
