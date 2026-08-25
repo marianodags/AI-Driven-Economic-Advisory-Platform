@@ -46,7 +46,8 @@ def process_data(df):
     sector_names = {
         'Agriculture': 'Agriculture Sector',
         'Industry': 'Industry Sector',
-        'Services': 'Services Sector'
+        'Services': 'Services Sector',
+        'All Industries': 'All Industries (Total GDP)'
     }
 
     for cat_key, display_name in sector_names.items():
@@ -56,7 +57,7 @@ def process_data(df):
         pct_share = {}
 
         for i, y in enumerate(years):
-            curr_val = sector_gdp[cat_key][y]
+            curr_val = total_gdp[y] if cat_key == 'All Industries' else sector_gdp[cat_key][y]
             tot_gdp = total_gdp[y]
 
             sh = (curr_val / tot_gdp * 100) if tot_gdp else 0.0
@@ -68,7 +69,7 @@ def process_data(df):
                 contribution[y] = None
             else:
                 py = years[i - 1]
-                prev_val = sector_gdp[cat_key][py]
+                prev_val = total_gdp[py] if cat_key == 'All Industries' else sector_gdp[cat_key][py]
                 prev_tot_gdp = total_gdp[py]
 
                 gr = (((curr_val - prev_val) / prev_val) * 100) if prev_val else 0.0

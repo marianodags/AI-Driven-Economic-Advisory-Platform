@@ -699,8 +699,13 @@
             const colors = ['#F59E0B', '#A855F7', '#3B82F6', '#10B981', '#EC4899', '#6366F1', '#14B8A6', '#F97316', '#06B6D4', '#84CC16'];
 
             if (isMajor) {
-                const categories = ['Agriculture Sector', 'Industry Sector', 'Services Sector'];
-                const sectorColors = { 'Agriculture Sector': '#F59E0B', 'Industry Sector': '#A855F7', 'Services Sector': '#3B82F6' };
+                const categories = ['Agriculture Sector', 'Industry Sector', 'Services Sector', 'All Industries (Total GDP)'];
+                const sectorColors = {
+                    'Agriculture Sector': '#F59E0B',
+                    'Industry Sector': '#A855F7',
+                    'Services Sector': '#3B82F6',
+                    'All Industries (Total GDP)': '#10B981'
+                };
 
                 datasets = categories.map(cat => {
                     const vals = years.map(y => (majorData[cat] && majorData[cat][metricProp]) ? (majorData[cat][metricProp][y] || 0) : 0);
@@ -709,7 +714,7 @@
                         data: vals,
                         borderColor: sectorColors[cat],
                         backgroundColor: sectorColors[cat] + '33',
-                        borderWidth: 2,
+                        borderWidth: cat.startsWith('All Industries') ? 3 : 2,
                         tension: 0.3
                     };
                 });
@@ -761,9 +766,10 @@
         }
 
         function buildMajorMatrixRows(majorData, metricKey, years, isPct) {
-            const categories = ['Agriculture Sector', 'Industry Sector', 'Services Sector'];
+            const categories = ['Agriculture Sector', 'Industry Sector', 'Services Sector', 'All Industries (Total GDP)'];
             return categories.map(cat => {
-                let html = `<tr class="hover:bg-slate-800/50 transition"><td class="p-3 font-semibold text-white">${cat}</td>`;
+                const isTotal = cat.startsWith('All Industries');
+                let html = `<tr class="hover:bg-slate-800/50 transition ${isTotal ? 'bg-slate-900/80 font-bold border-t border-b border-slate-700' : ''}"><td class="p-3 font-semibold text-white">${cat}</td>`;
                 years.forEach(y => {
                     const val = majorData[cat] && majorData[cat][metricKey] ? majorData[cat][metricKey][y] : null;
                     const formatted = formatValOrDash(val, isPct);
