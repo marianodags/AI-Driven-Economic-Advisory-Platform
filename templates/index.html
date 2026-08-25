@@ -116,7 +116,7 @@
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
                     <div class="flex justify-between items-start">
-                        <span id="labelLatestYearGdp" class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Total Gross Product</span>
+                        <span id="labelLatestYearGdp" class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Gross Domestic Product (GDP)</span>
                         <div class="p-2 bg-blue-500/10 text-blue-400 rounded-lg"><i data-lucide="coins" class="w-5 h-5"></i></div>
                     </div>
                     <div class="mt-4">
@@ -129,18 +129,18 @@
 
                 <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
                     <div class="flex justify-between items-start">
-                        <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Services Sector Share</span>
+                        <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Services Share of GDP</span>
                         <div class="p-2 bg-emerald-500/10 text-emerald-400 rounded-lg"><i data-lucide="shopping-bag" class="w-5 h-5"></i></div>
                     </div>
                     <div class="mt-4">
                         <h3 id="cardServicesShare" class="text-2xl font-bold text-white">49.89%</h3>
-                        <p id="cardServicesTotal" class="text-xs text-slate-400 mt-1">₱62.31 Billion total</p>
+                        <p id="cardServicesTotal" class="text-xs text-slate-400 mt-1">₱62.31B GVA</p>
                     </div>
                 </div>
 
                 <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
                     <div class="flex justify-between items-start">
-                        <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Industrial Output</span>
+                        <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Industry GVA</span>
                         <div class="p-2 bg-purple-500/10 text-purple-400 rounded-lg"><i data-lucide="building-2" class="w-5 h-5"></i></div>
                     </div>
                     <div class="mt-4">
@@ -153,7 +153,7 @@
 
                 <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
                     <div class="flex justify-between items-start">
-                        <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Agri, Forestry & Fishing</span>
+                        <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Agri, Forestry & Fishing GVA</span>
                         <div class="p-2 bg-amber-500/10 text-amber-400 rounded-lg"><i data-lucide="sprout" class="w-5 h-5"></i></div>
                     </div>
                     <div class="mt-4">
@@ -829,7 +829,7 @@
             const indGrowth = (sec.Industry[prevY] && activeY !== prevY) ? (((sec.Industry[activeY] - sec.Industry[prevY]) / sec.Industry[prevY]) * 100) : 0;
             const agriGrowth = (sec.Agriculture[prevY] && activeY !== prevY) ? (((sec.Agriculture[activeY] - sec.Agriculture[prevY]) / sec.Agriculture[prevY]) * 100) : 0;
 
-            document.getElementById('labelLatestYearGdp').innerText = `${activeY} TOTAL GROSS PRODUCT`;
+            document.getElementById('labelLatestYearGdp').innerText = `${activeY} GROSS DOMESTIC PRODUCT (GDP)`;
             document.getElementById('titleGdpTrajectory').innerText = selectedY ? `Gross Domestic Product Growth Trajectory (up to ${activeY})` : `Gross Domestic Product Growth Trajectory (2018–${proc.latest_year})`;
             document.getElementById('titleSectorDistribution').innerText = `${activeY} Sectoral Distribution`;
             document.getElementById('labelBaselineGdpCard').innerText = `Baseline ${activeY} GDP`;
@@ -838,7 +838,7 @@
             document.getElementById('cardTotalGrowth').innerHTML = `<i data-lucide="${growthLatest >= 0 ? 'arrow-up-right' : 'arrow-down-right'}" class="w-4 h-4 mr-1"></i> ${growthLatest >= 0 ? '+' : ''}${growthLatest.toFixed(2)}% ${activeY !== prevY ? 'from ' + prevY : ''}`;
 
             document.getElementById('cardServicesShare').innerText = totalLatest ? ((servLatest / totalLatest) * 100).toFixed(2) + '%' : '0%';
-            document.getElementById('cardServicesTotal').innerText = formatCurrencyBillion(servLatest) + ' total';
+            document.getElementById('cardServicesTotal').innerText = formatCurrencyBillion(servLatest) + ' GVA';
 
             document.getElementById('cardIndustryTotal').innerText = formatCurrencyBillion(indLatest);
             document.getElementById('cardIndustryGrowth').innerHTML = `<i data-lucide="${indGrowth >= 0 ? 'arrow-up-right' : 'arrow-down-right'}" class="w-4 h-4 mr-1"></i> ${indGrowth >= 0 ? '+' : ''}${indGrowth.toFixed(2)}% growth`;
