@@ -75,6 +75,16 @@ source venv/bin/activate
 # Install dependencies (Flask, Pandas, NumPy, Scikit-learn, Pytest)
 pip install flask pandas numpy scikit-learn pytest
 ```
+or 
+
+```bash
+# Create and activate virtual environment
+python -m venv venv
+.\venv\Scripts\Activate.ps1
+
+# Install dependencies (Flask, Pandas, NumPy, Scikit-learn, Pytest)
+pip install flask pandas numpy scikit-learn pytest
+```
 
 ### 2. Seed Database & Run ML Pipeline
 
