@@ -19,6 +19,11 @@
         .tab-content.active {
             display: block;
         }
+        .matrix-btn.active {
+            background-color: #2563EB;
+            color: #FFFFFF;
+            border-color: #3B82F6;
+        }
     </style>
 </head>
 <body class="bg-slate-950 text-slate-100 font-sans antialiased flex h-screen overflow-hidden">
@@ -48,7 +53,7 @@
                 </button>
                 <button onclick="switchTab('sectors', this)" class="nav-link w-full flex items-center space-x-3 px-4 py-3 text-sm font-medium rounded-r-lg text-slate-300 hover:bg-slate-800 transition-all">
                     <i data-lucide="factory" class="w-5 h-5"></i>
-                    <span>Industry Sectors</span>
+                    <span>Industry Sectors & Analytics</span>
                 </button>
                 <button onclick="switchTab('lgus', this)" class="nav-link w-full flex items-center space-x-3 px-4 py-3 text-sm font-medium rounded-r-lg text-slate-300 hover:bg-slate-800 transition-all">
                     <i data-lucide="map-pin" class="w-5 h-5"></i>
@@ -79,6 +84,17 @@
                 <p class="text-sm text-slate-400 mt-1">Real-time macro-economic data, predictive modeling, and sectoral breakdown (Constant 2018 Prices in ₱'000)</p>
             </div>
             <div class="flex items-center space-x-3">
+                <div class="flex items-center space-x-2 bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-lg text-xs">
+                    <i data-lucide="filter" class="w-4 h-4 text-blue-400"></i>
+                    <span class="text-slate-400 font-medium">Year Filter:</span>
+                    <select id="globalYearFilter" class="bg-slate-950 text-white font-semibold focus:outline-none cursor-pointer border border-slate-800 rounded px-1.5 py-0.5" onchange="onYearFilterChange()">
+                        <option value="all">All Years</option>
+                    </select>
+                </div>
+                <button onclick="openCrudModal()" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-semibold flex items-center space-x-1.5 transition">
+                    <i data-lucide="plus-circle" class="w-4 h-4"></i>
+                    <span>Manage Sectors (CRUD)</span>
+                </button>
                 <button onclick="triggerFileUpload()" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-500 text-white rounded-lg text-xs font-semibold flex items-center space-x-1.5 transition">
                     <i data-lucide="upload" class="w-4 h-4"></i>
                     <span>Import/Upload CSV</span>
@@ -100,13 +116,13 @@
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
                     <div class="flex justify-between items-start">
-                        <span id="labelLatestYearGdp" class="text-xs font-semibold text-slate-400 uppercase tracking-wider">2024 Total Gross Product</span>
+                        <span id="labelLatestYearGdp" class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Total Gross Product</span>
                         <div class="p-2 bg-blue-500/10 text-blue-400 rounded-lg"><i data-lucide="coins" class="w-5 h-5"></i></div>
                     </div>
                     <div class="mt-4">
                         <h3 id="cardTotalGdp" class="text-2xl font-bold text-white">₱124.89B</h3>
                         <p id="cardTotalGrowth" class="text-xs text-emerald-400 mt-1 flex items-center font-medium">
-                            <i data-lucide="arrow-up-right" class="w-4 h-4 mr-1"></i> +3.89% from 2023
+                            <i data-lucide="arrow-up-right" class="w-4 h-4 mr-1"></i> +3.89% YoY
                         </p>
                     </div>
                 </div>
@@ -143,7 +159,7 @@
                     <div class="mt-4">
                         <h3 id="cardAgriTotal" class="text-2xl font-bold text-white">₱18.46B</h3>
                         <p id="cardAgriGrowth" class="text-xs text-rose-400 mt-1 flex items-center font-medium">
-                            <i data-lucide="arrow-down-right" class="w-4 h-4 mr-1"></i> -1.86% from 2023
+                            <i data-lucide="arrow-down-right" class="w-4 h-4 mr-1"></i> -1.86% YoY
                         </p>
                     </div>
                 </div>
@@ -201,27 +217,101 @@
         </section>
 
         <section id="sectors" class="tab-content space-y-6">
+            <!-- 8 Economic Analytics Matrix Switcher & Dynamic Chart -->
             <div class="bg-slate-900 border border-slate-800 rounded-xl p-6">
-                <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-3">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-4">
                     <div>
-                        <h3 class="text-lg font-bold text-white">Historical Performance by Sub-Industry (Fetched from SQLite Database)</h3>
-                        <p class="text-xs text-slate-400">Constant 2018 Prices in ₱'000. Upload new PSA datasets (e.g. 2025 data) to update calculations automatically.</p>
+                        <h3 class="text-lg font-bold text-white">Economic Analytics Matrix & Visual Charts by Year</h3>
+                        <p class="text-xs text-slate-400">Select an economic metric view below to render interactive multi-year charts, growth rates, GDP shares, and percentage point contributions.</p>
                     </div>
                     <div class="flex items-center space-x-2">
+                        <button onclick="openCrudModal()" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-semibold flex items-center space-x-1 transition">
+                            <i data-lucide="plus" class="w-4 h-4"></i>
+                            <span>Add/Edit Sector</span>
+                        </button>
                         <button onclick="triggerFileUpload()" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-500 text-white rounded-lg text-xs font-semibold flex items-center space-x-1 transition">
                             <i data-lucide="upload-cloud" class="w-4 h-4"></i>
-                            <span>Upload PSA Data</span>
+                            <span>Upload Data</span>
                         </button>
                         <button onclick="exportData('csv')" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 rounded-lg text-xs font-semibold flex items-center space-x-1 transition">
                             <i data-lucide="download" class="w-4 h-4"></i>
-                            <span>Export</span>
+                            <span>Export CSV</span>
                         </button>
                     </div>
+                </div>
+
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-2 mb-6">
+                    <button onclick="selectMatrixView('growth_major', this)" class="matrix-btn active text-left px-3 py-2.5 rounded-lg border border-slate-800 text-xs font-medium text-slate-300 hover:bg-slate-800 transition">
+                        1. Growth Rate (Major Industry)
+                    </button>
+                    <button onclick="selectMatrixView('growth_all', this)" class="matrix-btn text-left px-3 py-2.5 rounded-lg border border-slate-800 text-xs font-medium text-slate-300 hover:bg-slate-800 transition">
+                        2. Growth Rate (All Industries)
+                    </button>
+                    <button onclick="selectMatrixView('share_major', this)" class="matrix-btn text-left px-3 py-2.5 rounded-lg border border-slate-800 text-xs font-medium text-slate-300 hover:bg-slate-800 transition">
+                        3. Share in GDP (Major Industry)
+                    </button>
+                    <button onclick="selectMatrixView('share_all', this)" class="matrix-btn text-left px-3 py-2.5 rounded-lg border border-slate-800 text-xs font-medium text-slate-300 hover:bg-slate-800 transition">
+                        4. Share in GDP (All Industries)
+                    </button>
+                    <button onclick="selectMatrixView('contrib_major', this)" class="matrix-btn text-left px-3 py-2.5 rounded-lg border border-slate-800 text-xs font-medium text-slate-300 hover:bg-slate-800 transition">
+                        5. Contribution to Growth (Major)
+                    </button>
+                    <button onclick="selectMatrixView('contrib_all', this)" class="matrix-btn text-left px-3 py-2.5 rounded-lg border border-slate-800 text-xs font-medium text-slate-300 hover:bg-slate-800 transition">
+                        6. Contribution to Growth (All)
+                    </button>
+                    <button onclick="selectMatrixView('pct_major', this)" class="matrix-btn text-left px-3 py-2.5 rounded-lg border border-slate-800 text-xs font-medium text-slate-300 hover:bg-slate-800 transition">
+                        7. Percentage Share (Major)
+                    </button>
+                    <button onclick="selectMatrixView('pct_all', this)" class="matrix-btn text-left px-3 py-2.5 rounded-lg border border-slate-800 text-xs font-medium text-slate-300 hover:bg-slate-800 transition">
+                        8. Percentage Share (All)
+                    </button>
+                </div>
+
+                <!-- Interactive Dynamic Analytics Chart -->
+                <div class="mb-6 bg-slate-950 p-4 border border-slate-800 rounded-xl">
+                    <div class="flex justify-between items-center mb-3">
+                        <h4 id="matrixChartTitle" class="text-xs font-bold text-blue-400 uppercase tracking-wider">Metric Visualization Chart</h4>
+                        <span id="matrixChartTypeLabel" class="text-xs text-slate-400">Multi-Year Breakdown</span>
+                    </div>
+                    <div class="h-72">
+                        <canvas id="matrixAnalyticsChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="border-t border-slate-800 pt-4">
+                    <div class="flex justify-between items-center mb-3">
+                        <h4 id="matrixTitle" class="text-sm font-bold text-white">1. YoY Growth Rate by Major Industry by Year</h4>
+                        <span id="matrixUnitBadge" class="text-xs text-slate-400">Unit: Percentage (%)</span>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-sm text-slate-300">
+                            <thead id="matrixTableHeader" class="bg-slate-950 text-xs uppercase text-slate-400 border-b border-slate-800">
+                                <!-- Matrix dynamic headers -->
+                            </thead>
+                            <tbody id="matrixTableBody" class="divide-y divide-slate-800">
+                                <!-- Matrix dynamic rows -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Historical GVA Database CRUD Table -->
+            <div class="bg-slate-900 border border-slate-800 rounded-xl p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <div>
+                        <h3 class="text-lg font-bold text-white">Historical Gross Value Added by Industry (In '000 PHP)</h3>
+                        <p class="text-xs text-slate-400">Database table view with CRUD edit/delete controls for each sector.</p>
+                    </div>
+                    <button onclick="openCrudModal()" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-semibold flex items-center space-x-1 transition">
+                        <i data-lucide="plus" class="w-4 h-4"></i>
+                        <span>New Sector</span>
+                    </button>
                 </div>
                 <div class="overflow-x-auto">
                     <table class="w-full text-left text-sm text-slate-300">
                         <thead id="industryTableHeader" class="bg-slate-950 text-xs uppercase text-slate-400 border-b border-slate-800">
-                            <!-- Dynamically generated year headers -->
+                            <!-- Dynamic headers -->
                         </thead>
                         <tbody id="industryTableBody" class="divide-y divide-slate-800">
                             <tr><td colspan="8" class="p-4 text-center text-slate-500">Loading industry data from database...</td></tr>
@@ -349,6 +439,47 @@
 
     </main>
 
+    <!-- CRUD Modal Dialog -->
+    <div id="crudModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-xl max-w-lg w-full p-6 shadow-2xl relative">
+            <div class="flex justify-between items-center pb-4 mb-4 border-b border-slate-800">
+                <h3 id="crudModalTitle" class="text-lg font-bold text-white">Add Industry Sector Record</h3>
+                <button onclick="closeCrudModal()" class="text-slate-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
+            </div>
+            <form id="crudForm" onsubmit="handleCrudSubmit(event)" class="space-y-4">
+                <input type="hidden" id="crudMode" value="create">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">Industry Code</label>
+                    <input type="text" id="crudCode" class="w-full bg-slate-950 border border-slate-800 text-white rounded-lg p-2 text-sm font-mono focus:border-blue-500 focus:outline-none" placeholder="e.g. A" required>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">Industry Name</label>
+                    <input type="text" id="crudIndustry" class="w-full bg-slate-950 border border-slate-800 text-white rounded-lg p-2 text-sm focus:border-blue-500 focus:outline-none" placeholder="e.g. Agriculture, forestry, and fishing" required>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">Sector Category</label>
+                    <select id="crudCategory" class="w-full bg-slate-950 border border-slate-800 text-white rounded-lg p-2 text-sm focus:border-blue-500 focus:outline-none">
+                        <option value="Agriculture">Agriculture</option>
+                        <option value="Industry">Industry</option>
+                        <option value="Services">Services</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">2024 GVA (₱'000)</label>
+                    <input type="number" step="any" id="crudVal2024" class="w-full bg-slate-950 border border-slate-800 text-white rounded-lg p-2 text-sm focus:border-blue-500 focus:outline-none" placeholder="18457242">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">2025 GVA (₱'000) (Optional / PSA Update)</label>
+                    <input type="number" step="any" id="crudVal2025" class="w-full bg-slate-950 border border-slate-800 text-white rounded-lg p-2 text-sm focus:border-blue-500 focus:outline-none" placeholder="19500000">
+                </div>
+                <div class="pt-4 flex justify-end space-x-3 border-t border-slate-800">
+                    <button type="button" onclick="closeCrudModal()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg text-xs font-semibold">Cancel</button>
+                    <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg text-xs font-semibold">Save Record</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script>
         lucide.createIcons();
 
@@ -361,17 +492,28 @@
         }
 
         let dbData = null;
+        let activeMatrixKey = 'growth_major';
         let overviewGdpChart = null;
         let overviewShareChart = null;
         let forecastChart = null;
         let lguBarChart = null;
+        let matrixAnalyticsChart = null;
 
         function formatCurrencyBillion(valInThousands) {
             return '₱' + (valInThousands / 1000000).toFixed(2) + 'B';
         }
 
         function formatNumber(val) {
-            if (val === undefined || val === null) return '-';
+            if (val === undefined || val === null || isNaN(val)) return '-';
+            return new Intl.NumberFormat('en-US').format(Math.round(val));
+        }
+
+        function formatValOrDash(val, isPct = false) {
+            if (val === null || val === undefined || isNaN(val)) return '-';
+            if (isPct) {
+                const sign = val > 0 ? '+' : '';
+                return `${sign}${val.toFixed(2)}%`;
+            }
             return new Intl.NumberFormat('en-US').format(Math.round(val));
         }
 
@@ -418,18 +560,240 @@
             window.location.href = `/api/export?format=${format}`;
         }
 
-        async function loadDashboardData() {
+        async function loadDashboardData(selectedYear = null) {
             try {
-                const response = await fetch('/api/data');
+                let url = '/api/data';
+                if (selectedYear && selectedYear !== 'all') {
+                    url += `?year=${selectedYear}`;
+                }
+                const response = await fetch(url);
                 dbData = await response.json();
+
+                populateYearFilterDropdown(dbData.processed.years);
                 renderOverview(dbData);
                 renderForecasts(dbData);
+                renderMatrixView(activeMatrixKey);
                 renderIndustryTable(dbData.processed.industry_rows, dbData.processed.years, dbData.processed.latest_year, dbData.processed.prev_year);
                 renderLguChart();
                 updateSimulation();
             } catch (err) {
                 console.error("Failed to load backend dynamic data:", err);
             }
+        }
+
+        function populateYearFilterDropdown(years) {
+            const select = document.getElementById('globalYearFilter');
+            const currVal = select.value;
+            select.innerHTML = '<option value="all">All Years</option>';
+            years.forEach(y => {
+                const opt = document.createElement('option');
+                opt.value = y;
+                opt.innerText = y;
+                if (y === currVal) opt.selected = true;
+                select.appendChild(opt);
+            });
+        }
+
+        function onYearFilterChange() {
+            const yr = document.getElementById('globalYearFilter').value;
+            loadDashboardData(yr);
+        }
+
+        function selectMatrixView(key, btnElement) {
+            activeMatrixKey = key;
+            document.querySelectorAll('.matrix-btn').forEach(b => b.classList.remove('active'));
+            if (btnElement) btnElement.classList.add('active');
+            renderMatrixView(key);
+        }
+
+        function renderMatrixView(key) {
+            if (!dbData || !dbData.processed) return;
+            const proc = dbData.processed;
+            const years = proc.years;
+            const majorData = proc.major_analytics || {};
+            const allData = proc.all_ind_analytics || {};
+
+            const thead = document.getElementById('matrixTableHeader');
+            const tbody = document.getElementById('matrixTableBody');
+            const titleEl = document.getElementById('matrixTitle');
+            const unitBadge = document.getElementById('matrixUnitBadge');
+
+            let headerHtml = '<tr><th class="p-3">Major Industry / Sector</th>';
+            if (key.endsWith('_all')) {
+                headerHtml = '<tr><th class="p-3">Code</th><th class="p-3">Industry Sector</th><th class="p-3">Category</th>';
+            }
+            years.forEach(y => {
+                headerHtml += `<th class="p-3 text-right">${y}</th>`;
+            });
+            headerHtml += '</tr>';
+            thead.innerHTML = headerHtml;
+
+            let rows = [];
+            let isPct = true;
+
+            switch (key) {
+                case 'growth_major':
+                    titleEl.innerText = '1. Growth Rate by Major Industry by Year';
+                    unitBadge.innerText = 'Unit: Percentage (%)';
+                    rows = buildMajorMatrixRows(majorData, 'growth_rate', years, true);
+                    break;
+                case 'growth_all':
+                    titleEl.innerText = '2. Growth Rate by All Industries by Year';
+                    unitBadge.innerText = 'Unit: Percentage (%)';
+                    rows = buildAllIndMatrixRows(allData, 'growth_rate', years, true);
+                    break;
+                case 'share_major':
+                    titleEl.innerText = '3. Share of Major Industries in GDP by Year';
+                    unitBadge.innerText = 'Unit: Percentage Share (%)';
+                    rows = buildMajorMatrixRows(majorData, 'share_in_gdp', years, true);
+                    break;
+                case 'share_all':
+                    titleEl.innerText = '4. Share of All Industries in GDP by Year';
+                    unitBadge.innerText = 'Unit: Percentage Share (%)';
+                    rows = buildAllIndMatrixRows(allData, 'share_in_gdp', years, true);
+                    break;
+                case 'contrib_major':
+                    titleEl.innerText = '5. Contribution to Growth (in Percentage Points) by Major Industry by Year';
+                    unitBadge.innerText = 'Unit: Percentage Points (pt)';
+                    rows = buildMajorMatrixRows(majorData, 'contribution_to_growth', years, false);
+                    break;
+                case 'contrib_all':
+                    titleEl.innerText = '6. Contribution to Growth (in Percentage Points) by All Industries by Year';
+                    unitBadge.innerText = 'Unit: Percentage Points (pt)';
+                    rows = buildAllIndMatrixRows(allData, 'contribution_to_growth', years, false);
+                    break;
+                case 'pct_major':
+                    titleEl.innerText = '7. Percentage Share by Major Industry by Year';
+                    unitBadge.innerText = 'Unit: Percentage (%)';
+                    rows = buildMajorMatrixRows(majorData, 'percentage_share', years, true);
+                    break;
+                case 'pct_all':
+                    titleEl.innerText = '8. Percentage Share by All Industries by Year';
+                    unitBadge.innerText = 'Unit: Percentage (%)';
+                    rows = buildAllIndMatrixRows(allData, 'percentage_share', years, true);
+                    break;
+            }
+
+            tbody.innerHTML = rows.join('');
+            renderMatrixChart(key, years, majorData, allData);
+        }
+
+        function renderMatrixChart(key, years, majorData, allData) {
+            const ctx = document.getElementById('matrixAnalyticsChart').getContext('2d');
+            if (matrixAnalyticsChart) matrixAnalyticsChart.destroy();
+
+            const chartTitleEl = document.getElementById('matrixChartTitle');
+            const typeLabelEl = document.getElementById('matrixChartTypeLabel');
+
+            const isMajor = key.endsWith('_major');
+            let metricProp = 'growth_rate';
+            if (key.startsWith('share_')) metricProp = 'share_in_gdp';
+            else if (key.startsWith('contrib_')) metricProp = 'contribution_to_growth';
+            else if (key.startsWith('pct_')) metricProp = 'percentage_share';
+
+            let datasets = [];
+            const colors = ['#F59E0B', '#A855F7', '#3B82F6', '#10B981', '#EC4899', '#6366F1', '#14B8A6', '#F97316', '#06B6D4', '#84CC16'];
+
+            if (isMajor) {
+                const categories = ['Agriculture Sector', 'Industry Sector', 'Services Sector'];
+                const sectorColors = { 'Agriculture Sector': '#F59E0B', 'Industry Sector': '#A855F7', 'Services Sector': '#3B82F6' };
+
+                datasets = categories.map(cat => {
+                    const vals = years.map(y => (majorData[cat] && majorData[cat][metricProp]) ? (majorData[cat][metricProp][y] || 0) : 0);
+                    return {
+                        label: cat,
+                        data: vals,
+                        borderColor: sectorColors[cat],
+                        backgroundColor: sectorColors[cat] + '33',
+                        borderWidth: 2,
+                        tension: 0.3
+                    };
+                });
+                chartTitleEl.innerText = `Major Industry - ${metricProp.replace(/_/g, ' ').toUpperCase()}`;
+                typeLabelEl.innerText = 'Multi-Line Sector Performance Chart';
+
+                matrixAnalyticsChart = new Chart(ctx, {
+                    type: key.startsWith('contrib') ? 'bar' : 'line',
+                    data: { labels: years, datasets: datasets },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { labels: { color: '#94A3B8' } } },
+                        scales: {
+                            x: { ticks: { color: '#64748B' }, grid: { color: '#1E293B' } },
+                            y: { ticks: { color: '#64748B' }, grid: { color: '#1E293B' } }
+                        }
+                    }
+                });
+            } else {
+                const codes = Object.keys(allData);
+                datasets = codes.slice(0, 8).map((code, idx) => {
+                    const item = allData[code];
+                    const vals = years.map(y => (item[metricProp] ? (item[metricProp][y] || 0) : 0));
+                    return {
+                        label: `[${code}] ${item.industry.substring(0, 18)}...`,
+                        data: vals,
+                        backgroundColor: colors[idx % colors.length],
+                        borderRadius: 4
+                    };
+                });
+                chartTitleEl.innerText = `All Industries - ${metricProp.replace(/_/g, ' ').toUpperCase()}`;
+                typeLabelEl.innerText = 'Sub-Sector Breakdown Chart';
+
+                matrixAnalyticsChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: { labels: years, datasets: datasets },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { position: 'bottom', labels: { color: '#94A3B8', font: { size: 10 } } } },
+                        scales: {
+                            x: { ticks: { color: '#64748B' }, grid: { color: '#1E293B' } },
+                            y: { ticks: { color: '#64748B' }, grid: { color: '#1E293B' } }
+                        }
+                    }
+                });
+            }
+        }
+
+        function buildMajorMatrixRows(majorData, metricKey, years, isPct) {
+            const categories = ['Agriculture Sector', 'Industry Sector', 'Services Sector'];
+            return categories.map(cat => {
+                let html = `<tr class="hover:bg-slate-800/50 transition"><td class="p-3 font-semibold text-white">${cat}</td>`;
+                years.forEach(y => {
+                    const val = majorData[cat] && majorData[cat][metricKey] ? majorData[cat][metricKey][y] : null;
+                    const formatted = formatValOrDash(val, isPct);
+                    const isNeg = val !== null && val < 0;
+                    html += `<td class="p-3 text-right font-mono ${isNeg ? 'text-rose-400' : 'text-emerald-400'}">${formatted}</td>`;
+                });
+                html += '</tr>';
+                return html;
+            });
+        }
+
+        function buildAllIndMatrixRows(allData, metricKey, years, isPct) {
+            return Object.keys(allData).map(code => {
+                const item = allData[code];
+                let categoryBadge = '';
+                if (item.category === 'Agriculture') categoryBadge = '<span class="text-amber-400 font-semibold">Agriculture</span>';
+                else if (item.category === 'Industry') categoryBadge = '<span class="text-purple-400 font-semibold">Industry</span>';
+                else categoryBadge = '<span class="text-blue-400 font-semibold">Services</span>';
+
+                let html = `
+                    <tr class="hover:bg-slate-800/50 transition">
+                        <td class="p-3 font-mono text-xs text-slate-400">${code}</td>
+                        <td class="p-3 font-medium text-white">${item.industry}</td>
+                        <td class="p-3">${categoryBadge}</td>
+                `;
+                years.forEach(y => {
+                    const val = item[metricKey] ? item[metricKey][y] : null;
+                    const formatted = formatValOrDash(val, isPct);
+                    const isNeg = val !== null && val < 0;
+                    html += `<td class="p-3 text-right font-mono ${isNeg ? 'text-rose-400' : 'text-emerald-400'}">${formatted}</td>`;
+                });
+                html += '</tr>';
+                return html;
+            });
         }
 
         function renderOverview(data) {
@@ -578,7 +942,7 @@
             displayYears.forEach(y => {
                 headerHtml += `<th class="p-3 text-right">${y}</th>`;
             });
-            headerHtml += `<th class="p-3 text-right">YoY Growth (${prevYear.slice(-2)}-${latestYear.slice(-2)})</th></tr>`;
+            headerHtml += `<th class="p-3 text-right">YoY Growth</th><th class="p-3 text-center">Actions (CRUD)</th></tr>`;
             thead.innerHTML = headerHtml;
 
             tbody.innerHTML = '';
@@ -611,11 +975,112 @@
                     <td class="p-3 text-right ${isPositive ? 'text-emerald-400' : 'text-rose-400'} font-semibold">
                         ${isPositive ? '+' : ''}${growth.toFixed(2)}%
                     </td>
+                    <td class="p-3 text-center">
+                        <div class="flex items-center justify-center space-x-2">
+                            <button onclick="editSector('${row.code}')" class="p-1.5 text-blue-400 hover:text-white hover:bg-slate-800 rounded transition" title="Edit Sector"><i data-lucide="edit-3" class="w-4 h-4"></i></button>
+                            <button onclick="deleteSector('${row.code}')" class="p-1.5 text-rose-400 hover:text-white hover:bg-slate-800 rounded transition" title="Delete Sector"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                        </div>
+                    </td>
                 `;
 
                 tr.innerHTML = rowHtml;
                 tbody.appendChild(tr);
             });
+            lucide.createIcons();
+        }
+
+        function openCrudModal(code = null) {
+            const modal = document.getElementById('crudModal');
+            const title = document.getElementById('crudModalTitle');
+            const modeInput = document.getElementById('crudMode');
+            const codeInput = document.getElementById('crudCode');
+
+            if (code) {
+                title.innerText = `Edit Sector (${code})`;
+                modeInput.value = 'update';
+                codeInput.value = code;
+                codeInput.readOnly = true;
+
+                fetch(`/api/gdp/${code}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        document.getElementById('crudIndustry').value = data.industry || '';
+                        document.getElementById('crudCategory').value = data.category || 'Services';
+                        document.getElementById('crudVal2024').value = data['2024'] || '';
+                        document.getElementById('crudVal2025').value = data['2025'] || '';
+                    });
+            } else {
+                title.innerText = 'Add Industry Sector Record';
+                modeInput.value = 'create';
+                codeInput.value = '';
+                codeInput.readOnly = false;
+                document.getElementById('crudForm').reset();
+            }
+            modal.classList.remove('hidden');
+        }
+
+        function closeCrudModal() {
+            document.getElementById('crudModal').classList.add('hidden');
+        }
+
+        async function handleCrudSubmit(event) {
+            event.preventDefault();
+            const mode = document.getElementById('crudMode').value;
+            const code = document.getElementById('crudCode').value;
+            const industry = document.getElementById('crudIndustry').value;
+            const category = document.getElementById('crudCategory').value;
+            const val2024 = document.getElementById('crudVal2024').value;
+            const val2025 = document.getElementById('crudVal2025').value;
+
+            const yearValues = {};
+            if (val2024) yearValues['2024'] = parseFloat(val2024);
+            if (val2025) yearValues['2025'] = parseFloat(val2025);
+
+            const payload = { code, industry, category, year_values: yearValues };
+
+            try {
+                let url = '/api/gdp';
+                let method = 'POST';
+                if (mode === 'update') {
+                    url = `/api/gdp/${code}`;
+                    method = 'PUT';
+                }
+                const res = await fetch(url, {
+                    method: method,
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const result = await res.json();
+                if (res.ok) {
+                    showNotification(result.message);
+                    closeCrudModal();
+                    await loadDashboardData();
+                } else {
+                    showNotification(result.error || 'Operation failed', true);
+                }
+            } catch (err) {
+                showNotification('CRUD Request Error: ' + err.message, true);
+            }
+        }
+
+        function editSector(code) {
+            openCrudModal(code);
+        }
+
+        async function deleteSector(code) {
+            if (!confirm(`Are you sure you want to delete industry sector record [${code}] from the database?`)) return;
+            try {
+                const res = await fetch(`/api/gdp/${code}`, { method: 'DELETE' });
+                const result = await res.json();
+                if (res.ok) {
+                    showNotification(result.message);
+                    await loadDashboardData();
+                } else {
+                    showNotification(result.error || 'Failed to delete record', true);
+                }
+            } catch (err) {
+                showNotification('Delete error: ' + err.message, true);
+            }
         }
 
         function renderLguChart() {
