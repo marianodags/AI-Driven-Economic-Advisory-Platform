@@ -132,3 +132,19 @@ def test_flask_crud_and_analytics_endpoints():
     res_pred = client.post('/api/predict', json={'year': 2030})
     assert res_pred.status_code == 200
     assert res_pred.get_json()['year'] == 2030
+
+def test_seed_forecaster_insights_scripts():
+    from seed import seed_database
+    from forecaster import run_forecaster
+    from insights import generate_insights
+
+    df_seeded = seed_database(db_path=TEST_DB_PATH)
+    assert not df_seeded.empty
+    assert '2025' in df_seeded.columns
+
+    forecast_results = run_forecaster(db_path=TEST_DB_PATH)
+    assert 2026 in forecast_results['forecast_total']
+
+    advisory_insights = generate_insights(db_path=TEST_DB_PATH)
+    assert 'executive_summary' in advisory_insights
+    assert len(advisory_insights['strategic_recommendations']) > 0
