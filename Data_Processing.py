@@ -128,6 +128,68 @@ def process_data(df):
             'percentage_share': pct_share
         }
 
+    # Province / HUC Results Key Indicators (as requested in official PSA format)
+    # 1. GDP growth rate of the province in 2025 (latest_year)
+    gdp_growth_2025 = float(latest_growth)
+
+    # 2. Cumulative GDP growth rate of the province from 2018 to 2025
+    gdp_2018 = total_gdp.get('2018', total_gdp[years[0]])
+    gdp_latest = total_gdp[latest_year]
+    gdp_growth_2018_2025 = (((gdp_latest - gdp_2018) / gdp_2018) * 100) if gdp_2018 else 0.0
+
+    # 3 & 4. Contribution of major industries & GVA growth rates of major industries in 2025
+    major_contrib_2025 = {}
+    major_growth_2025 = {}
+    for cat in ['Agriculture', 'Industry', 'Services']:
+        disp_name = f"{cat} Sector"
+        major_contrib_2025[cat] = major_analytics[disp_name]['contribution_to_growth'].get(latest_year, 0.0)
+        major_growth_2025[cat] = major_analytics[disp_name]['growth_rate'].get(latest_year, 0.0)
+
+    # 5. Top 3 industries in terms of contribution to GDP growth in 2025
+    ind_contrib_list = []
+    for code, item in all_ind_analytics.items():
+        contrib_val = item['contribution_to_growth'].get(latest_year)
+        if contrib_val is not None:
+            ind_contrib_list.append({
+                'code': code,
+                'industry': item['industry'],
+                'category': item['category'],
+                'contribution_to_growth': contrib_val
+            })
+    ind_contrib_list.sort(key=lambda x: x['contribution_to_growth'], reverse=True)
+    top_3_contrib = ind_contrib_list[:3]
+
+    # 6. Top 3 fastest-growing industries in 2025
+    ind_growth_list = []
+    for code, item in all_ind_analytics.items():
+        growth_val = item['growth_rate'].get(latest_year)
+        if growth_val is not None:
+            ind_growth_list.append({
+                'code': code,
+                'industry': item['industry'],
+                'category': item['category'],
+                'growth_rate': growth_val
+            })
+    ind_growth_list.sort(key=lambda x: x['growth_rate'], reverse=True)
+    top_3_fastest = ind_growth_list[:3]
+
+    # 7. Per capita GDP in 2025 (in PHP)
+    # Estimated Zamboanga del Norte population: ~1,047,464 (2020 Census projected to 2025 ~1,060,000)
+    # Total GDP is in '000 PHP, so total GDP in PHP = total_gdp * 1000
+    est_population = 1060000
+    per_capita_gdp_2025 = (gdp_latest * 1000) / est_population if est_population else 0.0
+
+    province_results = {
+        'gdp_growth_2025': round(gdp_growth_2025, 2),
+        'gdp_growth_2018_2025': round(gdp_growth_2018_2025, 2),
+        'major_contrib_2025': {k: round(v, 2) if v is not None else 0.0 for k, v in major_contrib_2025.items()},
+        'major_growth_2025': {k: round(v, 2) if v is not None else 0.0 for k, v in major_growth_2025.items()},
+        'top_3_contribution': top_3_contrib,
+        'top_3_fastest_growing': top_3_fastest,
+        'per_capita_gdp_2025': round(per_capita_gdp_2025, 2),
+        'est_population': est_population
+    }
+
     return {
         'raw_df': df,
         'years': years,
@@ -140,7 +202,8 @@ def process_data(df):
         'latest_gdp_2024': total_gdp[latest_year],
         'latest_growth_2024': float(latest_growth),
         'major_analytics': major_analytics,
-        'all_ind_analytics': all_ind_analytics
+        'all_ind_analytics': all_ind_analytics,
+        'province_results': province_results
     }
 
 if __name__ == '__main__':
