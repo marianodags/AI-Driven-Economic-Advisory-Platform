@@ -112,9 +112,17 @@
                     <i data-lucide="cpu" class="w-4 h-4"></i>
                     <span>Run ML Forecaster</span>
                 </button>
+                <button onclick="openForecasterModal()" class="px-2.5 py-1.5 bg-purple-50 dark:bg-purple-950/40 border border-purple-200 dark:border-purple-800 text-purple-700 dark:text-purple-300 hover:bg-purple-100 dark:hover:bg-purple-900/60 rounded-lg text-xs font-semibold flex items-center space-x-1 transition" title="View Forecast Results Viewer">
+                    <i data-lucide="eye" class="w-3.5 h-3.5"></i>
+                    <span>View Forecast</span>
+                </button>
                 <button onclick="fetchInsights()" class="px-3.5 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-semibold flex items-center space-x-1.5 shadow-sm transition" title="Generate AI Insights">
                     <i data-lucide="sparkles" class="w-4 h-4"></i>
                     <span>Generate AI Insights</span>
+                </button>
+                <button onclick="openInsightsModal()" class="px-2.5 py-1.5 bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-800 text-indigo-700 dark:text-indigo-300 hover:bg-indigo-100 dark:hover:bg-indigo-900/60 rounded-lg text-xs font-semibold flex items-center space-x-1 transition" title="View AI Insights Viewer">
+                    <i data-lucide="eye" class="w-3.5 h-3.5"></i>
+                    <span>View Insights</span>
                 </button>
                 <button onclick="openCrudModal()" class="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-semibold flex items-center space-x-1.5 shadow-sm transition">
                     <i data-lucide="plus-circle" class="w-4 h-4"></i>
@@ -491,6 +499,115 @@
 
     </main>
 
+    <!-- ML Forecaster Result Modal -->
+    <div id="forecasterResultModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl max-w-2xl w-full p-6 shadow-2xl relative my-8">
+            <div class="flex justify-between items-center pb-4 mb-4 border-b border-slate-200 dark:border-slate-700">
+                <div class="flex items-center space-x-2.5">
+                    <div class="p-2 bg-purple-100 dark:bg-purple-900/50 text-purple-600 dark:text-purple-300 rounded-xl">
+                        <i data-lucide="cpu" class="w-5 h-5"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-base font-bold text-slate-900 dark:text-slate-100">ML Forecaster Macroeconomic Projections (2026–2030)</h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400">Machine learning regression model estimates based on baseline PPA trends</p>
+                    </div>
+                </div>
+                <button onclick="closeForecasterModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"><i data-lucide="x" class="w-5 h-5"></i></button>
+            </div>
+
+            <div class="space-y-5">
+                <!-- Summary KPI Cards Grid -->
+                <div id="modalForecastGrid" class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <!-- Populated dynamically -->
+                </div>
+
+                <!-- Forecast Breakdown Table -->
+                <div class="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl border border-slate-200 dark:border-slate-700">
+                    <h4 class="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-3">5-Year Projected GDP Table (In Billion PHP)</h4>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs">
+                            <thead class="bg-slate-200/60 dark:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold uppercase border-b border-slate-300 dark:border-slate-600">
+                                <tr>
+                                    <th class="p-2.5">Year</th>
+                                    <th class="p-2.5 text-right">Projected GDP (₱B)</th>
+                                    <th class="p-2.5 text-right">Growth vs Prev (₱B)</th>
+                                    <th class="p-2.5 text-right">% YoY Expansion</th>
+                                </tr>
+                            </thead>
+                            <tbody id="modalForecastTableBody" class="divide-y divide-slate-200 dark:divide-slate-700 font-mono text-slate-800 dark:text-slate-200">
+                                <!-- Dynamic rows -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pt-5 mt-5 flex justify-end border-t border-slate-200 dark:border-slate-700">
+                <button onclick="closeForecasterModal()" class="px-5 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-xs font-bold shadow-sm transition">Close Results</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI Insights Result Modal -->
+    <div id="insightsResultModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl max-w-3xl w-full p-6 shadow-2xl relative my-8">
+            <div class="flex justify-between items-center pb-4 mb-4 border-b border-slate-200 dark:border-slate-700">
+                <div class="flex items-center space-x-2.5">
+                    <div class="p-2 bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-300 rounded-xl">
+                        <i data-lucide="sparkles" class="w-5 h-5"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-base font-bold text-slate-900 dark:text-slate-100">AI Economic Intelligence Executive Advisory</h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400">Automated policy recommendations and strategic macroeconomic synthesis</p>
+                    </div>
+                </div>
+                <button onclick="closeInsightsModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"><i data-lucide="x" class="w-5 h-5"></i></button>
+            </div>
+
+            <div class="space-y-4">
+                <!-- Executive Summary -->
+                <div class="bg-indigo-50/70 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-800 p-4 rounded-xl">
+                    <h4 class="text-xs font-bold text-indigo-800 dark:text-indigo-300 uppercase tracking-wider mb-2 flex items-center">
+                        <i data-lucide="file-text" class="w-4 h-4 mr-1.5"></i> Executive Summary
+                    </h4>
+                    <p id="modalExecutiveSummary" class="text-xs text-slate-700 dark:text-slate-300 leading-relaxed font-medium">
+                        Loading summary...
+                    </p>
+                </div>
+
+                <!-- Strategic Policy Recommendations List -->
+                <div class="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl border border-slate-200 dark:border-slate-700">
+                    <h4 class="text-xs font-bold text-emerald-800 dark:text-emerald-400 uppercase tracking-wider mb-2 flex items-center">
+                        <i data-lucide="check-circle-2" class="w-4 h-4 mr-1.5"></i> Key Strategic Policy Recommendations
+                    </h4>
+                    <ul id="modalRecommendationsList" class="space-y-2 text-xs text-slate-700 dark:text-slate-300 list-disc list-inside font-medium">
+                        <!-- Dynamic items -->
+                    </ul>
+                </div>
+
+                <!-- Risk Factors / Additional Advisory Callout -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div class="bg-slate-50 dark:bg-slate-900/50 p-3.5 rounded-xl border border-slate-200 dark:border-slate-700">
+                        <span class="text-[11px] font-bold text-amber-700 dark:text-amber-400 uppercase block mb-1">Growth Catalyst Sectors</span>
+                        <p id="modalGrowthCatalysts" class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+                            Services, Wholesale/Retail Trade, Real Estate, Agro-industrial Modernization.
+                        </p>
+                    </div>
+                    <div class="bg-slate-50 dark:bg-slate-900/50 p-3.5 rounded-xl border border-slate-200 dark:border-slate-700">
+                        <span class="text-[11px] font-bold text-rose-600 dark:text-rose-400 uppercase block mb-1">Risk Mitigation Priority</span>
+                        <p id="modalRiskMitigation" class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+                            Agri-fishery volatility and manufacturing sector revitalization interventions.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pt-5 mt-5 flex justify-end border-t border-slate-200 dark:border-slate-700">
+                <button onclick="closeInsightsModal()" class="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-bold shadow-sm transition">Close Advisory</button>
+            </div>
+        </div>
+    </div>
+
     <!-- CRUD Modal Dialog -->
     <div id="crudModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl max-w-lg w-full p-6 shadow-2xl relative">
@@ -664,6 +781,83 @@
             window.location.href = `/api/export?format=${format}`;
         }
 
+        function openForecasterModal(forecastTotal) {
+            const modal = document.getElementById('forecasterResultModal');
+            const grid = document.getElementById('modalForecastGrid');
+            const tbody = document.getElementById('modalForecastTableBody');
+
+            const fTotal = forecastTotal || (dbData && dbData.forecast ? dbData.forecast.forecast_total : {});
+            const years = Object.keys(fTotal).sort();
+
+            let gridHtml = '';
+            let tableHtml = '';
+            let prevVal = (dbData && dbData.processed) ? (dbData.processed.total_gdp[dbData.processed.latest_year] || 0) : 0;
+
+            years.forEach((y, idx) => {
+                const rawVal = fTotal[y];
+                const valBillion = rawVal / 1000000;
+                const diffBillion = prevVal ? (rawVal - prevVal) / 1000000 : 0;
+                const pctGrowth = prevVal ? ((rawVal - prevVal) / prevVal) * 100 : 0;
+
+                if (idx < 3) {
+                    gridHtml += `
+                        <div class="bg-slate-50 dark:bg-slate-900/50 p-3.5 rounded-xl border border-slate-200 dark:border-slate-700">
+                            <span class="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase block">${y} Target</span>
+                            <div class="text-xl font-extrabold text-purple-600 dark:text-purple-400 mt-1">₱${valBillion.toFixed(2)}B</div>
+                            <span class="text-[11px] text-emerald-600 dark:text-emerald-400 font-bold block mt-0.5">+${pctGrowth.toFixed(2)}% expansion</span>
+                        </div>
+                    `;
+                }
+
+                tableHtml += `
+                    <tr class="hover:bg-slate-100/50 dark:hover:bg-slate-700/50 transition">
+                        <td class="p-2.5 font-bold text-slate-900 dark:text-slate-100">${y} (F)</td>
+                        <td class="p-2.5 text-right font-bold text-purple-600 dark:text-purple-400">₱${valBillion.toFixed(2)}B</td>
+                        <td class="p-2.5 text-right text-emerald-600 dark:text-emerald-400 font-bold">+₱${diffBillion.toFixed(2)}B</td>
+                        <td class="p-2.5 text-right text-emerald-600 dark:text-emerald-400 font-bold">+${pctGrowth.toFixed(2)}%</td>
+                    </tr>
+                `;
+
+                prevVal = rawVal;
+            });
+
+            grid.innerHTML = gridHtml;
+            tbody.innerHTML = tableHtml;
+            modal.classList.remove('hidden');
+            lucide.createIcons();
+        }
+
+        function closeForecasterModal() {
+            document.getElementById('forecasterResultModal').classList.add('hidden');
+        }
+
+        function openInsightsModal(insightsData) {
+            const modal = document.getElementById('insightsResultModal');
+            const data = insightsData || (dbData ? dbData.insights : null);
+
+            if (data) {
+                if (data.executive_summary) {
+                    document.getElementById('modalExecutiveSummary').innerText = data.executive_summary;
+                }
+                const listEl = document.getElementById('modalRecommendationsList');
+                if (data.key_recommendations && data.key_recommendations.length > 0) {
+                    listEl.innerHTML = data.key_recommendations.map(rec => `<li class="leading-relaxed mb-1">${rec}</li>`).join('');
+                }
+                if (data.growth_catalysts) {
+                    document.getElementById('modalGrowthCatalysts').innerText = data.growth_catalysts;
+                }
+                if (data.risk_mitigation) {
+                    document.getElementById('modalRiskMitigation').innerText = data.risk_mitigation;
+                }
+            }
+            modal.classList.remove('hidden');
+            lucide.createIcons();
+        }
+
+        function closeInsightsModal() {
+            document.getElementById('insightsResultModal').classList.add('hidden');
+        }
+
         async function runForecaster() {
             try {
                 showNotification("Running ML Macroeconomic Forecaster (2026–2030)...");
@@ -672,6 +866,7 @@
                 if (response.ok) {
                     showNotification("ML Forecaster completed! 2026–2030 predictions updated.");
                     await loadDashboardData();
+                    openForecasterModal(forecastData);
                 } else {
                     showNotification(forecastData.error || "Failed to run ML Forecaster", true);
                 }
@@ -692,6 +887,7 @@
                         document.getElementById('aiRecommendationText').innerText = insightsData.executive_summary;
                     }
                     showNotification("AI Executive Insights generated successfully!");
+                    openInsightsModal(insightsData);
                 } else {
                     showNotification(insightsData.error || "Failed to generate AI Insights", true);
                 }
