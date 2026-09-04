@@ -9,9 +9,10 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         .nav-link.active {
-            background-color: rgba(59, 130, 246, 0.2);
-            color: #60A5FA;
-            border-bottom: 2px solid #3B82F6;
+            background-color: #2563EB !important;
+            color: #FFFFFF !important;
+            border-color: #2563EB !important;
+            box-shadow: 0 1px 3px rgba(37, 99, 235, 0.3);
         }
         .tab-content {
             display: none;
@@ -20,236 +21,214 @@
             display: block;
         }
         .matrix-btn.active {
-            background-color: #2563EB;
-            color: #FFFFFF;
-            border-color: #3B82F6;
+            background-color: #2563EB !important;
+            color: #FFFFFF !important;
+            border-color: #2563EB !important;
+            box-shadow: 0 1px 2px rgba(37, 99, 235, 0.2);
         }
     </style>
 </head>
-<body class="bg-slate-950 text-slate-100 font-sans antialiased flex flex-col h-screen overflow-hidden">
+<body class="bg-slate-100 text-slate-800 font-sans antialiased flex flex-col h-screen overflow-hidden">
 
     <!-- Top Navigation Header -->
-    <header class="bg-slate-900 border-b border-slate-800 shrink-0">
-        <div class="px-6 py-3 flex flex-wrap items-center justify-between gap-4">
+    <header class="bg-white border-b border-slate-200 shrink-0 shadow-sm">
+        <div class="px-6 py-3.5 flex flex-wrap items-center justify-between gap-4">
             <!-- Brand Logo & Title -->
             <div class="flex items-center space-x-3 shrink-0">
-                <div class="p-2 bg-blue-600 rounded-lg text-white">
+                <div class="p-2 bg-blue-600 rounded-xl text-white shadow-sm">
                     <i data-lucide="cpu" class="w-5 h-5"></i>
                 </div>
                 <div>
-                    <h1 class="text-sm font-bold leading-tight text-white">Zamboanga Del Norte</h1>
-                    <p class="text-xs text-blue-400 font-medium">Economic Intelligence Platform</p>
+                    <h1 class="text-base font-bold leading-tight text-slate-900">Zamboanga Del Norte</h1>
+                    <p class="text-xs text-blue-600 font-semibold">Provincial Product Accounts & AI Platform</p>
                 </div>
             </div>
 
             <!-- Top Navigation Horizontal Tabs -->
-            <nav class="flex items-center space-x-1 overflow-x-auto py-1">
-                <button onclick="switchTab('overview', this)" class="nav-link active flex items-center space-x-2 px-3.5 py-2 text-xs font-semibold rounded-lg text-slate-300 hover:bg-slate-800 transition-all">
+            <nav class="flex items-center space-x-1.5 overflow-x-auto py-1">
+                <button onclick="switchTab('overview', this)" class="nav-link active flex items-center space-x-2 px-4 py-2 text-xs font-semibold rounded-lg bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 transition-all">
                     <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
                     <span>Executive Overview</span>
                 </button>
-                <button onclick="switchTab('forecasts', this)" class="nav-link flex items-center space-x-2 px-3.5 py-2 text-xs font-semibold rounded-lg text-slate-300 hover:bg-slate-800 transition-all">
+                <button onclick="switchTab('forecasts', this)" class="nav-link flex items-center space-x-2 px-4 py-2 text-xs font-semibold rounded-lg bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 transition-all">
                     <i data-lucide="trending-up" class="w-4 h-4"></i>
                     <span>2026–2030 Forecasts</span>
                 </button>
-                <button onclick="switchTab('sectors', this)" class="nav-link flex items-center space-x-2 px-3.5 py-2 text-xs font-semibold rounded-lg text-slate-300 hover:bg-slate-800 transition-all">
+                <button onclick="switchTab('sectors', this)" class="nav-link flex items-center space-x-2 px-4 py-2 text-xs font-semibold rounded-lg bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 transition-all">
                     <i data-lucide="factory" class="w-4 h-4"></i>
                     <span>Industry Sectors & Analytics</span>
                 </button>
-                <button onclick="switchTab('lgus', this)" class="nav-link flex items-center space-x-2 px-3.5 py-2 text-xs font-semibold rounded-lg text-slate-300 hover:bg-slate-800 transition-all">
-                    <i data-lucide="map-pin" class="w-4 h-4"></i>
-                    <span>Provinces & LGUs</span>
-                </button>
-                <button onclick="switchTab('simulator', this)" class="nav-link flex items-center space-x-2 px-3.5 py-2 text-xs font-semibold rounded-lg text-slate-300 hover:bg-slate-800 transition-all">
+                <button onclick="switchTab('simulator', this)" class="nav-link flex items-center space-x-2 px-4 py-2 text-xs font-semibold rounded-lg bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 transition-all">
                     <i data-lucide="bot" class="w-4 h-4"></i>
                     <span>AI Insights & Simulator</span>
                 </button>
             </nav>
 
             <!-- Status Badge & Indicator -->
-            <div class="hidden lg:flex items-center space-x-3 text-xs text-slate-400 shrink-0">
-                <span class="flex items-center px-2.5 py-1 bg-slate-950 border border-slate-800 rounded-lg">
+            <div class="hidden lg:flex items-center space-x-3 text-xs text-slate-500 shrink-0">
+                <span class="flex items-center px-3 py-1 bg-slate-50 border border-slate-200 rounded-lg text-slate-700 font-medium">
                     <span class="w-2 h-2 rounded-full bg-emerald-500 inline-block mr-2"></span> AI Engine Active
                 </span>
-                <span class="text-slate-500 font-mono">v2.4 Pro</span>
+                <span class="text-slate-400 font-mono font-medium">v2.4 Pro</span>
             </div>
         </div>
     </header>
 
-    <main class="flex-1 overflow-y-auto bg-slate-950 p-6 md:p-8">
+    <main class="flex-1 overflow-y-auto bg-slate-100 p-6 md:p-8">
 
-        <div class="flex flex-col md:flex-row md:items-center justify-between pb-6 mb-8 border-b border-slate-800 gap-4">
+        <!-- Top Blue Header Banner Card (As in reference image) -->
+        <div class="bg-blue-600 rounded-2xl p-6 text-white shadow-md mb-6 relative overflow-hidden">
+            <div class="relative z-10">
+                <h2 class="text-2xl md:text-3xl font-extrabold tracking-tight">Zamboanga del Norte — Provincial Product Accounts</h2>
+                <p class="text-sm text-blue-100 mt-1 font-medium">Gross Domestic Product by Industry • Annual 2018–2025</p>
+                <p class="text-xs text-blue-200 mt-0.5">At Constant 2018 Prices • Values in Billion Philippine Pesos (e.g., 130,261,223 = Php 130,261,223,000)</p>
+            </div>
+        </div>
+
+        <!-- Toolbar & Filters -->
+        <div class="flex flex-col md:flex-row md:items-center justify-between pb-6 mb-6 border-b border-slate-200 gap-4">
             <div>
-                <h2 class="text-2xl font-bold text-white tracking-tight">Zamboanga Del Norte AI-Powered Economic Analytics & Forecasts</h2>
-                <p class="text-sm text-slate-400 mt-1">Real-time macro-economic data, predictive modeling, and sectoral breakdown (Constant 2018 Prices in ₱'000)</p>
+                <h3 class="text-lg font-bold text-slate-900">Economic Control Panel</h3>
+                <p class="text-xs text-slate-500">Filter parameters, trigger predictions, or manage sector dataset records</p>
             </div>
             <div class="flex flex-wrap items-center gap-2">
-                <div class="flex items-center space-x-2 bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-lg text-xs">
-                    <i data-lucide="filter" class="w-4 h-4 text-blue-400"></i>
-                    <span class="text-slate-400 font-medium">Year Filter:</span>
-                    <select id="globalYearFilter" class="bg-slate-950 text-white font-semibold focus:outline-none cursor-pointer border border-slate-800 rounded px-1.5 py-0.5" onchange="onYearFilterChange()">
+                <div class="flex items-center space-x-2 bg-white border border-slate-200 px-3 py-1.5 rounded-lg text-xs shadow-sm">
+                    <i data-lucide="filter" class="w-4 h-4 text-blue-600"></i>
+                    <span class="text-slate-600 font-semibold">Year Filter:</span>
+                    <select id="globalYearFilter" class="bg-slate-50 text-slate-900 font-bold focus:outline-none cursor-pointer border border-slate-200 rounded px-2 py-0.5" onchange="onYearFilterChange()">
                         <option value="all">All Years</option>
                     </select>
                 </div>
-                <button onclick="runForecaster()" class="px-3 py-1.5 bg-purple-600 hover:bg-purple-500 text-white rounded-lg text-xs font-semibold flex items-center space-x-1.5 transition" title="Run ML Forecaster">
+                <button onclick="runForecaster()" class="px-3.5 py-1.5 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-xs font-semibold flex items-center space-x-1.5 shadow-sm transition" title="Run ML Forecaster">
                     <i data-lucide="cpu" class="w-4 h-4"></i>
                     <span>Run ML Forecaster</span>
                 </button>
-                <button onclick="fetchInsights()" class="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-xs font-semibold flex items-center space-x-1.5 transition" title="Generate AI Insights">
+                <button onclick="fetchInsights()" class="px-3.5 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-semibold flex items-center space-x-1.5 shadow-sm transition" title="Generate AI Insights">
                     <i data-lucide="sparkles" class="w-4 h-4"></i>
                     <span>Generate AI Insights</span>
                 </button>
-                <button onclick="openCrudModal()" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-semibold flex items-center space-x-1.5 transition">
+                <button onclick="openCrudModal()" class="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-semibold flex items-center space-x-1.5 shadow-sm transition">
                     <i data-lucide="plus-circle" class="w-4 h-4"></i>
                     <span>Manage Sectors (CRUD)</span>
                 </button>
-                <button onclick="triggerFileUpload()" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-500 text-white rounded-lg text-xs font-semibold flex items-center space-x-1.5 transition">
+                <button onclick="triggerFileUpload()" class="px-3.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-semibold flex items-center space-x-1.5 shadow-sm transition">
                     <i data-lucide="upload" class="w-4 h-4"></i>
-                    <span>Import/Upload CSV</span>
+                    <span>Import CSV</span>
                 </button>
-                <button onclick="exportData('csv')" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 rounded-lg text-xs font-semibold flex items-center space-x-1.5 transition">
+                <button onclick="exportData('csv')" class="px-3.5 py-1.5 bg-white hover:bg-slate-50 border border-slate-300 text-slate-700 rounded-lg text-xs font-semibold flex items-center space-x-1.5 shadow-sm transition">
                     <i data-lucide="download" class="w-4 h-4"></i>
                     <span>Export CSV</span>
                 </button>
-                <span id="dataStatusBadge" class="px-3 py-1.5 bg-emerald-950 border border-emerald-800 text-emerald-400 rounded-full text-xs font-semibold flex items-center">
-                    <span class="w-2 h-2 rounded-full bg-emerald-400 mr-1.5"></span> Database Live
+                <span id="dataStatusBadge" class="px-3 py-1.5 bg-emerald-50 border border-emerald-200 text-emerald-700 rounded-full text-xs font-semibold flex items-center shadow-sm">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 mr-1.5"></span> Database Live
                 </span>
                 <input type="file" id="csvFileInput" accept=".csv" class="hidden" onchange="handleFileUpload(event)">
             </div>
         </div>
 
-        <div id="toastNotification" class="hidden mb-6 p-4 rounded-xl text-sm font-medium flex items-center justify-between transition-all"></div>
+        <div id="toastNotification" class="hidden mb-6 p-4 rounded-xl text-sm font-medium flex items-center justify-between transition-all shadow-sm"></div>
 
+        <!-- Overview Tab -->
         <section id="overview" class="tab-content active space-y-6">
-            <!-- Province / HUC Official Results Callout Section (As per PSA standard results format) -->
-            <div class="bg-slate-900 border border-slate-800 rounded-xl p-6 mb-6">
-                <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-800">
-                    <div class="flex items-center space-x-2">
-                        <div class="p-1.5 bg-blue-500/20 text-blue-400 rounded-lg"><i data-lucide="award" class="w-5 h-5"></i></div>
+
+            <!-- Key Metric Quick Cards (Matching Reference Layout) -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+                <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
+                    <div class="flex justify-between items-start">
+                        <span id="labelLatestYearGdp" class="text-xs font-bold text-slate-500 uppercase tracking-wider">Latest GDP (2025)</span>
+                        <div class="p-2 bg-blue-50 text-blue-600 rounded-lg"><i data-lucide="coins" class="w-5 h-5"></i></div>
+                    </div>
+                    <div class="mt-3">
+                        <h3 id="cardTotalGdp" class="text-3xl font-extrabold text-slate-900 tracking-tight">₱130,261,223B</h3>
+                        <p id="cardTotalGrowth" class="text-xs text-emerald-600 mt-1 flex items-center font-bold">
+                            <i data-lucide="arrow-up-right" class="w-4 h-4 mr-1"></i> +4.10% vs. 2024
+                        </p>
+                    </div>
+                </div>
+
+                <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
+                    <div class="flex justify-between items-start">
+                        <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">GDP Growth (2025)</span>
+                        <div class="p-2 bg-emerald-50 text-emerald-600 rounded-lg"><i data-lucide="trending-up" class="w-5 h-5"></i></div>
+                    </div>
+                    <div class="mt-3">
+                        <h3 id="hucGdpGrowth2025" class="text-3xl font-extrabold text-emerald-600 tracking-tight">4.10%</h3>
+                        <p class="text-xs text-slate-500 mt-1 font-medium">Year-on-year expansion</p>
+                    </div>
+                </div>
+
+                <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
+                    <div class="flex justify-between items-start">
+                        <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Per Capita GDP (2025)</span>
+                        <div class="p-2 bg-purple-50 text-purple-600 rounded-lg"><i data-lucide="user-check" class="w-5 h-5"></i></div>
+                    </div>
+                    <div class="mt-3">
+                        <h3 id="hucPerCapitaGdp" class="text-3xl font-extrabold text-slate-900 tracking-tight">₱120,709</h3>
+                        <p class="text-xs text-slate-500 mt-1 font-medium">Constant 2018 prices</p>
+                    </div>
+                </div>
+
+                <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
+                    <div class="flex justify-between items-start">
+                        <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Services Share</span>
+                        <div class="p-2 bg-amber-50 text-amber-600 rounded-lg"><i data-lucide="shopping-bag" class="w-5 h-5"></i></div>
+                    </div>
+                    <div class="mt-3">
+                        <h3 id="cardServicesShare" class="text-3xl font-extrabold text-slate-900 tracking-tight">52.91%</h3>
+                        <p id="cardServicesTotal" class="text-xs text-slate-500 mt-1 font-medium">2025 GDP share</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PSA Province Summary Detailed Indicators Box -->
+            <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
+                <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-200">
+                    <div class="flex items-center space-x-2.5">
+                        <div class="p-2 bg-blue-100 text-blue-700 rounded-lg"><i data-lucide="award" class="w-5 h-5"></i></div>
                         <div>
-                            <h3 class="text-base font-bold text-white">Province Results Summary (Official PSA Indicators)</h3>
-                            <p class="text-xs text-slate-400">Key macroeconomic findings for Zamboanga del Norte</p>
+                            <h3 class="text-base font-bold text-slate-900">PPA Summary</h3>
+                            <p class="text-xs text-slate-500">Major categories and total GDP performance indicators</p>
                         </div>
                     </div>
-                    <span id="provinceResultsBadge" class="px-2.5 py-1 bg-blue-950 border border-blue-800 text-blue-300 rounded-full text-xs font-semibold">2025 Official Results</span>
+                    <span id="provinceResultsBadge" class="px-3 py-1 bg-blue-50 border border-blue-200 text-blue-700 rounded-full text-xs font-bold">2025 Official Results</span>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
-                    <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
-                        <span class="text-xs text-slate-400 font-medium block mb-1">1. GDP Growth Rate (2025)</span>
-                        <div id="hucGdpGrowth2025" class="text-xl font-bold text-emerald-400">+4.10%</div>
-                        <span class="text-[11px] text-slate-500">Year-on-year expansion</span>
-                    </div>
-
-                    <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
-                        <span class="text-xs text-slate-400 font-medium block mb-1">2. Growth (2018 to 2025)</span>
-                        <div id="hucGdpGrowth20182025" class="text-xl font-bold text-blue-400">+24.31%</div>
-                        <span class="text-[11px] text-slate-500">Cumulative 7-year growth</span>
-                    </div>
-
-                    <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
-                        <span class="text-xs text-slate-400 font-medium block mb-1">7. Per Capita GDP (2025)</span>
-                        <div id="hucPerCapitaGdp" class="text-xl font-bold text-purple-400">₱122,888</div>
-                        <span class="text-[11px] text-slate-500">Per resident (Pop: ~1.06M)</span>
-                    </div>
-
-                    <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
-                        <span class="text-xs text-slate-400 font-medium block mb-1">Major Sector GVA Growth</span>
-                        <div class="text-xs space-y-1 mt-1">
-                            <div class="flex justify-between"><span class="text-blue-400">Services:</span> <span id="hucGrowthServices" class="font-bold text-emerald-400">+10.29%</span></div>
-                            <div class="flex justify-between"><span class="text-purple-400">Industry:</span> <span id="hucGrowthIndustry" class="font-bold text-rose-400">-2.08%</span></div>
-                            <div class="flex justify-between"><span class="text-amber-400">Agriculture:</span> <span id="hucGrowthAgri" class="font-bold text-rose-400">-2.03%</span></div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2 border-t border-slate-800/60">
-                    <div class="bg-slate-950/70 p-3.5 rounded-lg border border-slate-800">
-                        <span class="text-xs font-bold text-blue-400 uppercase tracking-wider block mb-2">3. Major Industry Contribution (pp)</span>
-                        <div class="space-y-1 text-xs">
-                            <div class="flex justify-between"><span class="text-slate-300">Services Sector:</span> <span id="hucContribServices" class="font-mono text-emerald-400 font-semibold">+5.14 pp</span></div>
-                            <div class="flex justify-between"><span class="text-slate-300">Industry Sector:</span> <span id="hucContribIndustry" class="font-mono text-rose-400 font-semibold">-0.73 pp</span></div>
-                            <div class="flex justify-between"><span class="text-slate-300">Agriculture Sector:</span> <span id="hucContribAgri" class="font-mono text-rose-400 font-semibold">-0.30 pp</span></div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-5 pt-2">
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                        <span class="text-xs font-bold text-blue-700 uppercase tracking-wider block mb-2">Major Sector Contributions (pp)</span>
+                        <div class="space-y-1.5 text-xs">
+                            <div class="flex justify-between"><span class="text-slate-600 font-medium">Services Sector:</span> <span id="hucContribServices" class="font-mono text-emerald-700 font-bold">+5.14 pp</span></div>
+                            <div class="flex justify-between"><span class="text-slate-600 font-medium">Industry Sector:</span> <span id="hucContribIndustry" class="font-mono text-rose-600 font-bold">-0.73 pp</span></div>
+                            <div class="flex justify-between"><span class="text-slate-600 font-medium">Agriculture Sector:</span> <span id="hucContribAgri" class="font-mono text-rose-600 font-bold">-0.30 pp</span></div>
                         </div>
                     </div>
 
-                    <div class="bg-slate-950/70 p-3.5 rounded-lg border border-slate-800">
-                        <span class="text-xs font-bold text-amber-400 uppercase tracking-wider block mb-2">5. Top 3 Contributors to GDP Growth</span>
-                        <ol id="hucTop3Contrib" class="space-y-1 text-xs text-slate-300 list-decimal list-inside">
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                        <span class="text-xs font-bold text-amber-700 uppercase tracking-wider block mb-2">Top 3 Contributors to Growth</span>
+                        <ol id="hucTop3Contrib" class="space-y-1.5 text-xs text-slate-700 list-decimal list-inside">
                             <!-- Dynamic items -->
                         </ol>
                     </div>
 
-                    <div class="bg-slate-950/70 p-3.5 rounded-lg border border-slate-800">
-                        <span class="text-xs font-bold text-emerald-400 uppercase tracking-wider block mb-2">6. Top 3 Fastest-Growing Industries</span>
-                        <ol id="hucTop3Fastest" class="space-y-1 text-xs text-slate-300 list-decimal list-inside">
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                        <span class="text-xs font-bold text-emerald-700 uppercase tracking-wider block mb-2">Top 3 Fastest-Growing Industries</span>
+                        <ol id="hucTop3Fastest" class="space-y-1.5 text-xs text-slate-700 list-decimal list-inside">
                             <!-- Dynamic items -->
                         </ol>
                     </div>
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
-                    <div class="flex justify-between items-start">
-                        <span id="labelLatestYearGdp" class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Gross Domestic Product (GDP)</span>
-                        <div class="p-2 bg-blue-500/10 text-blue-400 rounded-lg"><i data-lucide="coins" class="w-5 h-5"></i></div>
-                    </div>
-                    <div class="mt-4">
-                        <h3 id="cardTotalGdp" class="text-2xl font-bold text-white">₱124.89B</h3>
-                        <p id="cardTotalGrowth" class="text-xs text-emerald-400 mt-1 flex items-center font-medium">
-                            <i data-lucide="arrow-up-right" class="w-4 h-4 mr-1"></i> +3.89% YoY
-                        </p>
-                    </div>
-                </div>
-
-                <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
-                    <div class="flex justify-between items-start">
-                        <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Services Share of GDP</span>
-                        <div class="p-2 bg-emerald-500/10 text-emerald-400 rounded-lg"><i data-lucide="shopping-bag" class="w-5 h-5"></i></div>
-                    </div>
-                    <div class="mt-4">
-                        <h3 id="cardServicesShare" class="text-2xl font-bold text-white">49.89%</h3>
-                        <p id="cardServicesTotal" class="text-xs text-slate-400 mt-1">₱62.31B GVA</p>
-                    </div>
-                </div>
-
-                <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
-                    <div class="flex justify-between items-start">
-                        <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Industry GVA</span>
-                        <div class="p-2 bg-purple-500/10 text-purple-400 rounded-lg"><i data-lucide="building-2" class="w-5 h-5"></i></div>
-                    </div>
-                    <div class="mt-4">
-                        <h3 id="cardIndustryTotal" class="text-2xl font-bold text-white">₱44.12B</h3>
-                        <p id="cardIndustryGrowth" class="text-xs text-emerald-400 mt-1 flex items-center font-medium">
-                            <i data-lucide="arrow-up-right" class="w-4 h-4 mr-1"></i> +4.29% growth
-                        </p>
-                    </div>
-                </div>
-
-                <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
-                    <div class="flex justify-between items-start">
-                        <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Agri, Forestry & Fishing GVA</span>
-                        <div class="p-2 bg-amber-500/10 text-amber-400 rounded-lg"><i data-lucide="sprout" class="w-5 h-5"></i></div>
-                    </div>
-                    <div class="mt-4">
-                        <h3 id="cardAgriTotal" class="text-2xl font-bold text-white">₱18.46B</h3>
-                        <p id="cardAgriGrowth" class="text-xs text-rose-400 mt-1 flex items-center font-medium">
-                            <i data-lucide="arrow-down-right" class="w-4 h-4 mr-1"></i> -1.86% YoY
-                        </p>
-                    </div>
-                </div>
-            </div>
-
+            <!-- Charts Section -->
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <div class="lg:col-span-2 bg-slate-900 border border-slate-800 rounded-xl p-6">
-                    <h3 id="titleGdpTrajectory" class="text-lg font-bold text-white mb-4">Gross Domestic Product Growth Trajectory</h3>
+                <div class="lg:col-span-2 bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
+                    <h3 id="titleGdpTrajectory" class="text-base font-bold text-slate-900 mb-4">Gross Domestic Product Growth Trajectory</h3>
                     <div class="h-72">
                         <canvas id="overviewGdpChart"></canvas>
                     </div>
                 </div>
-                <div class="bg-slate-900 border border-slate-800 rounded-xl p-6">
-                    <h3 id="titleSectorDistribution" class="text-lg font-bold text-white mb-4">Sectoral Distribution</h3>
+                <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
+                    <h3 id="titleSectorDistribution" class="text-base font-bold text-slate-900 mb-4">Sectoral Distribution</h3>
                     <div class="h-72 flex items-center justify-center">
                         <canvas id="overviewShareChart"></canvas>
                     </div>
@@ -257,24 +236,25 @@
             </div>
         </section>
 
+        <!-- Forecasts Tab -->
         <section id="forecasts" class="tab-content space-y-6">
-            <div class="bg-slate-900 border border-slate-800 rounded-xl p-6">
+            <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
                     <div>
-                        <h3 class="text-lg font-bold text-white">AI Predictive Macroeconomic Model (2026–2030)</h3>
-                        <p class="text-sm text-slate-400">Projections powered by ML regression models based on database PPA trends.</p>
+                        <h3 class="text-lg font-bold text-slate-900">AI Predictive Macroeconomic Model (2026–2030)</h3>
+                        <p class="text-xs text-slate-500">Projections powered by ML regression models based on database PPA trends.</p>
                     </div>
                     <div class="mt-3 md:mt-0 flex items-center space-x-3">
-                        <button onclick="runForecaster()" class="px-3 py-1.5 bg-purple-600 hover:bg-purple-500 text-white rounded-lg text-xs font-semibold flex items-center space-x-1 transition">
+                        <button onclick="runForecaster()" class="px-3.5 py-1.5 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-xs font-semibold flex items-center space-x-1 transition shadow-sm">
                             <i data-lucide="play" class="w-4 h-4"></i>
                             <span>Run ML Forecaster</span>
                         </button>
-                        <button onclick="fetchInsights()" class="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-xs font-semibold flex items-center space-x-1 transition">
+                        <button onclick="fetchInsights()" class="px-3.5 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-semibold flex items-center space-x-1 transition shadow-sm">
                             <i data-lucide="sparkles" class="w-4 h-4"></i>
                             <span>Generate AI Insights</span>
                         </button>
-                        <div class="px-4 py-2 bg-blue-900/40 border border-blue-700/50 rounded-lg text-xs text-blue-300">
-                            Estimated CAGR: <span id="cagrValue" class="font-bold text-white">5.42%</span>
+                        <div class="px-4 py-2 bg-blue-50 border border-blue-200 rounded-lg text-xs text-blue-800 font-medium">
+                            Estimated CAGR: <span id="cagrValue" class="font-bold text-blue-900">5.42%</span>
                         </div>
                     </div>
                 </div>
@@ -284,114 +264,115 @@
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
-                    <span class="text-xs text-slate-400 font-semibold uppercase">2026 Forecast Target</span>
-                    <h4 id="forecastTarget2026" class="text-xl font-bold text-blue-400 mt-2">₱138.2 Billion</h4>
-                    <p class="text-xs text-slate-400 mt-1">Driven by service sector stabilization and industrial infrastructure recovery.</p>
+                <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
+                    <span class="text-xs text-slate-500 font-bold uppercase">2026 Forecast Target</span>
+                    <h4 id="forecastTarget2026" class="text-2xl font-extrabold text-blue-600 mt-2">₱138.2 Billion</h4>
+                    <p class="text-xs text-slate-500 mt-1">Driven by service sector stabilization and industrial infrastructure recovery.</p>
                 </div>
-                <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
-                    <span class="text-xs text-slate-400 font-semibold uppercase">2028 Forecast Target</span>
-                    <h4 id="forecastTarget2028" class="text-xl font-bold text-blue-400 mt-2">₱153.8 Billion</h4>
-                    <p class="text-xs text-slate-400 mt-1">Projected increase in agro-industrial modernization and tech integration.</p>
+                <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
+                    <span class="text-xs text-slate-500 font-bold uppercase">2028 Forecast Target</span>
+                    <h4 id="forecastTarget2028" class="text-2xl font-extrabold text-blue-600 mt-2">₱153.8 Billion</h4>
+                    <p class="text-xs text-slate-500 mt-1">Projected increase in agro-industrial modernization and tech integration.</p>
                 </div>
-                <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
-                    <span class="text-xs text-slate-400 font-semibold uppercase">2030 Vision Target</span>
-                    <h4 id="forecastTarget2030" class="text-xl font-bold text-emerald-400 mt-2">₱171.1 Billion</h4>
-                    <p class="text-xs text-slate-400 mt-1">Potential milestone achieving sustained double-digit growth in services.</p>
+                <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
+                    <span class="text-xs text-slate-500 font-bold uppercase">2030 Vision Target</span>
+                    <h4 id="forecastTarget2030" class="text-2xl font-extrabold text-emerald-600 mt-2">₱171.1 Billion</h4>
+                    <p class="text-xs text-slate-500 mt-1">Potential milestone achieving sustained double-digit growth in services.</p>
                 </div>
             </div>
         </section>
 
+        <!-- Sectors Tab -->
         <section id="sectors" class="tab-content space-y-6">
             <!-- 8 Economic Analytics Matrix Switcher & Dynamic Chart -->
-            <div class="bg-slate-900 border border-slate-800 rounded-xl p-6">
+            <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-4">
                     <div>
-                        <h3 class="text-lg font-bold text-white">Economic Analytics Matrix & Visual Charts by Year</h3>
-                        <p class="text-xs text-slate-400">Select an economic metric view below to render interactive multi-year charts, growth rates, GDP shares, and percentage point contributions.</p>
+                        <h3 class="text-lg font-bold text-slate-900">Economic Analytics Matrix & Visual Charts by Year</h3>
+                        <p class="text-xs text-slate-500">Select an economic metric view below to render interactive multi-year charts, growth rates, GDP shares, and percentage point contributions.</p>
                     </div>
                     <div class="flex items-center space-x-2">
-                        <button onclick="openCrudModal()" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-semibold flex items-center space-x-1 transition">
+                        <button onclick="openCrudModal()" class="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-semibold flex items-center space-x-1 transition shadow-sm">
                             <i data-lucide="plus" class="w-4 h-4"></i>
                             <span>Add/Edit Sector</span>
                         </button>
-                        <button onclick="triggerFileUpload()" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-500 text-white rounded-lg text-xs font-semibold flex items-center space-x-1 transition">
+                        <button onclick="triggerFileUpload()" class="px-3.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-semibold flex items-center space-x-1 transition shadow-sm">
                             <i data-lucide="upload-cloud" class="w-4 h-4"></i>
                             <span>Upload Data</span>
                         </button>
-                        <button onclick="exportData('csv')" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 rounded-lg text-xs font-semibold flex items-center space-x-1 transition">
+                        <button onclick="exportData('csv')" class="px-3.5 py-1.5 bg-white hover:bg-slate-50 border border-slate-300 text-slate-700 rounded-lg text-xs font-semibold flex items-center space-x-1 transition shadow-sm">
                             <i data-lucide="download" class="w-4 h-4"></i>
                             <span>Export CSV</span>
                         </button>
                     </div>
                 </div>
 
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-2 mb-6">
-                    <button onclick="selectMatrixView('growth_major', this)" class="matrix-btn active text-left px-3 py-2.5 rounded-lg border border-slate-800 text-xs font-medium text-slate-300 hover:bg-slate-800 transition">
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-2.5 mb-6">
+                    <button onclick="selectMatrixView('growth_major', this)" class="matrix-btn active text-left px-3.5 py-2.5 rounded-lg border border-slate-200 bg-white text-xs font-semibold text-slate-700 hover:bg-slate-50 transition shadow-sm">
                         1. Growth Rate (Major Industry)
                     </button>
-                    <button onclick="selectMatrixView('growth_all', this)" class="matrix-btn text-left px-3 py-2.5 rounded-lg border border-slate-800 text-xs font-medium text-slate-300 hover:bg-slate-800 transition">
+                    <button onclick="selectMatrixView('growth_all', this)" class="matrix-btn text-left px-3.5 py-2.5 rounded-lg border border-slate-200 bg-white text-xs font-semibold text-slate-700 hover:bg-slate-50 transition shadow-sm">
                         2. Growth Rate (All Industries)
                     </button>
-                    <button onclick="selectMatrixView('share_major', this)" class="matrix-btn text-left px-3 py-2.5 rounded-lg border border-slate-800 text-xs font-medium text-slate-300 hover:bg-slate-800 transition">
+                    <button onclick="selectMatrixView('share_major', this)" class="matrix-btn text-left px-3.5 py-2.5 rounded-lg border border-slate-200 bg-white text-xs font-semibold text-slate-700 hover:bg-slate-50 transition shadow-sm">
                         3. Share in GDP (Major Industry)
                     </button>
-                    <button onclick="selectMatrixView('share_all', this)" class="matrix-btn text-left px-3 py-2.5 rounded-lg border border-slate-800 text-xs font-medium text-slate-300 hover:bg-slate-800 transition">
+                    <button onclick="selectMatrixView('share_all', this)" class="matrix-btn text-left px-3.5 py-2.5 rounded-lg border border-slate-200 bg-white text-xs font-semibold text-slate-700 hover:bg-slate-50 transition shadow-sm">
                         4. Share in GDP (All Industries)
                     </button>
-                    <button onclick="selectMatrixView('contrib_major', this)" class="matrix-btn text-left px-3 py-2.5 rounded-lg border border-slate-800 text-xs font-medium text-slate-300 hover:bg-slate-800 transition">
+                    <button onclick="selectMatrixView('contrib_major', this)" class="matrix-btn text-left px-3.5 py-2.5 rounded-lg border border-slate-200 bg-white text-xs font-semibold text-slate-700 hover:bg-slate-50 transition shadow-sm">
                         5. Contribution to Growth (Major)
                     </button>
-                    <button onclick="selectMatrixView('contrib_all', this)" class="matrix-btn text-left px-3 py-2.5 rounded-lg border border-slate-800 text-xs font-medium text-slate-300 hover:bg-slate-800 transition">
+                    <button onclick="selectMatrixView('contrib_all', this)" class="matrix-btn text-left px-3.5 py-2.5 rounded-lg border border-slate-200 bg-white text-xs font-semibold text-slate-700 hover:bg-slate-50 transition shadow-sm">
                         6. Contribution to Growth (All)
                     </button>
-                    <button onclick="selectMatrixView('pct_major', this)" class="matrix-btn text-left px-3 py-2.5 rounded-lg border border-slate-800 text-xs font-medium text-slate-300 hover:bg-slate-800 transition">
+                    <button onclick="selectMatrixView('pct_major', this)" class="matrix-btn text-left px-3.5 py-2.5 rounded-lg border border-slate-200 bg-white text-xs font-semibold text-slate-700 hover:bg-slate-50 transition shadow-sm">
                         7. Percentage Share (Major)
                     </button>
-                    <button onclick="selectMatrixView('pct_all', this)" class="matrix-btn text-left px-3 py-2.5 rounded-lg border border-slate-800 text-xs font-medium text-slate-300 hover:bg-slate-800 transition">
+                    <button onclick="selectMatrixView('pct_all', this)" class="matrix-btn text-left px-3.5 py-2.5 rounded-lg border border-slate-200 bg-white text-xs font-semibold text-slate-700 hover:bg-slate-50 transition shadow-sm">
                         8. Percentage Share (All)
                     </button>
                 </div>
 
                 <!-- Interactive Dynamic Analytics Chart -->
-                <div class="mb-6 bg-slate-950 p-4 border border-slate-800 rounded-xl">
+                <div class="mb-6 bg-slate-50 p-4 border border-slate-200 rounded-xl shadow-inner">
                     <div class="flex justify-between items-center mb-3">
-                        <h4 id="matrixChartTitle" class="text-xs font-bold text-blue-400 uppercase tracking-wider">Metric Visualization Chart</h4>
-                        <span id="matrixChartTypeLabel" class="text-xs text-slate-400">Multi-Year Breakdown</span>
+                        <h4 id="matrixChartTitle" class="text-xs font-bold text-blue-600 uppercase tracking-wider">Metric Visualization Chart</h4>
+                        <span id="matrixChartTypeLabel" class="text-xs text-slate-500 font-medium">Multi-Year Breakdown</span>
                     </div>
                     <div class="h-72">
                         <canvas id="matrixAnalyticsChart"></canvas>
                     </div>
                 </div>
 
-                <div class="border-t border-slate-800 pt-4">
+                <div class="border-t border-slate-200 pt-4">
                     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
                         <div>
-                            <h4 id="matrixTitle" class="text-sm font-bold text-white">1. YoY Growth Rate by Major Industry by Year</h4>
-                            <span id="matrixUnitBadge" class="text-xs text-slate-400">Unit: Percentage (%)</span>
+                            <h4 id="matrixTitle" class="text-sm font-bold text-slate-900">1. YoY Growth Rate by Major Industry by Year</h4>
+                            <span id="matrixUnitBadge" class="text-xs text-slate-500 font-medium">Unit: Percentage (%)</span>
                         </div>
                     </div>
 
                     <!-- All Industries Sorting & Ranking Controls -->
-                    <div id="allIndSortBar" class="flex flex-wrap items-center gap-2 mb-4 hidden bg-slate-950/80 p-3 rounded-lg border border-slate-800">
-                        <span class="text-xs text-slate-400 font-semibold uppercase mr-1 flex items-center">
-                            <i data-lucide="arrow-up-down" class="w-3.5 h-3.5 mr-1 text-blue-400"></i> Top Rankings:
+                    <div id="allIndSortBar" class="flex flex-wrap items-center gap-2 mb-4 hidden bg-slate-50 p-3 rounded-lg border border-slate-200">
+                        <span class="text-xs text-slate-600 font-bold uppercase mr-1 flex items-center">
+                            <i data-lucide="arrow-up-down" class="w-3.5 h-3.5 mr-1 text-blue-600"></i> Top Rankings:
                         </span>
-                        <button id="btnSortGrowth" onclick="setMatrixSort('growth_rate', 'growth_all')" class="px-2.5 py-1 bg-emerald-950/80 border border-emerald-800 text-emerald-300 hover:bg-emerald-900 rounded text-xs font-semibold transition flex items-center gap-1">
+                        <button id="btnSortGrowth" onclick="setMatrixSort('growth_rate', 'growth_all')" class="px-3 py-1 bg-emerald-50 border border-emerald-200 text-emerald-800 hover:bg-emerald-100 rounded text-xs font-bold transition flex items-center gap-1 shadow-sm">
                             <i data-lucide="trending-up" class="w-3.5 h-3.5"></i> Top Growth Rate
                         </button>
-                        <button id="btnSortContrib" onclick="setMatrixSort('contribution_to_growth', 'contrib_all')" class="px-2.5 py-1 bg-purple-950/80 border border-purple-800 text-purple-300 hover:bg-purple-900 rounded text-xs font-semibold transition flex items-center gap-1">
+                        <button id="btnSortContrib" onclick="setMatrixSort('contribution_to_growth', 'contrib_all')" class="px-3 py-1 bg-purple-50 border border-purple-200 text-purple-800 hover:bg-purple-100 rounded text-xs font-bold transition flex items-center gap-1 shadow-sm">
                             <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> Top Contributors
                         </button>
-                        <button id="btnSortShare" onclick="setMatrixSort('share_in_gdp', 'share_all')" class="px-2.5 py-1 bg-blue-950/80 border border-blue-800 text-blue-300 hover:bg-blue-900 rounded text-xs font-semibold transition flex items-center gap-1">
+                        <button id="btnSortShare" onclick="setMatrixSort('share_in_gdp', 'share_all')" class="px-3 py-1 bg-blue-50 border border-blue-200 text-blue-800 hover:bg-blue-100 rounded text-xs font-bold transition flex items-center gap-1 shadow-sm">
                             <i data-lucide="pie-chart" class="w-3.5 h-3.5"></i> Top GDP Share
                         </button>
-                        <button onclick="setMatrixSort('default')" class="px-2.5 py-1 bg-slate-800 border border-slate-700 text-slate-300 hover:bg-slate-700 rounded text-xs font-semibold transition flex items-center gap-1">
+                        <button onclick="setMatrixSort('default')" class="px-3 py-1 bg-white border border-slate-300 text-slate-700 hover:bg-slate-100 rounded text-xs font-bold transition flex items-center gap-1 shadow-sm">
                             <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i> Reset Sort
                         </button>
-                        <div class="ml-auto flex items-center space-x-1.5 text-xs text-slate-400">
+                        <div class="ml-auto flex items-center space-x-1.5 text-xs text-slate-600 font-medium">
                             <span>Order:</span>
-                            <select id="matrixSortOrderSelect" onchange="toggleMatrixSortOrder(this.value)" class="bg-slate-900 border border-slate-800 text-white rounded px-2 py-0.5 focus:outline-none">
+                            <select id="matrixSortOrderSelect" onchange="toggleMatrixSortOrder(this.value)" class="bg-white border border-slate-300 text-slate-900 rounded px-2 py-0.5 focus:outline-none">
                                 <option value="desc">Highest to Lowest (Top)</option>
                                 <option value="asc">Lowest to Highest</option>
                             </select>
@@ -399,11 +380,11 @@
                     </div>
 
                     <div class="overflow-x-auto">
-                        <table class="w-full text-left text-sm text-slate-300">
-                            <thead id="matrixTableHeader" class="bg-slate-950 text-xs uppercase text-slate-400 border-b border-slate-800">
+                        <table class="w-full text-left text-sm text-slate-800">
+                            <thead id="matrixTableHeader" class="bg-slate-100 text-xs font-bold uppercase text-slate-600 border-b border-slate-200">
                                 <!-- Matrix dynamic headers -->
                             </thead>
-                            <tbody id="matrixTableBody" class="divide-y divide-slate-800">
+                            <tbody id="matrixTableBody" class="divide-y divide-slate-200 bg-white">
                                 <!-- Matrix dynamic rows -->
                             </tbody>
                         </table>
@@ -412,139 +393,86 @@
             </div>
 
             <!-- Historical GVA Database CRUD Table -->
-            <div class="bg-slate-900 border border-slate-800 rounded-xl p-6">
+            <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
                 <div class="flex justify-between items-center mb-4">
                     <div>
-                        <h3 class="text-lg font-bold text-white">Historical Gross Value Added by Industry (In '000 PHP)</h3>
-                        <p class="text-xs text-slate-400">Database table view with CRUD edit/delete controls for each sector.</p>
+                        <h3 class="text-lg font-bold text-slate-900">Historical Gross Value Added by Industry (In '000 PHP)</h3>
+                        <p class="text-xs text-slate-500">Database table view with CRUD edit/delete controls for each sector.</p>
                     </div>
-                    <button onclick="openCrudModal()" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-semibold flex items-center space-x-1 transition">
+                    <button onclick="openCrudModal()" class="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-semibold flex items-center space-x-1 transition shadow-sm">
                         <i data-lucide="plus" class="w-4 h-4"></i>
                         <span>New Sector</span>
                     </button>
                 </div>
                 <div class="overflow-x-auto">
-                    <table class="w-full text-left text-sm text-slate-300">
-                        <thead id="industryTableHeader" class="bg-slate-950 text-xs uppercase text-slate-400 border-b border-slate-800">
+                    <table class="w-full text-left text-sm text-slate-800">
+                        <thead id="industryTableHeader" class="bg-slate-100 text-xs font-bold uppercase text-slate-600 border-b border-slate-200">
                             <!-- Dynamic headers -->
                         </thead>
-                        <tbody id="industryTableBody" class="divide-y divide-slate-800">
-                            <tr><td colspan="8" class="p-4 text-center text-slate-500">Loading industry data from database...</td></tr>
+                        <tbody id="industryTableBody" class="divide-y divide-slate-200 bg-white">
+                            <tr><td colspan="8" class="p-4 text-center text-slate-400 font-medium">Loading industry data from database...</td></tr>
                         </tbody>
                     </table>
                 </div>
             </div>
         </section>
 
-        <section id="lgus" class="tab-content space-y-6">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 hover:border-slate-700 transition">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <h4 class="font-bold text-lg text-white">Dipolog City</h4>
-                            <span class="text-xs text-blue-400">Provincial Capital</span>
-                        </div>
-                        <span class="px-2 py-1 bg-blue-500/10 text-blue-400 text-xs rounded">Commercial Hub</span>
-                    </div>
-                    <div class="mt-4 space-y-2 text-sm">
-                        <div class="flex justify-between text-slate-400"><span>Primary Driver:</span> <span class="text-white">Wholesale & Trade</span></div>
-                        <div class="flex justify-between text-slate-400"><span>Services Contribution:</span> <span class="text-white">High (~58%)</span></div>
-                    </div>
-                </div>
-
-                <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 hover:border-slate-700 transition">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <h4 class="font-bold text-lg text-white">Dapitan City</h4>
-                            <span class="text-xs text-emerald-400">Heritage & Tourism Zone</span>
-                        </div>
-                        <span class="px-2 py-1 bg-emerald-500/10 text-emerald-400 text-xs rounded">Services/Tourism</span>
-                    </div>
-                    <div class="mt-4 space-y-2 text-sm">
-                        <div class="flex justify-between text-slate-400"><span>Primary Driver:</span> <span class="text-white">Accommodation & Food</span></div>
-                        <div class="flex justify-between text-slate-400"><span>Growth Trajectory:</span> <span class="text-white font-medium text-emerald-400">+8.2% YoY</span></div>
-                    </div>
-                </div>
-
-                <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 hover:border-slate-700 transition">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <h4 class="font-bold text-lg text-white">Sindangan</h4>
-                            <span class="text-xs text-amber-400">1st Class Municipality</span>
-                        </div>
-                        <span class="px-2 py-1 bg-amber-500/10 text-amber-400 text-xs rounded">Agro-Industrial</span>
-                    </div>
-                    <div class="mt-4 space-y-2 text-sm">
-                        <div class="flex justify-between text-slate-400"><span>Primary Driver:</span> <span class="text-white">Agriculture & Fishing</span></div>
-                        <div class="flex justify-between text-slate-400"><span>Regional Share:</span> <span class="text-white">Key Coastal Producer</span></div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="bg-slate-900 border border-slate-800 rounded-xl p-6">
-                <h3 class="text-lg font-bold text-white mb-2">LGU Economic Contribution Matrix</h3>
-                <p class="text-xs text-slate-400 mb-4">Strategic focus areas mapped across key municipalities for targeted provincial investment.</p>
-                <div class="h-64">
-                    <canvas id="lguBarChart"></canvas>
-                </div>
-            </div>
-        </section>
-
+        <!-- Simulator Tab -->
         <section id="simulator" class="tab-content space-y-6">
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <div class="bg-slate-900 border border-slate-800 rounded-xl p-6 space-y-5">
-                    <h3 class="text-lg font-bold text-white flex items-center">
-                        <i data-lucide="sliders" class="w-5 h-5 mr-2 text-blue-400"></i> Policy Input Simulator
+                <div class="bg-white border border-slate-200 rounded-xl p-6 space-y-5 shadow-sm">
+                    <h3 class="text-lg font-bold text-slate-900 flex items-center">
+                        <i data-lucide="sliders" class="w-5 h-5 mr-2 text-blue-600"></i> Policy Input Simulator
                     </h3>
 
                     <div>
-                        <label class="text-xs text-slate-400 font-medium block mb-2">Agricultural Technology Stimulus (+%)</label>
-                        <input id="agriSlider" type="range" min="0" max="25" value="5" class="w-full accent-blue-500 bg-slate-800 rounded-lg h-2" oninput="updateSimulation()">
-                        <div class="flex justify-between text-xs text-slate-500 mt-1"><span>0%</span><span id="agriVal" class="text-blue-400 font-bold">5%</span><span>25%</span></div>
+                        <label class="text-xs text-slate-600 font-semibold block mb-2">Agricultural Technology Stimulus (+%)</label>
+                        <input id="agriSlider" type="range" min="0" max="25" value="5" class="w-full accent-blue-600 bg-slate-200 rounded-lg h-2" oninput="updateSimulation()">
+                        <div class="flex justify-between text-xs text-slate-500 mt-1"><span>0%</span><span id="agriVal" class="text-blue-600 font-bold">5%</span><span>25%</span></div>
                     </div>
 
                     <div>
-                        <label class="text-xs text-slate-400 font-medium block mb-2">Infrastructure & Industrial Investment (+%)</label>
-                        <input id="indSlider" type="range" min="0" max="25" value="8" class="w-full accent-blue-500 bg-slate-800 rounded-lg h-2" oninput="updateSimulation()">
-                        <div class="flex justify-between text-xs text-slate-500 mt-1"><span>0%</span><span id="indVal" class="text-blue-400 font-bold">8%</span><span>25%</span></div>
+                        <label class="text-xs text-slate-600 font-semibold block mb-2">Infrastructure & Industrial Investment (+%)</label>
+                        <input id="indSlider" type="range" min="0" max="25" value="8" class="w-full accent-blue-600 bg-slate-200 rounded-lg h-2" oninput="updateSimulation()">
+                        <div class="flex justify-between text-xs text-slate-500 mt-1"><span>0%</span><span id="indVal" class="text-blue-600 font-bold">8%</span><span>25%</span></div>
                     </div>
 
                     <div>
-                        <label class="text-xs text-slate-400 font-medium block mb-2">Services & Digitalization Push (+%)</label>
-                        <input id="servSlider" type="range" min="0" max="25" value="10" class="w-full accent-blue-500 bg-slate-800 rounded-lg h-2" oninput="updateSimulation()">
-                        <div class="flex justify-between text-xs text-slate-500 mt-1"><span>0%</span><span id="servVal" class="text-blue-400 font-bold">10%</span><span>25%</span></div>
+                        <label class="text-xs text-slate-600 font-semibold block mb-2">Services & Digitalization Push (+%)</label>
+                        <input id="servSlider" type="range" min="0" max="25" value="10" class="w-full accent-blue-600 bg-slate-200 rounded-lg h-2" oninput="updateSimulation()">
+                        <div class="flex justify-between text-xs text-slate-500 mt-1"><span>0%</span><span id="servVal" class="text-blue-600 font-bold">10%</span><span>25%</span></div>
                     </div>
 
-                    <div class="pt-4 border-t border-slate-800">
-                        <button onclick="updateSimulation(true)" class="w-full py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-medium rounded-lg text-sm transition">
+                    <div class="pt-4 border-t border-slate-200">
+                        <button onclick="updateSimulation(true)" class="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg text-sm transition shadow-sm">
                             Re-Run Policy Simulation
                         </button>
                     </div>
                 </div>
 
-                <div class="lg:col-span-2 bg-slate-900 border border-slate-800 rounded-xl p-6 flex flex-col justify-between">
+                <div class="lg:col-span-2 bg-white border border-slate-200 rounded-xl p-6 flex flex-col justify-between shadow-sm">
                     <div>
                         <div class="flex justify-between items-center mb-4">
-                            <h3 class="text-lg font-bold text-white">Simulated 2026 GDP Impact</h3>
-                            <span class="px-3 py-1 bg-purple-950 border border-purple-800 text-purple-300 rounded-full text-xs">AI Impact Scenario</span>
+                            <h3 class="text-lg font-bold text-slate-900">Simulated 2026 GDP Impact</h3>
+                            <span class="px-3 py-1 bg-purple-50 border border-purple-200 text-purple-700 rounded-full text-xs font-bold">AI Impact Scenario</span>
                         </div>
                         <div class="grid grid-cols-2 gap-4 mb-6">
-                            <div class="bg-slate-950 p-4 rounded-lg border border-slate-800">
-                                <span id="labelBaselineGdpCard" class="text-xs text-slate-400">Baseline GDP</span>
-                                <p id="baselineGdpText" class="text-xl font-bold text-slate-300 mt-1">₱124.89 Billion</p>
+                            <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                                <span id="labelBaselineGdpCard" class="text-xs text-slate-500 font-semibold uppercase">Baseline GDP</span>
+                                <p id="baselineGdpText" class="text-2xl font-extrabold text-slate-800 mt-1">₱124.89 Billion</p>
                             </div>
-                            <div class="bg-slate-950 p-4 rounded-lg border border-slate-800">
-                                <span class="text-xs text-slate-400">Simulated Target GDP</span>
-                                <p id="simulatedGdp" class="text-xl font-bold text-emerald-400 mt-1">₱141.22 Billion</p>
+                            <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                                <span class="text-xs text-slate-500 font-semibold uppercase">Simulated Target GDP</span>
+                                <p id="simulatedGdp" class="text-2xl font-extrabold text-emerald-600 mt-1">₱141.22 Billion</p>
                             </div>
                         </div>
                     </div>
 
-                    <div class="bg-slate-950/70 border border-slate-800 p-4 rounded-lg">
-                        <h4 class="text-xs font-bold text-blue-400 uppercase tracking-wider mb-2 flex items-center">
+                    <div class="bg-blue-50/60 border border-blue-200 p-4 rounded-xl">
+                        <h4 class="text-xs font-bold text-blue-700 uppercase tracking-wider mb-2 flex items-center">
                             <i data-lucide="sparkles" class="w-4 h-4 mr-1"></i> AI Executive Recommendation
                         </h4>
-                        <p id="aiRecommendationText" class="text-xs text-slate-300 leading-relaxed">
+                        <p id="aiRecommendationText" class="text-xs text-slate-700 leading-relaxed font-medium">
                             Loading recommendations...
                         </p>
                     </div>
@@ -555,41 +483,41 @@
     </main>
 
     <!-- CRUD Modal Dialog -->
-    <div id="crudModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-slate-900 border border-slate-800 rounded-xl max-w-lg w-full p-6 shadow-2xl relative">
-            <div class="flex justify-between items-center pb-4 mb-4 border-b border-slate-800">
-                <h3 id="crudModalTitle" class="text-lg font-bold text-white">Add Industry Sector Record</h3>
-                <button onclick="closeCrudModal()" class="text-slate-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
+    <div id="crudModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white border border-slate-200 rounded-2xl max-w-lg w-full p-6 shadow-2xl relative">
+            <div class="flex justify-between items-center pb-4 mb-4 border-b border-slate-200">
+                <h3 id="crudModalTitle" class="text-lg font-bold text-slate-900">Add Industry Sector Record</h3>
+                <button onclick="closeCrudModal()" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-5 h-5"></i></button>
             </div>
             <form id="crudForm" onsubmit="handleCrudSubmit(event)" class="space-y-4">
                 <input type="hidden" id="crudMode" value="create">
                 <div>
-                    <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">Industry Code</label>
-                    <input type="text" id="crudCode" class="w-full bg-slate-950 border border-slate-800 text-white rounded-lg p-2 text-sm font-mono focus:border-blue-500 focus:outline-none" placeholder="e.g. A" required>
+                    <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Industry Code</label>
+                    <input type="text" id="crudCode" class="w-full bg-slate-50 border border-slate-200 text-slate-900 rounded-lg p-2 text-sm font-mono focus:border-blue-500 focus:outline-none" placeholder="e.g. A" required>
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">Industry Name</label>
-                    <input type="text" id="crudIndustry" class="w-full bg-slate-950 border border-slate-800 text-white rounded-lg p-2 text-sm focus:border-blue-500 focus:outline-none" placeholder="e.g. Agriculture, forestry, and fishing" required>
+                    <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Industry Name</label>
+                    <input type="text" id="crudIndustry" class="w-full bg-slate-50 border border-slate-200 text-slate-900 rounded-lg p-2 text-sm focus:border-blue-500 focus:outline-none" placeholder="e.g. Agriculture, forestry, and fishing" required>
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">Sector Category</label>
-                    <select id="crudCategory" class="w-full bg-slate-950 border border-slate-800 text-white rounded-lg p-2 text-sm focus:border-blue-500 focus:outline-none">
+                    <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Sector Category</label>
+                    <select id="crudCategory" class="w-full bg-slate-50 border border-slate-200 text-slate-900 rounded-lg p-2 text-sm focus:border-blue-500 focus:outline-none">
                         <option value="Agriculture">Agriculture</option>
                         <option value="Industry">Industry</option>
                         <option value="Services">Services</option>
                     </select>
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">2024 GVA (₱'000)</label>
-                    <input type="number" step="any" id="crudVal2024" class="w-full bg-slate-950 border border-slate-800 text-white rounded-lg p-2 text-sm focus:border-blue-500 focus:outline-none" placeholder="18457242">
+                    <label class="block text-xs font-bold text-slate-600 uppercase mb-1">2024 GVA (₱'000)</label>
+                    <input type="number" step="any" id="crudVal2024" class="w-full bg-slate-50 border border-slate-200 text-slate-900 rounded-lg p-2 text-sm focus:border-blue-500 focus:outline-none" placeholder="18457242">
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">2025 GVA (₱'000) (Optional / PSA Update)</label>
-                    <input type="number" step="any" id="crudVal2025" class="w-full bg-slate-950 border border-slate-800 text-white rounded-lg p-2 text-sm focus:border-blue-500 focus:outline-none" placeholder="19500000">
+                    <label class="block text-xs font-bold text-slate-600 uppercase mb-1">2025 GVA (₱'000) (Optional / PSA Update)</label>
+                    <input type="number" step="any" id="crudVal2025" class="w-full bg-slate-50 border border-slate-200 text-slate-900 rounded-lg p-2 text-sm focus:border-blue-500 focus:outline-none" placeholder="19500000">
                 </div>
-                <div class="pt-4 flex justify-end space-x-3 border-t border-slate-800">
-                    <button type="button" onclick="closeCrudModal()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg text-xs font-semibold">Cancel</button>
-                    <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg text-xs font-semibold">Save Record</button>
+                <div class="pt-4 flex justify-end space-x-3 border-t border-slate-200">
+                    <button type="button" onclick="closeCrudModal()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-bold">Cancel</button>
+                    <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-bold shadow-sm">Save Record</button>
                 </div>
             </form>
         </div>
@@ -602,8 +530,9 @@
             document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
             document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
 
-            document.getElementById(tabId).classList.add('active');
-            element.classList.add('active');
+            const target = document.getElementById(tabId);
+            if (target) target.classList.add('active');
+            if (element) element.classList.add('active');
         }
 
         let dbData = null;
@@ -613,7 +542,6 @@
         let overviewGdpChart = null;
         let overviewShareChart = null;
         let forecastChart = null;
-        let lguBarChart = null;
         let matrixAnalyticsChart = null;
 
         function setMatrixSort(metricKey, targetViewKey = null) {
@@ -652,8 +580,8 @@
 
         function showNotification(message, isError = false) {
             const toast = document.getElementById('toastNotification');
-            toast.className = `mb-6 p-4 rounded-xl text-sm font-medium flex items-center justify-between border ${
-                isError ? 'bg-rose-950/80 border-rose-800 text-rose-200' : 'bg-emerald-950/80 border-emerald-800 text-emerald-200'
+            toast.className = `mb-6 p-4 rounded-xl text-sm font-semibold flex items-center justify-between border shadow-sm ${
+                isError ? 'bg-rose-50 border-rose-200 text-rose-800' : 'bg-emerald-50 border-emerald-200 text-emerald-800'
             }`;
             toast.innerHTML = `<span>${message}</span><button onclick="this.parentElement.classList.add('hidden')" class="ml-4 opacity-75 hover:opacity-100">✕</button>`;
             toast.classList.remove('hidden');
@@ -743,7 +671,6 @@
                 renderForecasts(dbData);
                 renderMatrixView(activeMatrixKey);
                 renderIndustryTable(dbData.processed.industry_rows, dbData.processed.years, dbData.processed.latest_year, dbData.processed.prev_year, dbData.selected_year);
-                renderLguChart();
                 updateSimulation();
             } catch (err) {
                 console.error("Failed to load backend dynamic data:", err);
@@ -798,12 +725,12 @@
             const titleEl = document.getElementById('matrixTitle');
             const unitBadge = document.getElementById('matrixUnitBadge');
 
-            let headerHtml = '<tr><th class="p-3">Major Industry / Sector</th>';
+            let headerHtml = '<tr><th class="p-3">Industry / Sector</th>';
             if (key.endsWith('_all')) {
                 headerHtml = '<tr><th class="p-3">Code</th><th class="p-3">Industry Sector</th><th class="p-3">Category</th>';
             }
             years.forEach(y => {
-                headerHtml += `<th class="p-3 text-right cursor-pointer hover:text-blue-400" onclick="setMatrixSort('${getMetricKeyForView(key)}')" title="Sort by ${y}">${y}</th>`;
+                headerHtml += `<th class="p-3 text-right cursor-pointer hover:text-blue-600" onclick="setMatrixSort('${getMetricKeyForView(key)}')" title="Sort by ${y}">${y}</th>`;
             });
             headerHtml += '</tr>';
             thead.innerHTML = headerHtml;
@@ -880,15 +807,15 @@
             else if (key.startsWith('pct_')) metricProp = 'percentage_share';
 
             let datasets = [];
-            const colors = ['#F59E0B', '#A855F7', '#3B82F6', '#10B981', '#EC4899', '#6366F1', '#14B8A6', '#F97316', '#06B6D4', '#84CC16'];
+            const colors = ['#2563EB', '#059669', '#D97706', '#7C3AED', '#DB2777', '#0891B2', '#4F46E5', '#65A30D'];
 
             if (isMajor) {
                 const categories = ['Agriculture Sector', 'Industry Sector', 'Services Sector', 'All Industries (Total GDP)'];
                 const sectorColors = {
-                    'Agriculture Sector': '#F59E0B',
-                    'Industry Sector': '#A855F7',
-                    'Services Sector': '#3B82F6',
-                    'All Industries (Total GDP)': '#10B981'
+                    'Agriculture Sector': '#D97706',
+                    'Industry Sector': '#7C3AED',
+                    'Services Sector': '#2563EB',
+                    'All Industries (Total GDP)': '#059669'
                 };
 
                 datasets = categories.map(cat => {
@@ -897,7 +824,7 @@
                         label: cat,
                         data: vals,
                         borderColor: sectorColors[cat],
-                        backgroundColor: sectorColors[cat] + '33',
+                        backgroundColor: sectorColors[cat] + '20',
                         borderWidth: cat.startsWith('All Industries') ? 3 : 2,
                         tension: 0.3
                     };
@@ -911,10 +838,10 @@
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
-                        plugins: { legend: { labels: { color: '#94A3B8' } } },
+                        plugins: { legend: { labels: { color: '#334155', font: { weight: 'bold' } } } },
                         scales: {
-                            x: { ticks: { color: '#64748B' }, grid: { color: '#1E293B' } },
-                            y: { ticks: { color: '#64748B' }, grid: { color: '#1E293B' } }
+                            x: { ticks: { color: '#64748B' }, grid: { color: '#E2E8F0' } },
+                            y: { ticks: { color: '#64748B' }, grid: { color: '#E2E8F0' } }
                         }
                     }
                 });
@@ -939,10 +866,10 @@
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
-                        plugins: { legend: { position: 'bottom', labels: { color: '#94A3B8', font: { size: 10 } } } },
+                        plugins: { legend: { position: 'bottom', labels: { color: '#334155', font: { size: 11, weight: 'bold' } } } },
                         scales: {
-                            x: { ticks: { color: '#64748B' }, grid: { color: '#1E293B' } },
-                            y: { ticks: { color: '#64748B' }, grid: { color: '#1E293B' } }
+                            x: { ticks: { color: '#64748B' }, grid: { color: '#E2E8F0' } },
+                            y: { ticks: { color: '#64748B' }, grid: { color: '#E2E8F0' } }
                         }
                     }
                 });
@@ -953,12 +880,12 @@
             const categories = ['Agriculture Sector', 'Industry Sector', 'Services Sector', 'All Industries (Total GDP)'];
             return categories.map(cat => {
                 const isTotal = cat.startsWith('All Industries');
-                let html = `<tr class="hover:bg-slate-800/50 transition ${isTotal ? 'bg-slate-900/80 font-bold border-t border-b border-slate-700' : ''}"><td class="p-3 font-semibold text-white">${cat}</td>`;
+                let html = `<tr class="hover:bg-slate-50 transition ${isTotal ? 'bg-blue-50/80 font-extrabold border-t-2 border-b-2 border-blue-200 text-slate-900' : ''}"><td class="p-3 font-semibold text-slate-900">${cat}</td>`;
                 years.forEach(y => {
                     const val = majorData[cat] && majorData[cat][metricKey] ? majorData[cat][metricKey][y] : null;
                     const formatted = formatValOrDash(val, isPct);
                     const isNeg = val !== null && val < 0;
-                    html += `<td class="p-3 text-right font-mono ${isNeg ? 'text-rose-400' : 'text-emerald-400'}">${formatted}</td>`;
+                    html += `<td class="p-3 text-right font-mono font-bold ${isNeg ? 'text-rose-600' : 'text-emerald-700'}">${formatted}</td>`;
                 });
                 html += '</tr>';
                 return html;
@@ -981,29 +908,29 @@
             return codes.map((code, index) => {
                 const item = allData[code];
                 let categoryBadge = '';
-                if (item.category === 'Agriculture') categoryBadge = '<span class="text-amber-400 font-semibold">Agriculture</span>';
-                else if (item.category === 'Industry') categoryBadge = '<span class="text-purple-400 font-semibold">Industry</span>';
-                else categoryBadge = '<span class="text-blue-400 font-semibold">Services</span>';
+                if (item.category === 'Agriculture') categoryBadge = '<span class="text-amber-700 font-bold">Agriculture</span>';
+                else if (item.category === 'Industry') categoryBadge = '<span class="text-purple-700 font-bold">Industry</span>';
+                else categoryBadge = '<span class="text-blue-700 font-bold">Services</span>';
 
                 let rankBadge = '';
                 if (currentSortMetric || metricKey) {
                     const rankNum = index + 1;
-                    if (rankNum === 1) rankBadge = '<span class="ml-2 px-1.5 py-0.5 bg-amber-500/20 text-amber-300 border border-amber-500/30 rounded text-[10px] font-bold">#1 Top</span>';
-                    else if (rankNum === 2) rankBadge = '<span class="ml-2 px-1.5 py-0.5 bg-slate-400/20 text-slate-200 border border-slate-400/30 rounded text-[10px] font-bold">#2</span>';
-                    else if (rankNum === 3) rankBadge = '<span class="ml-2 px-1.5 py-0.5 bg-amber-700/20 text-amber-400 border border-amber-700/30 rounded text-[10px] font-bold">#3</span>';
+                    if (rankNum === 1) rankBadge = '<span class="ml-2 px-1.5 py-0.5 bg-amber-100 text-amber-800 border border-amber-300 rounded text-[10px] font-bold">#1 Top</span>';
+                    else if (rankNum === 2) rankBadge = '<span class="ml-2 px-1.5 py-0.5 bg-slate-100 text-slate-800 border border-slate-300 rounded text-[10px] font-bold">#2</span>';
+                    else if (rankNum === 3) rankBadge = '<span class="ml-2 px-1.5 py-0.5 bg-amber-50 text-amber-900 border border-amber-200 rounded text-[10px] font-bold">#3</span>';
                 }
 
                 let html = `
-                    <tr class="hover:bg-slate-800/50 transition">
-                        <td class="p-3 font-mono text-xs text-slate-400">${code}</td>
-                        <td class="p-3 font-medium text-white flex items-center">${item.industry}${rankBadge}</td>
+                    <tr class="hover:bg-slate-50 transition">
+                        <td class="p-3 font-mono text-xs text-slate-500 font-semibold">${code}</td>
+                        <td class="p-3 font-semibold text-slate-900 flex items-center">${item.industry}${rankBadge}</td>
                         <td class="p-3">${categoryBadge}</td>
                 `;
                 years.forEach(y => {
                     const val = item[metricKey] ? item[metricKey][y] : null;
                     const formatted = formatValOrDash(val, isPct);
                     const isNeg = val !== null && val < 0;
-                    html += `<td class="p-3 text-right font-mono ${isNeg ? 'text-rose-400' : 'text-emerald-400'}">${formatted}</td>`;
+                    html += `<td class="p-3 text-right font-mono font-bold ${isNeg ? 'text-rose-600' : 'text-emerald-700'}">${formatted}</td>`;
                 });
                 html += '</tr>';
                 return html;
@@ -1033,36 +960,24 @@
             const indGrowth = (sec.Industry[prevY] && activeY !== prevY) ? (((sec.Industry[activeY] - sec.Industry[prevY]) / sec.Industry[prevY]) * 100) : 0;
             const agriGrowth = (sec.Agriculture[prevY] && activeY !== prevY) ? (((sec.Agriculture[activeY] - sec.Agriculture[prevY]) / sec.Agriculture[prevY]) * 100) : 0;
 
-            document.getElementById('labelLatestYearGdp').innerText = `${activeY} GROSS DOMESTIC PRODUCT (GDP)`;
+            document.getElementById('labelLatestYearGdp').innerText = `LATEST GDP (${activeY})`;
             document.getElementById('titleGdpTrajectory').innerText = selectedY ? `Gross Domestic Product Growth Trajectory (up to ${activeY})` : `Gross Domestic Product Growth Trajectory (2018–${proc.latest_year})`;
             document.getElementById('titleSectorDistribution').innerText = `${activeY} Sectoral Distribution`;
             document.getElementById('labelBaselineGdpCard').innerText = `Baseline ${activeY} GDP`;
 
             document.getElementById('cardTotalGdp').innerText = formatCurrencyBillion(totalLatest);
-            document.getElementById('cardTotalGrowth').innerHTML = `<i data-lucide="${growthLatest >= 0 ? 'arrow-up-right' : 'arrow-down-right'}" class="w-4 h-4 mr-1"></i> ${growthLatest >= 0 ? '+' : ''}${growthLatest.toFixed(2)}% ${activeY !== prevY ? 'from ' + prevY : ''}`;
+            document.getElementById('cardTotalGrowth').innerHTML = `<i data-lucide="${growthLatest >= 0 ? 'arrow-up-right' : 'arrow-down-right'}" class="w-4 h-4 mr-1"></i> ${growthLatest >= 0 ? '+' : ''}${growthLatest.toFixed(2)}% ${activeY !== prevY ? 'vs. ' + prevY : ''}`;
 
             document.getElementById('cardServicesShare').innerText = totalLatest ? ((servLatest / totalLatest) * 100).toFixed(2) + '%' : '0%';
-            document.getElementById('cardServicesTotal').innerText = formatCurrencyBillion(servLatest) + ' GVA';
-
-            document.getElementById('cardIndustryTotal').innerText = formatCurrencyBillion(indLatest);
-            document.getElementById('cardIndustryGrowth').innerHTML = `<i data-lucide="${indGrowth >= 0 ? 'arrow-up-right' : 'arrow-down-right'}" class="w-4 h-4 mr-1"></i> ${indGrowth >= 0 ? '+' : ''}${indGrowth.toFixed(2)}% growth`;
-
-            document.getElementById('cardAgriTotal').innerText = formatCurrencyBillion(agriLatest);
-            document.getElementById('cardAgriGrowth').innerHTML = `<i data-lucide="${agriGrowth >= 0 ? 'arrow-up-right' : 'arrow-down-right'}" class="w-4 h-4 mr-1"></i> ${agriGrowth >= 0 ? '+' : ''}${agriGrowth.toFixed(2)}% ${activeY !== prevY ? 'from ' + prevY : ''}`;
+            document.getElementById('cardServicesTotal').innerText = `${activeY} GDP share`;
 
             // Render Province / HUC Results Callout Indicators
             if (proc.province_results) {
                 const pr = proc.province_results;
                 document.getElementById('hucGdpGrowth2025').innerText = `${pr.gdp_growth_2025 >= 0 ? '+' : ''}${pr.gdp_growth_2025.toFixed(2)}%`;
-                document.getElementById('hucGdpGrowth20182025').innerText = `${pr.gdp_growth_2018_2025 >= 0 ? '+' : ''}${pr.gdp_growth_2018_2025.toFixed(2)}%`;
                 document.getElementById('hucPerCapitaGdp').innerText = `₱${formatNumber(pr.per_capita_gdp_2025)}`;
 
-                const mg = pr.major_growth_2025 || {};
                 const mc = pr.major_contrib_2025 || {};
-
-                document.getElementById('hucGrowthServices').innerText = `${mg.Services >= 0 ? '+' : ''}${mg.Services.toFixed(2)}%`;
-                document.getElementById('hucGrowthIndustry').innerText = `${mg.Industry >= 0 ? '+' : ''}${mg.Industry.toFixed(2)}%`;
-                document.getElementById('hucGrowthAgri').innerText = `${mg.Agriculture >= 0 ? '+' : ''}${mg.Agriculture.toFixed(2)}%`;
 
                 document.getElementById('hucContribServices').innerText = `${mc.Services >= 0 ? '+' : ''}${mc.Services.toFixed(2)} pp`;
                 document.getElementById('hucContribIndustry').innerText = `${mc.Industry >= 0 ? '+' : ''}${mc.Industry.toFixed(2)} pp`;
@@ -1073,8 +988,8 @@
                 if (pr.top_3_contribution && pr.top_3_contribution.length > 0) {
                     top3ContribOl.innerHTML = pr.top_3_contribution.map(item => `
                         <li class="truncate" title="${item.industry}">
-                            <span class="font-medium text-white">${item.industry.length > 28 ? item.industry.substring(0, 28) + '...' : item.industry}</span>
-                            <span class="font-mono ${item.contribution_to_growth >= 0 ? 'text-emerald-400' : 'text-rose-400'} float-right">${item.contribution_to_growth >= 0 ? '+' : ''}${item.contribution_to_growth.toFixed(2)} pp</span>
+                            <span class="font-semibold text-slate-800">${item.industry.length > 28 ? item.industry.substring(0, 28) + '...' : item.industry}</span>
+                            <span class="font-mono ${item.contribution_to_growth >= 0 ? 'text-emerald-700' : 'text-rose-600'} font-bold float-right">${item.contribution_to_growth >= 0 ? '+' : ''}${item.contribution_to_growth.toFixed(2)} pp</span>
                         </li>
                     `).join('');
                 }
@@ -1084,8 +999,8 @@
                 if (pr.top_3_fastest_growing && pr.top_3_fastest_growing.length > 0) {
                     top3FastestOl.innerHTML = pr.top_3_fastest_growing.map(item => `
                         <li class="truncate" title="${item.industry}">
-                            <span class="font-medium text-white">${item.industry.length > 28 ? item.industry.substring(0, 28) + '...' : item.industry}</span>
-                            <span class="font-mono ${item.growth_rate >= 0 ? 'text-emerald-400' : 'text-rose-400'} float-right">${item.growth_rate >= 0 ? '+' : ''}${item.growth_rate.toFixed(2)}%</span>
+                            <span class="font-semibold text-slate-800">${item.industry.length > 28 ? item.industry.substring(0, 28) + '...' : item.industry}</span>
+                            <span class="font-mono ${item.growth_rate >= 0 ? 'text-emerald-700' : 'text-rose-600'} font-bold float-right">${item.growth_rate >= 0 ? '+' : ''}${item.growth_rate.toFixed(2)}%</span>
                         </li>
                     `).join('');
                 }
@@ -1105,21 +1020,21 @@
                     datasets: [{
                         label: 'Gross Domestic Product (in Billions PHP)',
                         data: totalGdpData,
-                        borderColor: '#3B82F6',
-                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        borderColor: '#2563EB',
+                        backgroundColor: 'rgba(37, 99, 235, 0.08)',
                         fill: true,
                         tension: 0.3,
                         borderWidth: 3,
-                        pointBackgroundColor: '#60A5FA'
+                        pointBackgroundColor: '#1D4ED8'
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: { legend: { labels: { color: '#94A3B8' } } },
+                    plugins: { legend: { labels: { color: '#334155', font: { weight: 'bold' } } } },
                     scales: {
-                        x: { ticks: { color: '#64748B' }, grid: { color: '#1E293B' } },
-                        y: { ticks: { color: '#64748B' }, grid: { color: '#1E293B' } }
+                        x: { ticks: { color: '#64748B' }, grid: { color: '#E2E8F0' } },
+                        y: { ticks: { color: '#64748B' }, grid: { color: '#E2E8F0' } }
                     }
                 }
             });
@@ -1132,14 +1047,14 @@
                     labels: ['Services', 'Industry', 'Agriculture'],
                     datasets: [{
                         data: [servLatest, indLatest, agriLatest],
-                        backgroundColor: ['#3B82F6', '#A855F7', '#F59E0B'],
+                        backgroundColor: ['#2563EB', '#7C3AED', '#D97706'],
                         borderWidth: 0
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: { legend: { position: 'bottom', labels: { color: '#94A3B8' } } }
+                    plugins: { legend: { position: 'bottom', labels: { color: '#334155', font: { weight: 'bold' } } } }
                 }
             });
         }
@@ -1166,21 +1081,21 @@
                     datasets: [{
                         label: 'Projected GDP Trajectory (Billions PHP)',
                         data: values,
-                        borderColor: '#10B981',
+                        borderColor: '#059669',
                         borderDash: [5, 5],
-                        backgroundColor: 'rgba(16, 185, 129, 0.05)',
+                        backgroundColor: 'rgba(5, 150, 105, 0.08)',
                         fill: true,
                         tension: 0.3,
-                        pointBackgroundColor: '#34D399'
+                        pointBackgroundColor: '#047857'
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: { legend: { labels: { color: '#94A3B8' } } },
+                    plugins: { legend: { labels: { color: '#334155', font: { weight: 'bold' } } } },
                     scales: {
-                        x: { ticks: { color: '#64748B' }, grid: { color: '#1E293B' } },
-                        y: { ticks: { color: '#64748B' }, grid: { color: '#1E293B' } }
+                        x: { ticks: { color: '#64748B' }, grid: { color: '#E2E8F0' } },
+                        y: { ticks: { color: '#64748B' }, grid: { color: '#E2E8F0' } }
                     }
                 }
             });
@@ -1220,32 +1135,32 @@
                 const isPositive = growth >= 0;
 
                 const tr = document.createElement('tr');
-                tr.className = 'hover:bg-slate-800/50 transition';
+                tr.className = 'hover:bg-slate-50 transition';
 
                 let categoryBadge = '';
-                if (row.category === 'Agriculture') categoryBadge = '<span class="text-amber-400 font-semibold">Agriculture</span>';
-                else if (row.category === 'Industry') categoryBadge = '<span class="text-purple-400 font-semibold">Industry</span>';
-                else categoryBadge = '<span class="text-blue-400 font-semibold">Services</span>';
+                if (row.category === 'Agriculture') categoryBadge = '<span class="text-amber-700 font-bold">Agriculture</span>';
+                else if (row.category === 'Industry') categoryBadge = '<span class="text-purple-700 font-bold">Industry</span>';
+                else categoryBadge = '<span class="text-blue-700 font-bold">Services</span>';
 
                 let rowHtml = `
-                    <td class="p-3 font-mono text-xs text-slate-400">${row.code}</td>
-                    <td class="p-3 font-medium text-white">${row.industry}</td>
+                    <td class="p-3 font-mono text-xs text-slate-500 font-semibold">${row.code}</td>
+                    <td class="p-3 font-semibold text-slate-900">${row.industry}</td>
                     <td class="p-3">${categoryBadge}</td>
                 `;
 
                 displayYears.forEach(y => {
                     const isLatest = y === activeYear;
-                    rowHtml += `<td class="p-3 text-right ${isLatest ? 'font-semibold text-white' : ''}">${formatNumber(row[y])}</td>`;
+                    rowHtml += `<td class="p-3 text-right font-mono ${isLatest ? 'font-bold text-slate-900' : 'text-slate-700'}">${formatNumber(row[y])}</td>`;
                 });
 
                 rowHtml += `
-                    <td class="p-3 text-right ${isPositive ? 'text-emerald-400' : 'text-rose-400'} font-semibold">
+                    <td class="p-3 text-right ${isPositive ? 'text-emerald-700' : 'text-rose-600'} font-bold font-mono">
                         ${(activeYear !== activePrevYear) ? (isPositive ? '+' : '') + growth.toFixed(2) + '%' : '-'}
                     </td>
                     <td class="p-3 text-center">
                         <div class="flex items-center justify-center space-x-2">
-                            <button onclick="editSector('${row.code}')" class="p-1.5 text-blue-400 hover:text-white hover:bg-slate-800 rounded transition" title="Edit Sector"><i data-lucide="edit-3" class="w-4 h-4"></i></button>
-                            <button onclick="deleteSector('${row.code}')" class="p-1.5 text-rose-400 hover:text-white hover:bg-slate-800 rounded transition" title="Delete Sector"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                            <button onclick="editSector('${row.code}')" class="p-1.5 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded transition" title="Edit Sector"><i data-lucide="edit-3" class="w-4 h-4"></i></button>
+                            <button onclick="deleteSector('${row.code}')" class="p-1.5 text-rose-600 hover:text-rose-800 hover:bg-rose-50 rounded transition" title="Delete Sector"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
                         </div>
                     </td>
                 `;
@@ -1350,32 +1265,6 @@
             }
         }
 
-        function renderLguChart() {
-            const ctxLgu = document.getElementById('lguBarChart').getContext('2d');
-            if (lguBarChart) lguBarChart.destroy();
-            lguBarChart = new Chart(ctxLgu, {
-                type: 'bar',
-                data: {
-                    labels: ['Dipolog City', 'Dapitan City', 'Sindangan', 'Liloy', 'Labason', 'Siocon'],
-                    datasets: [{
-                        label: 'Economic Share Output Weight (Index)',
-                        data: [85, 62, 58, 44, 38, 42],
-                        backgroundColor: '#3B82F6',
-                        borderRadius: 6
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: {
-                        x: { ticks: { color: '#64748B' }, grid: { display: false } },
-                        y: { ticks: { color: '#64748B' }, grid: { color: '#1E293B' } }
-                    }
-                }
-            });
-        }
-
         function updateSimulation(isManualRun = false) {
             const agri = parseFloat(document.getElementById('agriSlider').value);
             const ind = parseFloat(document.getElementById('indSlider').value);
@@ -1410,7 +1299,7 @@
             document.getElementById('simulatedGdp').innerText = '₱' + simGdp.toFixed(2) + ' Billion';
 
             const recEl = document.getElementById('aiRecommendationText');
-            recEl.innerText = `Policy Scenario Active: Target stimulus (+${agri}% Agri, +${ind}% Industry, +${serv}% Services) projects an overall GDP growth of +${pctGain.toFixed(2)}% (+₱${netGain.toFixed(2)}B net expansion). Strategic investment in high-yield services and agro-processing hubs yields the maximum return on public capital across Dipolog, Dapitan, and Sindangan.`;
+            recEl.innerText = `Policy Scenario Active: Target stimulus (+${agri}% Agri, +${ind}% Industry, +${serv}% Services) projects an overall GDP growth of +${pctGain.toFixed(2)}% (+₱${netGain.toFixed(2)}B net expansion). Strategic investment in high-yield services and agro-processing hubs yields the maximum return on public capital across Zamboanga del Norte.`;
 
             if (isManualRun) {
                 showNotification(`Policy Simulation executed! Projected GDP target: ₱${simGdp.toFixed(2)}B (+₱${netGain.toFixed(2)}B net growth).`);
