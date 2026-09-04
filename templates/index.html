@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Zamboanga Del Norte Economic Intelligence Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class'
+        }
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
@@ -28,10 +33,10 @@
         }
     </style>
 </head>
-<body class="bg-slate-100 text-slate-800 font-sans antialiased flex flex-col h-screen overflow-hidden">
+<body class="bg-slate-100 dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-sans antialiased flex flex-col h-screen overflow-hidden transition-colors duration-200">
 
     <!-- Top Navigation Header -->
-    <header class="bg-white border-b border-slate-200 shrink-0 shadow-sm">
+    <header class="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 shrink-0 shadow-sm">
         <div class="px-6 py-3.5 flex flex-wrap items-center justify-between gap-4">
             <!-- Brand Logo & Title -->
             <div class="flex items-center space-x-3 shrink-0">
@@ -39,45 +44,49 @@
                     <i data-lucide="cpu" class="w-5 h-5"></i>
                 </div>
                 <div>
-                    <h1 class="text-base font-bold leading-tight text-slate-900">Zamboanga Del Norte</h1>
-                    <p class="text-xs text-blue-600 font-semibold">Provincial Product Accounts & AI Platform</p>
+                    <h1 class="text-base font-bold leading-tight text-slate-900 dark:text-slate-100">Zamboanga Del Norte</h1>
+                    <p class="text-xs text-blue-600 dark:text-blue-400 font-semibold">Provincial Product Accounts & AI Platform</p>
                 </div>
             </div>
 
             <!-- Top Navigation Horizontal Tabs -->
             <nav class="flex items-center space-x-1.5 overflow-x-auto py-1">
-                <button onclick="switchTab('overview', this)" class="nav-link active flex items-center space-x-2 px-4 py-2 text-xs font-semibold rounded-lg bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 transition-all">
+                <button onclick="switchTab('overview', this)" class="nav-link active flex items-center space-x-2 px-4 py-2 text-xs font-semibold rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition-all">
                     <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
                     <span>Executive Overview</span>
                 </button>
-                <button onclick="switchTab('forecasts', this)" class="nav-link flex items-center space-x-2 px-4 py-2 text-xs font-semibold rounded-lg bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 transition-all">
+                <button onclick="switchTab('forecasts', this)" class="nav-link flex items-center space-x-2 px-4 py-2 text-xs font-semibold rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition-all">
                     <i data-lucide="trending-up" class="w-4 h-4"></i>
                     <span>2026–2030 Forecasts</span>
                 </button>
-                <button onclick="switchTab('sectors', this)" class="nav-link flex items-center space-x-2 px-4 py-2 text-xs font-semibold rounded-lg bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 transition-all">
+                <button onclick="switchTab('sectors', this)" class="nav-link flex items-center space-x-2 px-4 py-2 text-xs font-semibold rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition-all">
                     <i data-lucide="factory" class="w-4 h-4"></i>
                     <span>Industry Sectors & Analytics</span>
                 </button>
-                <button onclick="switchTab('simulator', this)" class="nav-link flex items-center space-x-2 px-4 py-2 text-xs font-semibold rounded-lg bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 transition-all">
+                <button onclick="switchTab('simulator', this)" class="nav-link flex items-center space-x-2 px-4 py-2 text-xs font-semibold rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition-all">
                     <i data-lucide="bot" class="w-4 h-4"></i>
                     <span>AI Insights & Simulator</span>
                 </button>
             </nav>
 
-            <!-- Status Badge & Indicator -->
-            <div class="hidden lg:flex items-center space-x-3 text-xs text-slate-500 shrink-0">
-                <span class="flex items-center px-3 py-1 bg-slate-50 border border-slate-200 rounded-lg text-slate-700 font-medium">
+            <!-- Status Badge, Day/Night Toggle & Indicator -->
+            <div class="flex items-center space-x-3 text-xs shrink-0">
+                <button id="themeToggleBtn" onclick="toggleTheme()" class="flex items-center space-x-1.5 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 border border-slate-200 dark:border-slate-600 rounded-lg text-xs font-semibold text-slate-700 dark:text-slate-200 transition shadow-sm" title="Toggle Light / Dark Mode">
+                    <i id="themeToggleIcon" data-lucide="moon" class="w-4 h-4 text-slate-600 dark:text-amber-400"></i>
+                    <span id="themeToggleText">Dark Mode</span>
+                </button>
+                <span class="hidden lg:flex items-center px-3 py-1 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-700 dark:text-slate-300 font-medium">
                     <span class="w-2 h-2 rounded-full bg-emerald-500 inline-block mr-2"></span> AI Engine Active
                 </span>
-                <span class="text-slate-400 font-mono font-medium">v2.4 Pro</span>
+                <span class="hidden lg:inline text-slate-400 dark:text-slate-500 font-mono font-medium">v2.4 Pro</span>
             </div>
         </div>
     </header>
 
-    <main class="flex-1 overflow-y-auto bg-slate-100 p-6 md:p-8">
+    <main class="flex-1 overflow-y-auto bg-slate-100 dark:bg-slate-900 p-6 md:p-8">
 
         <!-- Top Blue Header Banner Card (As in reference image) -->
-        <div class="bg-blue-600 rounded-2xl p-6 text-white shadow-md mb-6 relative overflow-hidden">
+        <div class="bg-blue-600 dark:bg-blue-700 rounded-2xl p-6 text-white shadow-md mb-6 relative overflow-hidden">
             <div class="relative z-10">
                 <h2 class="text-2xl md:text-3xl font-extrabold tracking-tight">Zamboanga del Norte — Provincial Product Accounts</h2>
                 <p class="text-sm text-blue-100 mt-1 font-medium">Gross Domestic Product by Industry • Annual 2018–2025</p>
@@ -86,16 +95,16 @@
         </div>
 
         <!-- Toolbar & Filters -->
-        <div class="flex flex-col md:flex-row md:items-center justify-between pb-6 mb-6 border-b border-slate-200 gap-4">
+        <div class="flex flex-col md:flex-row md:items-center justify-between pb-6 mb-6 border-b border-slate-200 dark:border-slate-800 gap-4">
             <div>
-                <h3 class="text-lg font-bold text-slate-900">Economic Control Panel</h3>
-                <p class="text-xs text-slate-500">Filter parameters, trigger predictions, or manage sector dataset records</p>
+                <h3 class="text-lg font-bold text-slate-900 dark:text-slate-100">Economic Control Panel</h3>
+                <p class="text-xs text-slate-500 dark:text-slate-400">Filter parameters, trigger predictions, or manage sector dataset records</p>
             </div>
             <div class="flex flex-wrap items-center gap-2">
-                <div class="flex items-center space-x-2 bg-white border border-slate-200 px-3 py-1.5 rounded-lg text-xs shadow-sm">
-                    <i data-lucide="filter" class="w-4 h-4 text-blue-600"></i>
-                    <span class="text-slate-600 font-semibold">Year Filter:</span>
-                    <select id="globalYearFilter" class="bg-slate-50 text-slate-900 font-bold focus:outline-none cursor-pointer border border-slate-200 rounded px-2 py-0.5" onchange="onYearFilterChange()">
+                <div class="flex items-center space-x-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-1.5 rounded-lg text-xs shadow-sm">
+                    <i data-lucide="filter" class="w-4 h-4 text-blue-600 dark:text-blue-400"></i>
+                    <span class="text-slate-600 dark:text-slate-300 font-semibold">Year Filter:</span>
+                    <select id="globalYearFilter" class="bg-slate-50 dark:bg-slate-700 text-slate-900 dark:text-slate-100 font-bold focus:outline-none cursor-pointer border border-slate-200 dark:border-slate-600 rounded px-2 py-0.5" onchange="onYearFilterChange()">
                         <option value="all">All Years</option>
                     </select>
                 </div>
@@ -115,11 +124,11 @@
                     <i data-lucide="upload" class="w-4 h-4"></i>
                     <span>Import CSV</span>
                 </button>
-                <button onclick="exportData('csv')" class="px-3.5 py-1.5 bg-white hover:bg-slate-50 border border-slate-300 text-slate-700 rounded-lg text-xs font-semibold flex items-center space-x-1.5 shadow-sm transition">
+                <button onclick="exportData('csv')" class="px-3.5 py-1.5 bg-white hover:bg-slate-50 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-200 rounded-lg text-xs font-semibold flex items-center space-x-1.5 shadow-sm transition">
                     <i data-lucide="download" class="w-4 h-4"></i>
                     <span>Export CSV</span>
                 </button>
-                <span id="dataStatusBadge" class="px-3 py-1.5 bg-emerald-50 border border-emerald-200 text-emerald-700 rounded-full text-xs font-semibold flex items-center shadow-sm">
+                <span id="dataStatusBadge" class="px-3 py-1.5 bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300 rounded-full text-xs font-semibold flex items-center shadow-sm">
                     <span class="w-2 h-2 rounded-full bg-emerald-500 mr-1.5"></span> Database Live
                 </span>
                 <input type="file" id="csvFileInput" accept=".csv" class="hidden" onchange="handleFileUpload(event)">
@@ -133,86 +142,86 @@
 
             <!-- Key Metric Quick Cards (Matching Reference Layout) -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
-                <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
+                <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-5 shadow-sm">
                     <div class="flex justify-between items-start">
-                        <span id="labelLatestYearGdp" class="text-xs font-bold text-slate-500 uppercase tracking-wider">Latest GDP (2025)</span>
-                        <div class="p-2 bg-blue-50 text-blue-600 rounded-lg"><i data-lucide="coins" class="w-5 h-5"></i></div>
+                        <span id="labelLatestYearGdp" class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Latest GDP (2025)</span>
+                        <div class="p-2 bg-blue-50 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 rounded-lg"><i data-lucide="coins" class="w-5 h-5"></i></div>
                     </div>
                     <div class="mt-3">
-                        <h3 id="cardTotalGdp" class="text-3xl font-extrabold text-slate-900 tracking-tight">₱130,261,223B</h3>
-                        <p id="cardTotalGrowth" class="text-xs text-emerald-600 mt-1 flex items-center font-bold">
+                        <h3 id="cardTotalGdp" class="text-3xl font-extrabold text-slate-900 dark:text-slate-100 tracking-tight">₱130,261,223B</h3>
+                        <p id="cardTotalGrowth" class="text-xs text-emerald-600 dark:text-emerald-400 mt-1 flex items-center font-bold">
                             <i data-lucide="arrow-up-right" class="w-4 h-4 mr-1"></i> +4.10% vs. 2024
                         </p>
                     </div>
                 </div>
 
-                <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
+                <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-5 shadow-sm">
                     <div class="flex justify-between items-start">
-                        <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">GDP Growth (2025)</span>
-                        <div class="p-2 bg-emerald-50 text-emerald-600 rounded-lg"><i data-lucide="trending-up" class="w-5 h-5"></i></div>
+                        <span class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">GDP Growth (2025)</span>
+                        <div class="p-2 bg-emerald-50 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400 rounded-lg"><i data-lucide="trending-up" class="w-5 h-5"></i></div>
                     </div>
                     <div class="mt-3">
-                        <h3 id="hucGdpGrowth2025" class="text-3xl font-extrabold text-emerald-600 tracking-tight">4.10%</h3>
-                        <p class="text-xs text-slate-500 mt-1 font-medium">Year-on-year expansion</p>
+                        <h3 id="hucGdpGrowth2025" class="text-3xl font-extrabold text-emerald-600 dark:text-emerald-400 tracking-tight">4.10%</h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 font-medium">Year-on-year expansion</p>
                     </div>
                 </div>
 
-                <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
+                <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-5 shadow-sm">
                     <div class="flex justify-between items-start">
-                        <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Per Capita GDP (2025)</span>
-                        <div class="p-2 bg-purple-50 text-purple-600 rounded-lg"><i data-lucide="user-check" class="w-5 h-5"></i></div>
+                        <span class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Per Capita GDP (2025)</span>
+                        <div class="p-2 bg-purple-50 dark:bg-purple-900/40 text-purple-600 dark:text-purple-400 rounded-lg"><i data-lucide="user-check" class="w-5 h-5"></i></div>
                     </div>
                     <div class="mt-3">
-                        <h3 id="hucPerCapitaGdp" class="text-3xl font-extrabold text-slate-900 tracking-tight">₱120,709</h3>
-                        <p class="text-xs text-slate-500 mt-1 font-medium">Constant 2018 prices</p>
+                        <h3 id="hucPerCapitaGdp" class="text-3xl font-extrabold text-slate-900 dark:text-slate-100 tracking-tight">₱120,709</h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 font-medium">Constant 2018 prices</p>
                     </div>
                 </div>
 
-                <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
+                <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-5 shadow-sm">
                     <div class="flex justify-between items-start">
-                        <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Services Share</span>
-                        <div class="p-2 bg-amber-50 text-amber-600 rounded-lg"><i data-lucide="shopping-bag" class="w-5 h-5"></i></div>
+                        <span class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Services Share</span>
+                        <div class="p-2 bg-amber-50 dark:bg-amber-900/40 text-amber-600 dark:text-amber-400 rounded-lg"><i data-lucide="shopping-bag" class="w-5 h-5"></i></div>
                     </div>
                     <div class="mt-3">
-                        <h3 id="cardServicesShare" class="text-3xl font-extrabold text-slate-900 tracking-tight">52.91%</h3>
-                        <p id="cardServicesTotal" class="text-xs text-slate-500 mt-1 font-medium">2025 GDP share</p>
+                        <h3 id="cardServicesShare" class="text-3xl font-extrabold text-slate-900 dark:text-slate-100 tracking-tight">52.91%</h3>
+                        <p id="cardServicesTotal" class="text-xs text-slate-500 dark:text-slate-400 mt-1 font-medium">2025 GDP share</p>
                     </div>
                 </div>
             </div>
 
             <!-- PSA Province Summary Detailed Indicators Box -->
-            <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
-                <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-200">
+            <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-6 shadow-sm">
+                <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-200 dark:border-slate-700">
                     <div class="flex items-center space-x-2.5">
-                        <div class="p-2 bg-blue-100 text-blue-700 rounded-lg"><i data-lucide="award" class="w-5 h-5"></i></div>
+                        <div class="p-2 bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 rounded-lg"><i data-lucide="award" class="w-5 h-5"></i></div>
                         <div>
-                            <h3 class="text-base font-bold text-slate-900">PPA Summary</h3>
-                            <p class="text-xs text-slate-500">Major categories and total GDP performance indicators</p>
+                            <h3 class="text-base font-bold text-slate-900 dark:text-slate-100">PPA Summary</h3>
+                            <p class="text-xs text-slate-500 dark:text-slate-400">Major categories and total GDP performance indicators</p>
                         </div>
                     </div>
-                    <span id="provinceResultsBadge" class="px-3 py-1 bg-blue-50 border border-blue-200 text-blue-700 rounded-full text-xs font-bold">2025 Official Results</span>
+                    <span id="provinceResultsBadge" class="px-3 py-1 bg-blue-50 dark:bg-blue-900/40 border border-blue-200 dark:border-blue-700 text-blue-700 dark:text-blue-300 rounded-full text-xs font-bold">2025 Official Results</span>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-5 pt-2">
-                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
-                        <span class="text-xs font-bold text-blue-700 uppercase tracking-wider block mb-2">Major Sector Contributions (pp)</span>
+                    <div class="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl border border-slate-200 dark:border-slate-700">
+                        <span class="text-xs font-bold text-blue-700 dark:text-blue-400 uppercase tracking-wider block mb-2">Major Sector Contributions (pp)</span>
                         <div class="space-y-1.5 text-xs">
-                            <div class="flex justify-between"><span class="text-slate-600 font-medium">Services Sector:</span> <span id="hucContribServices" class="font-mono text-emerald-700 font-bold">+5.14 pp</span></div>
-                            <div class="flex justify-between"><span class="text-slate-600 font-medium">Industry Sector:</span> <span id="hucContribIndustry" class="font-mono text-rose-600 font-bold">-0.73 pp</span></div>
-                            <div class="flex justify-between"><span class="text-slate-600 font-medium">Agriculture Sector:</span> <span id="hucContribAgri" class="font-mono text-rose-600 font-bold">-0.30 pp</span></div>
+                            <div class="flex justify-between"><span class="text-slate-600 dark:text-slate-400 font-medium">Services Sector:</span> <span id="hucContribServices" class="font-mono text-emerald-700 dark:text-emerald-400 font-bold">+5.14 pp</span></div>
+                            <div class="flex justify-between"><span class="text-slate-600 dark:text-slate-400 font-medium">Industry Sector:</span> <span id="hucContribIndustry" class="font-mono text-rose-600 dark:text-rose-400 font-bold">-0.73 pp</span></div>
+                            <div class="flex justify-between"><span class="text-slate-600 dark:text-slate-400 font-medium">Agriculture Sector:</span> <span id="hucContribAgri" class="font-mono text-rose-600 dark:text-rose-400 font-bold">-0.30 pp</span></div>
                         </div>
                     </div>
 
-                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
-                        <span class="text-xs font-bold text-amber-700 uppercase tracking-wider block mb-2">Top 3 Contributors to Growth</span>
-                        <ol id="hucTop3Contrib" class="space-y-1.5 text-xs text-slate-700 list-decimal list-inside">
+                    <div class="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl border border-slate-200 dark:border-slate-700">
+                        <span class="text-xs font-bold text-amber-700 dark:text-amber-400 uppercase tracking-wider block mb-2">Top 3 Contributors to Growth</span>
+                        <ol id="hucTop3Contrib" class="space-y-1.5 text-xs text-slate-700 dark:text-slate-300 list-decimal list-inside">
                             <!-- Dynamic items -->
                         </ol>
                     </div>
 
-                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
-                        <span class="text-xs font-bold text-emerald-700 uppercase tracking-wider block mb-2">Top 3 Fastest-Growing Industries</span>
-                        <ol id="hucTop3Fastest" class="space-y-1.5 text-xs text-slate-700 list-decimal list-inside">
+                    <div class="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl border border-slate-200 dark:border-slate-700">
+                        <span class="text-xs font-bold text-emerald-700 dark:text-emerald-400 uppercase tracking-wider block mb-2">Top 3 Fastest-Growing Industries</span>
+                        <ol id="hucTop3Fastest" class="space-y-1.5 text-xs text-slate-700 dark:text-slate-300 list-decimal list-inside">
                             <!-- Dynamic items -->
                         </ol>
                     </div>
@@ -221,14 +230,14 @@
 
             <!-- Charts Section -->
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <div class="lg:col-span-2 bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
-                    <h3 id="titleGdpTrajectory" class="text-base font-bold text-slate-900 mb-4">Gross Domestic Product Growth Trajectory</h3>
+                <div class="lg:col-span-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-6 shadow-sm">
+                    <h3 id="titleGdpTrajectory" class="text-base font-bold text-slate-900 dark:text-slate-100 mb-4">Gross Domestic Product Growth Trajectory</h3>
                     <div class="h-72">
                         <canvas id="overviewGdpChart"></canvas>
                     </div>
                 </div>
-                <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
-                    <h3 id="titleSectorDistribution" class="text-base font-bold text-slate-900 mb-4">Sectoral Distribution</h3>
+                <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-6 shadow-sm">
+                    <h3 id="titleSectorDistribution" class="text-base font-bold text-slate-900 dark:text-slate-100 mb-4">Sectoral Distribution</h3>
                     <div class="h-72 flex items-center justify-center">
                         <canvas id="overviewShareChart"></canvas>
                     </div>
@@ -238,11 +247,11 @@
 
         <!-- Forecasts Tab -->
         <section id="forecasts" class="tab-content space-y-6">
-            <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
+            <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-6 shadow-sm">
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
                     <div>
-                        <h3 class="text-lg font-bold text-slate-900">AI Predictive Macroeconomic Model (2026–2030)</h3>
-                        <p class="text-xs text-slate-500">Projections powered by ML regression models based on database PPA trends.</p>
+                        <h3 class="text-lg font-bold text-slate-900 dark:text-slate-100">AI Predictive Macroeconomic Model (2026–2030)</h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400">Projections powered by ML regression models based on database PPA trends.</p>
                     </div>
                     <div class="mt-3 md:mt-0 flex items-center space-x-3">
                         <button onclick="runForecaster()" class="px-3.5 py-1.5 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-xs font-semibold flex items-center space-x-1 transition shadow-sm">
@@ -253,8 +262,8 @@
                             <i data-lucide="sparkles" class="w-4 h-4"></i>
                             <span>Generate AI Insights</span>
                         </button>
-                        <div class="px-4 py-2 bg-blue-50 border border-blue-200 rounded-lg text-xs text-blue-800 font-medium">
-                            Estimated CAGR: <span id="cagrValue" class="font-bold text-blue-900">5.42%</span>
+                        <div class="px-4 py-2 bg-blue-50 dark:bg-blue-900/40 border border-blue-200 dark:border-blue-700 rounded-lg text-xs text-blue-800 dark:text-blue-300 font-medium">
+                            Estimated CAGR: <span id="cagrValue" class="font-bold text-blue-900 dark:text-blue-200">5.42%</span>
                         </div>
                     </div>
                 </div>
@@ -264,20 +273,20 @@
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
-                    <span class="text-xs text-slate-500 font-bold uppercase">2026 Forecast Target</span>
-                    <h4 id="forecastTarget2026" class="text-2xl font-extrabold text-blue-600 mt-2">₱138.2 Billion</h4>
-                    <p class="text-xs text-slate-500 mt-1">Driven by service sector stabilization and industrial infrastructure recovery.</p>
+                <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-5 shadow-sm">
+                    <span class="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase">2026 Forecast Target</span>
+                    <h4 id="forecastTarget2026" class="text-2xl font-extrabold text-blue-600 dark:text-blue-400 mt-2">₱138.2 Billion</h4>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Driven by service sector stabilization and industrial infrastructure recovery.</p>
                 </div>
-                <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
-                    <span class="text-xs text-slate-500 font-bold uppercase">2028 Forecast Target</span>
-                    <h4 id="forecastTarget2028" class="text-2xl font-extrabold text-blue-600 mt-2">₱153.8 Billion</h4>
-                    <p class="text-xs text-slate-500 mt-1">Projected increase in agro-industrial modernization and tech integration.</p>
+                <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-5 shadow-sm">
+                    <span class="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase">2028 Forecast Target</span>
+                    <h4 id="forecastTarget2028" class="text-2xl font-extrabold text-blue-600 dark:text-blue-400 mt-2">₱153.8 Billion</h4>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Projected increase in agro-industrial modernization and tech integration.</p>
                 </div>
-                <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
-                    <span class="text-xs text-slate-500 font-bold uppercase">2030 Vision Target</span>
-                    <h4 id="forecastTarget2030" class="text-2xl font-extrabold text-emerald-600 mt-2">₱171.1 Billion</h4>
-                    <p class="text-xs text-slate-500 mt-1">Potential milestone achieving sustained double-digit growth in services.</p>
+                <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-5 shadow-sm">
+                    <span class="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase">2030 Vision Target</span>
+                    <h4 id="forecastTarget2030" class="text-2xl font-extrabold text-emerald-600 dark:text-emerald-400 mt-2">₱171.1 Billion</h4>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Potential milestone achieving sustained double-digit growth in services.</p>
                 </div>
             </div>
         </section>
@@ -285,11 +294,11 @@
         <!-- Sectors Tab -->
         <section id="sectors" class="tab-content space-y-6">
             <!-- 8 Economic Analytics Matrix Switcher & Dynamic Chart -->
-            <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
+            <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-6 shadow-sm">
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-4">
                     <div>
-                        <h3 class="text-lg font-bold text-slate-900">Economic Analytics Matrix & Visual Charts by Year</h3>
-                        <p class="text-xs text-slate-500">Select an economic metric view below to render interactive multi-year charts, growth rates, GDP shares, and percentage point contributions.</p>
+                        <h3 class="text-lg font-bold text-slate-900 dark:text-slate-100">Economic Analytics Matrix & Visual Charts by Year</h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400">Select an economic metric view below to render interactive multi-year charts, growth rates, GDP shares, and percentage point contributions.</p>
                     </div>
                     <div class="flex items-center space-x-2">
                         <button onclick="openCrudModal()" class="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-semibold flex items-center space-x-1 transition shadow-sm">
@@ -300,7 +309,7 @@
                             <i data-lucide="upload-cloud" class="w-4 h-4"></i>
                             <span>Upload Data</span>
                         </button>
-                        <button onclick="exportData('csv')" class="px-3.5 py-1.5 bg-white hover:bg-slate-50 border border-slate-300 text-slate-700 rounded-lg text-xs font-semibold flex items-center space-x-1 transition shadow-sm">
+                        <button onclick="exportData('csv')" class="px-3.5 py-1.5 bg-white dark:bg-slate-700 hover:bg-slate-50 dark:hover:bg-slate-600 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-200 rounded-lg text-xs font-semibold flex items-center space-x-1 transition shadow-sm">
                             <i data-lucide="download" class="w-4 h-4"></i>
                             <span>Export CSV</span>
                         </button>
@@ -308,71 +317,71 @@
                 </div>
 
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-2.5 mb-6">
-                    <button onclick="selectMatrixView('growth_major', this)" class="matrix-btn active text-left px-3.5 py-2.5 rounded-lg border border-slate-200 bg-white text-xs font-semibold text-slate-700 hover:bg-slate-50 transition shadow-sm">
+                    <button onclick="selectMatrixView('growth_major', this)" class="matrix-btn active text-left px-3.5 py-2.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition shadow-sm">
                         1. Growth Rate (Major Industry)
                     </button>
-                    <button onclick="selectMatrixView('growth_all', this)" class="matrix-btn text-left px-3.5 py-2.5 rounded-lg border border-slate-200 bg-white text-xs font-semibold text-slate-700 hover:bg-slate-50 transition shadow-sm">
+                    <button onclick="selectMatrixView('growth_all', this)" class="matrix-btn text-left px-3.5 py-2.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition shadow-sm">
                         2. Growth Rate (All Industries)
                     </button>
-                    <button onclick="selectMatrixView('share_major', this)" class="matrix-btn text-left px-3.5 py-2.5 rounded-lg border border-slate-200 bg-white text-xs font-semibold text-slate-700 hover:bg-slate-50 transition shadow-sm">
+                    <button onclick="selectMatrixView('share_major', this)" class="matrix-btn text-left px-3.5 py-2.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition shadow-sm">
                         3. Share in GDP (Major Industry)
                     </button>
-                    <button onclick="selectMatrixView('share_all', this)" class="matrix-btn text-left px-3.5 py-2.5 rounded-lg border border-slate-200 bg-white text-xs font-semibold text-slate-700 hover:bg-slate-50 transition shadow-sm">
+                    <button onclick="selectMatrixView('share_all', this)" class="matrix-btn text-left px-3.5 py-2.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition shadow-sm">
                         4. Share in GDP (All Industries)
                     </button>
-                    <button onclick="selectMatrixView('contrib_major', this)" class="matrix-btn text-left px-3.5 py-2.5 rounded-lg border border-slate-200 bg-white text-xs font-semibold text-slate-700 hover:bg-slate-50 transition shadow-sm">
+                    <button onclick="selectMatrixView('contrib_major', this)" class="matrix-btn text-left px-3.5 py-2.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition shadow-sm">
                         5. Contribution to Growth (Major)
                     </button>
-                    <button onclick="selectMatrixView('contrib_all', this)" class="matrix-btn text-left px-3.5 py-2.5 rounded-lg border border-slate-200 bg-white text-xs font-semibold text-slate-700 hover:bg-slate-50 transition shadow-sm">
+                    <button onclick="selectMatrixView('contrib_all', this)" class="matrix-btn text-left px-3.5 py-2.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition shadow-sm">
                         6. Contribution to Growth (All)
                     </button>
-                    <button onclick="selectMatrixView('pct_major', this)" class="matrix-btn text-left px-3.5 py-2.5 rounded-lg border border-slate-200 bg-white text-xs font-semibold text-slate-700 hover:bg-slate-50 transition shadow-sm">
+                    <button onclick="selectMatrixView('pct_major', this)" class="matrix-btn text-left px-3.5 py-2.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition shadow-sm">
                         7. Percentage Share (Major)
                     </button>
-                    <button onclick="selectMatrixView('pct_all', this)" class="matrix-btn text-left px-3.5 py-2.5 rounded-lg border border-slate-200 bg-white text-xs font-semibold text-slate-700 hover:bg-slate-50 transition shadow-sm">
+                    <button onclick="selectMatrixView('pct_all', this)" class="matrix-btn text-left px-3.5 py-2.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition shadow-sm">
                         8. Percentage Share (All)
                     </button>
                 </div>
 
                 <!-- Interactive Dynamic Analytics Chart -->
-                <div class="mb-6 bg-slate-50 p-4 border border-slate-200 rounded-xl shadow-inner">
+                <div class="mb-6 bg-slate-50 dark:bg-slate-900/50 p-4 border border-slate-200 dark:border-slate-700 rounded-xl shadow-inner">
                     <div class="flex justify-between items-center mb-3">
-                        <h4 id="matrixChartTitle" class="text-xs font-bold text-blue-600 uppercase tracking-wider">Metric Visualization Chart</h4>
-                        <span id="matrixChartTypeLabel" class="text-xs text-slate-500 font-medium">Multi-Year Breakdown</span>
+                        <h4 id="matrixChartTitle" class="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wider">Metric Visualization Chart</h4>
+                        <span id="matrixChartTypeLabel" class="text-xs text-slate-500 dark:text-slate-400 font-medium">Multi-Year Breakdown</span>
                     </div>
                     <div class="h-72">
                         <canvas id="matrixAnalyticsChart"></canvas>
                     </div>
                 </div>
 
-                <div class="border-t border-slate-200 pt-4">
+                <div class="border-t border-slate-200 dark:border-slate-700 pt-4">
                     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
                         <div>
-                            <h4 id="matrixTitle" class="text-sm font-bold text-slate-900">1. YoY Growth Rate by Major Industry by Year</h4>
-                            <span id="matrixUnitBadge" class="text-xs text-slate-500 font-medium">Unit: Percentage (%)</span>
+                            <h4 id="matrixTitle" class="text-sm font-bold text-slate-900 dark:text-slate-100">1. YoY Growth Rate by Major Industry by Year</h4>
+                            <span id="matrixUnitBadge" class="text-xs text-slate-500 dark:text-slate-400 font-medium">Unit: Percentage (%)</span>
                         </div>
                     </div>
 
                     <!-- All Industries Sorting & Ranking Controls -->
-                    <div id="allIndSortBar" class="flex flex-wrap items-center gap-2 mb-4 hidden bg-slate-50 p-3 rounded-lg border border-slate-200">
-                        <span class="text-xs text-slate-600 font-bold uppercase mr-1 flex items-center">
-                            <i data-lucide="arrow-up-down" class="w-3.5 h-3.5 mr-1 text-blue-600"></i> Top Rankings:
+                    <div id="allIndSortBar" class="flex flex-wrap items-center gap-2 mb-4 hidden bg-slate-50 dark:bg-slate-900/50 p-3 rounded-lg border border-slate-200 dark:border-slate-700">
+                        <span class="text-xs text-slate-600 dark:text-slate-300 font-bold uppercase mr-1 flex items-center">
+                            <i data-lucide="arrow-up-down" class="w-3.5 h-3.5 mr-1 text-blue-600 dark:text-blue-400"></i> Top Rankings:
                         </span>
-                        <button id="btnSortGrowth" onclick="setMatrixSort('growth_rate', 'growth_all')" class="px-3 py-1 bg-emerald-50 border border-emerald-200 text-emerald-800 hover:bg-emerald-100 rounded text-xs font-bold transition flex items-center gap-1 shadow-sm">
+                        <button id="btnSortGrowth" onclick="setMatrixSort('growth_rate', 'growth_all')" class="px-3 py-1 bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-200 dark:border-emerald-800 text-emerald-800 dark:text-emerald-300 hover:bg-emerald-100 dark:hover:bg-emerald-900/50 rounded text-xs font-bold transition flex items-center gap-1 shadow-sm">
                             <i data-lucide="trending-up" class="w-3.5 h-3.5"></i> Top Growth Rate
                         </button>
-                        <button id="btnSortContrib" onclick="setMatrixSort('contribution_to_growth', 'contrib_all')" class="px-3 py-1 bg-purple-50 border border-purple-200 text-purple-800 hover:bg-purple-100 rounded text-xs font-bold transition flex items-center gap-1 shadow-sm">
+                        <button id="btnSortContrib" onclick="setMatrixSort('contribution_to_growth', 'contrib_all')" class="px-3 py-1 bg-purple-50 dark:bg-purple-950/50 border border-purple-200 dark:border-purple-800 text-purple-800 dark:text-purple-300 hover:bg-purple-100 dark:hover:bg-purple-900/50 rounded text-xs font-bold transition flex items-center gap-1 shadow-sm">
                             <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> Top Contributors
                         </button>
-                        <button id="btnSortShare" onclick="setMatrixSort('share_in_gdp', 'share_all')" class="px-3 py-1 bg-blue-50 border border-blue-200 text-blue-800 hover:bg-blue-100 rounded text-xs font-bold transition flex items-center gap-1 shadow-sm">
+                        <button id="btnSortShare" onclick="setMatrixSort('share_in_gdp', 'share_all')" class="px-3 py-1 bg-blue-50 dark:bg-blue-950/50 border border-blue-200 dark:border-blue-800 text-blue-800 dark:text-blue-300 hover:bg-blue-100 dark:hover:bg-blue-900/50 rounded text-xs font-bold transition flex items-center gap-1 shadow-sm">
                             <i data-lucide="pie-chart" class="w-3.5 h-3.5"></i> Top GDP Share
                         </button>
-                        <button onclick="setMatrixSort('default')" class="px-3 py-1 bg-white border border-slate-300 text-slate-700 hover:bg-slate-100 rounded text-xs font-bold transition flex items-center gap-1 shadow-sm">
+                        <button onclick="setMatrixSort('default')" class="px-3 py-1 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-600 rounded text-xs font-bold transition flex items-center gap-1 shadow-sm">
                             <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i> Reset Sort
                         </button>
-                        <div class="ml-auto flex items-center space-x-1.5 text-xs text-slate-600 font-medium">
+                        <div class="ml-auto flex items-center space-x-1.5 text-xs text-slate-600 dark:text-slate-300 font-medium">
                             <span>Order:</span>
-                            <select id="matrixSortOrderSelect" onchange="toggleMatrixSortOrder(this.value)" class="bg-white border border-slate-300 text-slate-900 rounded px-2 py-0.5 focus:outline-none">
+                            <select id="matrixSortOrderSelect" onchange="toggleMatrixSortOrder(this.value)" class="bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 text-slate-900 dark:text-slate-100 rounded px-2 py-0.5 focus:outline-none">
                                 <option value="desc">Highest to Lowest (Top)</option>
                                 <option value="asc">Lowest to Highest</option>
                             </select>
@@ -380,11 +389,11 @@
                     </div>
 
                     <div class="overflow-x-auto">
-                        <table class="w-full text-left text-sm text-slate-800">
-                            <thead id="matrixTableHeader" class="bg-slate-100 text-xs font-bold uppercase text-slate-600 border-b border-slate-200">
+                        <table class="w-full text-left text-sm text-slate-800 dark:text-slate-200">
+                            <thead id="matrixTableHeader" class="bg-slate-100 dark:bg-slate-700 text-xs font-bold uppercase text-slate-600 dark:text-slate-300 border-b border-slate-200 dark:border-slate-700">
                                 <!-- Matrix dynamic headers -->
                             </thead>
-                            <tbody id="matrixTableBody" class="divide-y divide-slate-200 bg-white">
+                            <tbody id="matrixTableBody" class="divide-y divide-slate-200 dark:divide-slate-700 bg-white dark:bg-slate-800">
                                 <!-- Matrix dynamic rows -->
                             </tbody>
                         </table>
@@ -393,11 +402,11 @@
             </div>
 
             <!-- Historical GVA Database CRUD Table -->
-            <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
+            <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-6 shadow-sm">
                 <div class="flex justify-between items-center mb-4">
                     <div>
-                        <h3 class="text-lg font-bold text-slate-900">Historical Gross Value Added by Industry (In '000 PHP)</h3>
-                        <p class="text-xs text-slate-500">Database table view with CRUD edit/delete controls for each sector.</p>
+                        <h3 class="text-lg font-bold text-slate-900 dark:text-slate-100">Historical Gross Value Added by Industry (In '000 PHP)</h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400">Database table view with CRUD edit/delete controls for each sector.</p>
                     </div>
                     <button onclick="openCrudModal()" class="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-semibold flex items-center space-x-1 transition shadow-sm">
                         <i data-lucide="plus" class="w-4 h-4"></i>
@@ -405,11 +414,11 @@
                     </button>
                 </div>
                 <div class="overflow-x-auto">
-                    <table class="w-full text-left text-sm text-slate-800">
-                        <thead id="industryTableHeader" class="bg-slate-100 text-xs font-bold uppercase text-slate-600 border-b border-slate-200">
+                    <table class="w-full text-left text-sm text-slate-800 dark:text-slate-200">
+                        <thead id="industryTableHeader" class="bg-slate-100 dark:bg-slate-700 text-xs font-bold uppercase text-slate-600 dark:text-slate-300 border-b border-slate-200 dark:border-slate-700">
                             <!-- Dynamic headers -->
                         </thead>
-                        <tbody id="industryTableBody" class="divide-y divide-slate-200 bg-white">
+                        <tbody id="industryTableBody" class="divide-y divide-slate-200 dark:divide-slate-700 bg-white dark:bg-slate-800">
                             <tr><td colspan="8" class="p-4 text-center text-slate-400 font-medium">Loading industry data from database...</td></tr>
                         </tbody>
                     </table>
@@ -420,59 +429,59 @@
         <!-- Simulator Tab -->
         <section id="simulator" class="tab-content space-y-6">
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <div class="bg-white border border-slate-200 rounded-xl p-6 space-y-5 shadow-sm">
-                    <h3 class="text-lg font-bold text-slate-900 flex items-center">
-                        <i data-lucide="sliders" class="w-5 h-5 mr-2 text-blue-600"></i> Policy Input Simulator
+                <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-6 space-y-5 shadow-sm">
+                    <h3 class="text-lg font-bold text-slate-900 dark:text-slate-100 flex items-center">
+                        <i data-lucide="sliders" class="w-5 h-5 mr-2 text-blue-600 dark:text-blue-400"></i> Policy Input Simulator
                     </h3>
 
                     <div>
-                        <label class="text-xs text-slate-600 font-semibold block mb-2">Agricultural Technology Stimulus (+%)</label>
-                        <input id="agriSlider" type="range" min="0" max="25" value="5" class="w-full accent-blue-600 bg-slate-200 rounded-lg h-2" oninput="updateSimulation()">
-                        <div class="flex justify-between text-xs text-slate-500 mt-1"><span>0%</span><span id="agriVal" class="text-blue-600 font-bold">5%</span><span>25%</span></div>
+                        <label class="text-xs text-slate-600 dark:text-slate-300 font-semibold block mb-2">Agricultural Technology Stimulus (+%)</label>
+                        <input id="agriSlider" type="range" min="0" max="25" value="5" class="w-full accent-blue-600 bg-slate-200 dark:bg-slate-700 rounded-lg h-2" oninput="updateSimulation()">
+                        <div class="flex justify-between text-xs text-slate-500 dark:text-slate-400 mt-1"><span>0%</span><span id="agriVal" class="text-blue-600 dark:text-blue-400 font-bold">5%</span><span>25%</span></div>
                     </div>
 
                     <div>
-                        <label class="text-xs text-slate-600 font-semibold block mb-2">Infrastructure & Industrial Investment (+%)</label>
-                        <input id="indSlider" type="range" min="0" max="25" value="8" class="w-full accent-blue-600 bg-slate-200 rounded-lg h-2" oninput="updateSimulation()">
-                        <div class="flex justify-between text-xs text-slate-500 mt-1"><span>0%</span><span id="indVal" class="text-blue-600 font-bold">8%</span><span>25%</span></div>
+                        <label class="text-xs text-slate-600 dark:text-slate-300 font-semibold block mb-2">Infrastructure & Industrial Investment (+%)</label>
+                        <input id="indSlider" type="range" min="0" max="25" value="8" class="w-full accent-blue-600 bg-slate-200 dark:bg-slate-700 rounded-lg h-2" oninput="updateSimulation()">
+                        <div class="flex justify-between text-xs text-slate-500 dark:text-slate-400 mt-1"><span>0%</span><span id="indVal" class="text-blue-600 dark:text-blue-400 font-bold">8%</span><span>25%</span></div>
                     </div>
 
                     <div>
-                        <label class="text-xs text-slate-600 font-semibold block mb-2">Services & Digitalization Push (+%)</label>
-                        <input id="servSlider" type="range" min="0" max="25" value="10" class="w-full accent-blue-600 bg-slate-200 rounded-lg h-2" oninput="updateSimulation()">
-                        <div class="flex justify-between text-xs text-slate-500 mt-1"><span>0%</span><span id="servVal" class="text-blue-600 font-bold">10%</span><span>25%</span></div>
+                        <label class="text-xs text-slate-600 dark:text-slate-300 font-semibold block mb-2">Services & Digitalization Push (+%)</label>
+                        <input id="servSlider" type="range" min="0" max="25" value="10" class="w-full accent-blue-600 bg-slate-200 dark:bg-slate-700 rounded-lg h-2" oninput="updateSimulation()">
+                        <div class="flex justify-between text-xs text-slate-500 dark:text-slate-400 mt-1"><span>0%</span><span id="servVal" class="text-blue-600 dark:text-blue-400 font-bold">10%</span><span>25%</span></div>
                     </div>
 
-                    <div class="pt-4 border-t border-slate-200">
+                    <div class="pt-4 border-t border-slate-200 dark:border-slate-700">
                         <button onclick="updateSimulation(true)" class="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg text-sm transition shadow-sm">
                             Re-Run Policy Simulation
                         </button>
                     </div>
                 </div>
 
-                <div class="lg:col-span-2 bg-white border border-slate-200 rounded-xl p-6 flex flex-col justify-between shadow-sm">
+                <div class="lg:col-span-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-6 flex flex-col justify-between shadow-sm">
                     <div>
                         <div class="flex justify-between items-center mb-4">
-                            <h3 class="text-lg font-bold text-slate-900">Simulated 2026 GDP Impact</h3>
-                            <span class="px-3 py-1 bg-purple-50 border border-purple-200 text-purple-700 rounded-full text-xs font-bold">AI Impact Scenario</span>
+                            <h3 class="text-lg font-bold text-slate-900 dark:text-slate-100">Simulated 2026 GDP Impact</h3>
+                            <span class="px-3 py-1 bg-purple-50 dark:bg-purple-950/50 border border-purple-200 dark:border-purple-800 text-purple-700 dark:text-purple-300 rounded-full text-xs font-bold">AI Impact Scenario</span>
                         </div>
                         <div class="grid grid-cols-2 gap-4 mb-6">
-                            <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
-                                <span id="labelBaselineGdpCard" class="text-xs text-slate-500 font-semibold uppercase">Baseline GDP</span>
-                                <p id="baselineGdpText" class="text-2xl font-extrabold text-slate-800 mt-1">₱124.89 Billion</p>
+                            <div class="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl border border-slate-200 dark:border-slate-700">
+                                <span id="labelBaselineGdpCard" class="text-xs text-slate-500 dark:text-slate-400 font-semibold uppercase">Baseline GDP</span>
+                                <p id="baselineGdpText" class="text-2xl font-extrabold text-slate-800 dark:text-slate-200 mt-1">₱124.89 Billion</p>
                             </div>
-                            <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
-                                <span class="text-xs text-slate-500 font-semibold uppercase">Simulated Target GDP</span>
-                                <p id="simulatedGdp" class="text-2xl font-extrabold text-emerald-600 mt-1">₱141.22 Billion</p>
+                            <div class="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl border border-slate-200 dark:border-slate-700">
+                                <span class="text-xs text-slate-500 dark:text-slate-400 font-semibold uppercase">Simulated Target GDP</span>
+                                <p id="simulatedGdp" class="text-2xl font-extrabold text-emerald-600 dark:text-emerald-400 mt-1">₱141.22 Billion</p>
                             </div>
                         </div>
                     </div>
 
-                    <div class="bg-blue-50/60 border border-blue-200 p-4 rounded-xl">
-                        <h4 class="text-xs font-bold text-blue-700 uppercase tracking-wider mb-2 flex items-center">
+                    <div class="bg-blue-50/60 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800 p-4 rounded-xl">
+                        <h4 class="text-xs font-bold text-blue-700 dark:text-blue-300 uppercase tracking-wider mb-2 flex items-center">
                             <i data-lucide="sparkles" class="w-4 h-4 mr-1"></i> AI Executive Recommendation
                         </h4>
-                        <p id="aiRecommendationText" class="text-xs text-slate-700 leading-relaxed font-medium">
+                        <p id="aiRecommendationText" class="text-xs text-slate-700 dark:text-slate-300 leading-relaxed font-medium">
                             Loading recommendations...
                         </p>
                     </div>
@@ -484,39 +493,39 @@
 
     <!-- CRUD Modal Dialog -->
     <div id="crudModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white border border-slate-200 rounded-2xl max-w-lg w-full p-6 shadow-2xl relative">
-            <div class="flex justify-between items-center pb-4 mb-4 border-b border-slate-200">
-                <h3 id="crudModalTitle" class="text-lg font-bold text-slate-900">Add Industry Sector Record</h3>
-                <button onclick="closeCrudModal()" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-5 h-5"></i></button>
+        <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl max-w-lg w-full p-6 shadow-2xl relative">
+            <div class="flex justify-between items-center pb-4 mb-4 border-b border-slate-200 dark:border-slate-700">
+                <h3 id="crudModalTitle" class="text-lg font-bold text-slate-900 dark:text-slate-100">Add Industry Sector Record</h3>
+                <button onclick="closeCrudModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"><i data-lucide="x" class="w-5 h-5"></i></button>
             </div>
             <form id="crudForm" onsubmit="handleCrudSubmit(event)" class="space-y-4">
                 <input type="hidden" id="crudMode" value="create">
                 <div>
-                    <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Industry Code</label>
-                    <input type="text" id="crudCode" class="w-full bg-slate-50 border border-slate-200 text-slate-900 rounded-lg p-2 text-sm font-mono focus:border-blue-500 focus:outline-none" placeholder="e.g. A" required>
+                    <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 uppercase mb-1">Industry Code</label>
+                    <input type="text" id="crudCode" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-slate-900 dark:text-slate-100 rounded-lg p-2 text-sm font-mono focus:border-blue-500 focus:outline-none" placeholder="e.g. A" required>
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Industry Name</label>
-                    <input type="text" id="crudIndustry" class="w-full bg-slate-50 border border-slate-200 text-slate-900 rounded-lg p-2 text-sm focus:border-blue-500 focus:outline-none" placeholder="e.g. Agriculture, forestry, and fishing" required>
+                    <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 uppercase mb-1">Industry Name</label>
+                    <input type="text" id="crudIndustry" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-slate-900 dark:text-slate-100 rounded-lg p-2 text-sm focus:border-blue-500 focus:outline-none" placeholder="e.g. Agriculture, forestry, and fishing" required>
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Sector Category</label>
-                    <select id="crudCategory" class="w-full bg-slate-50 border border-slate-200 text-slate-900 rounded-lg p-2 text-sm focus:border-blue-500 focus:outline-none">
+                    <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 uppercase mb-1">Sector Category</label>
+                    <select id="crudCategory" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-slate-900 dark:text-slate-100 rounded-lg p-2 text-sm focus:border-blue-500 focus:outline-none">
                         <option value="Agriculture">Agriculture</option>
                         <option value="Industry">Industry</option>
                         <option value="Services">Services</option>
                     </select>
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-slate-600 uppercase mb-1">2024 GVA (₱'000)</label>
-                    <input type="number" step="any" id="crudVal2024" class="w-full bg-slate-50 border border-slate-200 text-slate-900 rounded-lg p-2 text-sm focus:border-blue-500 focus:outline-none" placeholder="18457242">
+                    <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 uppercase mb-1">2024 GVA (₱'000)</label>
+                    <input type="number" step="any" id="crudVal2024" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-slate-900 dark:text-slate-100 rounded-lg p-2 text-sm focus:border-blue-500 focus:outline-none" placeholder="18457242">
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-slate-600 uppercase mb-1">2025 GVA (₱'000) (Optional / PSA Update)</label>
-                    <input type="number" step="any" id="crudVal2025" class="w-full bg-slate-50 border border-slate-200 text-slate-900 rounded-lg p-2 text-sm focus:border-blue-500 focus:outline-none" placeholder="19500000">
+                    <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 uppercase mb-1">2025 GVA (₱'000) (Optional / PSA Update)</label>
+                    <input type="number" step="any" id="crudVal2025" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-slate-900 dark:text-slate-100 rounded-lg p-2 text-sm focus:border-blue-500 focus:outline-none" placeholder="19500000">
                 </div>
-                <div class="pt-4 flex justify-end space-x-3 border-t border-slate-200">
-                    <button type="button" onclick="closeCrudModal()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-bold">Cancel</button>
+                <div class="pt-4 flex justify-end space-x-3 border-t border-slate-200 dark:border-slate-700">
+                    <button type="button" onclick="closeCrudModal()" class="px-4 py-2 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 rounded-lg text-xs font-bold">Cancel</button>
                     <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-bold shadow-sm">Save Record</button>
                 </div>
             </form>
@@ -524,6 +533,40 @@
     </div>
 
     <script>
+        function applyThemeUI(isDark) {
+            const btnText = document.getElementById('themeToggleText');
+            const btnIcon = document.getElementById('themeToggleIcon');
+            if (isDark) {
+                document.documentElement.classList.add('dark');
+                if (btnText) btnText.innerText = 'Light Mode';
+                if (btnIcon) btnIcon.setAttribute('data-lucide', 'sun');
+            } else {
+                document.documentElement.classList.remove('dark');
+                if (btnText) btnText.innerText = 'Dark Mode';
+                if (btnIcon) btnIcon.setAttribute('data-lucide', 'moon');
+            }
+            lucide.createIcons();
+        }
+
+        function toggleTheme() {
+            const isDark = !document.documentElement.classList.contains('dark');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            applyThemeUI(isDark);
+            if (dbData) {
+                renderOverview(dbData);
+                renderForecasts(dbData);
+                renderMatrixView(activeMatrixKey);
+            }
+        }
+
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const isDark = savedTheme ? savedTheme === 'dark' : prefersDark;
+            applyThemeUI(isDark);
+        }
+
+        initTheme();
         lucide.createIcons();
 
         function switchTab(tabId, element) {
@@ -793,10 +836,20 @@
             return 'growth_rate';
         }
 
+        function getChartThemeColors() {
+            const isDark = document.documentElement.classList.contains('dark');
+            return {
+                textColor: isDark ? '#F1F5F9' : '#334155',
+                subTextColor: isDark ? '#94A3B8' : '#64748B',
+                gridColor: isDark ? '#334155' : '#E2E8F0'
+            };
+        }
+
         function renderMatrixChart(key, years, majorData, allData) {
             const ctx = document.getElementById('matrixAnalyticsChart').getContext('2d');
             if (matrixAnalyticsChart) matrixAnalyticsChart.destroy();
 
+            const themeColors = getChartThemeColors();
             const chartTitleEl = document.getElementById('matrixChartTitle');
             const typeLabelEl = document.getElementById('matrixChartTypeLabel');
 
@@ -838,10 +891,10 @@
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
-                        plugins: { legend: { labels: { color: '#334155', font: { weight: 'bold' } } } },
+                        plugins: { legend: { labels: { color: themeColors.textColor, font: { weight: 'bold' } } } },
                         scales: {
-                            x: { ticks: { color: '#64748B' }, grid: { color: '#E2E8F0' } },
-                            y: { ticks: { color: '#64748B' }, grid: { color: '#E2E8F0' } }
+                            x: { ticks: { color: themeColors.subTextColor }, grid: { color: themeColors.gridColor } },
+                            y: { ticks: { color: themeColors.subTextColor }, grid: { color: themeColors.gridColor } }
                         }
                     }
                 });
@@ -866,10 +919,10 @@
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
-                        plugins: { legend: { position: 'bottom', labels: { color: '#334155', font: { size: 11, weight: 'bold' } } } },
+                        plugins: { legend: { position: 'bottom', labels: { color: themeColors.textColor, font: { size: 11, weight: 'bold' } } } },
                         scales: {
-                            x: { ticks: { color: '#64748B' }, grid: { color: '#E2E8F0' } },
-                            y: { ticks: { color: '#64748B' }, grid: { color: '#E2E8F0' } }
+                            x: { ticks: { color: themeColors.subTextColor }, grid: { color: themeColors.gridColor } },
+                            y: { ticks: { color: themeColors.subTextColor }, grid: { color: themeColors.gridColor } }
                         }
                     }
                 });
@@ -1011,6 +1064,7 @@
             const chartYears = selectedY ? proc.years.slice(0, idx + 1) : proc.years;
             const totalGdpData = chartYears.map(y => proc.total_gdp[y] / 1000000);
 
+            const themeColors = getChartThemeColors();
             const ctxOverview = document.getElementById('overviewGdpChart').getContext('2d');
             if (overviewGdpChart) overviewGdpChart.destroy();
             overviewGdpChart = new Chart(ctxOverview, {
@@ -1031,10 +1085,10 @@
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: { legend: { labels: { color: '#334155', font: { weight: 'bold' } } } },
+                    plugins: { legend: { labels: { color: themeColors.textColor, font: { weight: 'bold' } } } },
                     scales: {
-                        x: { ticks: { color: '#64748B' }, grid: { color: '#E2E8F0' } },
-                        y: { ticks: { color: '#64748B' }, grid: { color: '#E2E8F0' } }
+                        x: { ticks: { color: themeColors.subTextColor }, grid: { color: themeColors.gridColor } },
+                        y: { ticks: { color: themeColors.subTextColor }, grid: { color: themeColors.gridColor } }
                     }
                 }
             });
@@ -1054,7 +1108,7 @@
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: { legend: { position: 'bottom', labels: { color: '#334155', font: { weight: 'bold' } } } }
+                    plugins: { legend: { position: 'bottom', labels: { color: themeColors.textColor, font: { weight: 'bold' } } } }
                 }
             });
         }
@@ -1072,6 +1126,7 @@
             if (fTotal['2028']) document.getElementById('forecastTarget2028').innerText = '₱' + (fTotal['2028'] / 1000000).toFixed(2) + ' Billion';
             if (fTotal['2030']) document.getElementById('forecastTarget2030').innerText = '₱' + (fTotal['2030'] / 1000000).toFixed(2) + ' Billion';
 
+            const themeColors = getChartThemeColors();
             const ctxForecast = document.getElementById('forecastChart').getContext('2d');
             if (forecastChart) forecastChart.destroy();
             forecastChart = new Chart(ctxForecast, {
@@ -1092,10 +1147,10 @@
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: { legend: { labels: { color: '#334155', font: { weight: 'bold' } } } },
+                    plugins: { legend: { labels: { color: themeColors.textColor, font: { weight: 'bold' } } } },
                     scales: {
-                        x: { ticks: { color: '#64748B' }, grid: { color: '#E2E8F0' } },
-                        y: { ticks: { color: '#64748B' }, grid: { color: '#E2E8F0' } }
+                        x: { ticks: { color: themeColors.subTextColor }, grid: { color: themeColors.gridColor } },
+                        y: { ticks: { color: themeColors.subTextColor }, grid: { color: themeColors.gridColor } }
                     }
                 }
             });
