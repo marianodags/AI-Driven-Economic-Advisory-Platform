@@ -83,7 +83,8 @@ def create_app():
                 'latest_gdp_2024': processed['latest_gdp_2024'],
                 'latest_growth_2024': processed['latest_growth_2024'],
                 'major_analytics': processed.get('major_analytics', {}),
-                'all_ind_analytics': processed.get('all_ind_analytics', {})
+                'all_ind_analytics': processed.get('all_ind_analytics', {}),
+                'province_results': processed.get('province_results', {})
             },
             'forecast': {
                 'forecast_total': forecast['forecast_total'],
