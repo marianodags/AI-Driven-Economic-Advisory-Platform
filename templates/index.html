@@ -121,6 +121,74 @@
         <div id="toastNotification" class="hidden mb-6 p-4 rounded-xl text-sm font-medium flex items-center justify-between transition-all"></div>
 
         <section id="overview" class="tab-content active space-y-6">
+            <!-- Province / HUC Official Results Callout Section (As per PSA standard results format) -->
+            <div class="bg-slate-900 border border-slate-800 rounded-xl p-6 mb-6">
+                <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-800">
+                    <div class="flex items-center space-x-2">
+                        <div class="p-1.5 bg-blue-500/20 text-blue-400 rounded-lg"><i data-lucide="award" class="w-5 h-5"></i></div>
+                        <div>
+                            <h3 class="text-base font-bold text-white">Province Results Summary (Official PSA Indicators)</h3>
+                            <p class="text-xs text-slate-400">Key macroeconomic findings for Zamboanga del Norte</p>
+                        </div>
+                    </div>
+                    <span id="provinceResultsBadge" class="px-2.5 py-1 bg-blue-950 border border-blue-800 text-blue-300 rounded-full text-xs font-semibold">2025 Official Results</span>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+                    <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
+                        <span class="text-xs text-slate-400 font-medium block mb-1">1. GDP Growth Rate (2025)</span>
+                        <div id="hucGdpGrowth2025" class="text-xl font-bold text-emerald-400">+4.10%</div>
+                        <span class="text-[11px] text-slate-500">Year-on-year expansion</span>
+                    </div>
+
+                    <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
+                        <span class="text-xs text-slate-400 font-medium block mb-1">2. Growth (2018 to 2025)</span>
+                        <div id="hucGdpGrowth20182025" class="text-xl font-bold text-blue-400">+24.31%</div>
+                        <span class="text-[11px] text-slate-500">Cumulative 7-year growth</span>
+                    </div>
+
+                    <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
+                        <span class="text-xs text-slate-400 font-medium block mb-1">7. Per Capita GDP (2025)</span>
+                        <div id="hucPerCapitaGdp" class="text-xl font-bold text-purple-400">₱122,888</div>
+                        <span class="text-[11px] text-slate-500">Per resident (Pop: ~1.06M)</span>
+                    </div>
+
+                    <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
+                        <span class="text-xs text-slate-400 font-medium block mb-1">Major Sector GVA Growth</span>
+                        <div class="text-xs space-y-1 mt-1">
+                            <div class="flex justify-between"><span class="text-blue-400">Services:</span> <span id="hucGrowthServices" class="font-bold text-emerald-400">+10.29%</span></div>
+                            <div class="flex justify-between"><span class="text-purple-400">Industry:</span> <span id="hucGrowthIndustry" class="font-bold text-rose-400">-2.08%</span></div>
+                            <div class="flex justify-between"><span class="text-amber-400">Agriculture:</span> <span id="hucGrowthAgri" class="font-bold text-rose-400">-2.03%</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2 border-t border-slate-800/60">
+                    <div class="bg-slate-950/70 p-3.5 rounded-lg border border-slate-800">
+                        <span class="text-xs font-bold text-blue-400 uppercase tracking-wider block mb-2">3. Major Industry Contribution (pp)</span>
+                        <div class="space-y-1 text-xs">
+                            <div class="flex justify-between"><span class="text-slate-300">Services Sector:</span> <span id="hucContribServices" class="font-mono text-emerald-400 font-semibold">+5.14 pp</span></div>
+                            <div class="flex justify-between"><span class="text-slate-300">Industry Sector:</span> <span id="hucContribIndustry" class="font-mono text-rose-400 font-semibold">-0.73 pp</span></div>
+                            <div class="flex justify-between"><span class="text-slate-300">Agriculture Sector:</span> <span id="hucContribAgri" class="font-mono text-rose-400 font-semibold">-0.30 pp</span></div>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-950/70 p-3.5 rounded-lg border border-slate-800">
+                        <span class="text-xs font-bold text-amber-400 uppercase tracking-wider block mb-2">5. Top 3 Contributors to GDP Growth</span>
+                        <ol id="hucTop3Contrib" class="space-y-1 text-xs text-slate-300 list-decimal list-inside">
+                            <!-- Dynamic items -->
+                        </ol>
+                    </div>
+
+                    <div class="bg-slate-950/70 p-3.5 rounded-lg border border-slate-800">
+                        <span class="text-xs font-bold text-emerald-400 uppercase tracking-wider block mb-2">6. Top 3 Fastest-Growing Industries</span>
+                        <ol id="hucTop3Fastest" class="space-y-1 text-xs text-slate-300 list-decimal list-inside">
+                            <!-- Dynamic items -->
+                        </ol>
+                    </div>
+                </div>
+            </div>
+
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
                     <div class="flex justify-between items-start">
@@ -981,6 +1049,47 @@
 
             document.getElementById('cardAgriTotal').innerText = formatCurrencyBillion(agriLatest);
             document.getElementById('cardAgriGrowth').innerHTML = `<i data-lucide="${agriGrowth >= 0 ? 'arrow-up-right' : 'arrow-down-right'}" class="w-4 h-4 mr-1"></i> ${agriGrowth >= 0 ? '+' : ''}${agriGrowth.toFixed(2)}% ${activeY !== prevY ? 'from ' + prevY : ''}`;
+
+            // Render Province / HUC Results Callout Indicators
+            if (proc.province_results) {
+                const pr = proc.province_results;
+                document.getElementById('hucGdpGrowth2025').innerText = `${pr.gdp_growth_2025 >= 0 ? '+' : ''}${pr.gdp_growth_2025.toFixed(2)}%`;
+                document.getElementById('hucGdpGrowth20182025').innerText = `${pr.gdp_growth_2018_2025 >= 0 ? '+' : ''}${pr.gdp_growth_2018_2025.toFixed(2)}%`;
+                document.getElementById('hucPerCapitaGdp').innerText = `₱${formatNumber(pr.per_capita_gdp_2025)}`;
+
+                const mg = pr.major_growth_2025 || {};
+                const mc = pr.major_contrib_2025 || {};
+
+                document.getElementById('hucGrowthServices').innerText = `${mg.Services >= 0 ? '+' : ''}${mg.Services.toFixed(2)}%`;
+                document.getElementById('hucGrowthIndustry').innerText = `${mg.Industry >= 0 ? '+' : ''}${mg.Industry.toFixed(2)}%`;
+                document.getElementById('hucGrowthAgri').innerText = `${mg.Agriculture >= 0 ? '+' : ''}${mg.Agriculture.toFixed(2)}%`;
+
+                document.getElementById('hucContribServices').innerText = `${mc.Services >= 0 ? '+' : ''}${mc.Services.toFixed(2)} pp`;
+                document.getElementById('hucContribIndustry').innerText = `${mc.Industry >= 0 ? '+' : ''}${mc.Industry.toFixed(2)} pp`;
+                document.getElementById('hucContribAgri').innerText = `${mc.Agriculture >= 0 ? '+' : ''}${mc.Agriculture.toFixed(2)} pp`;
+
+                // Top 3 Contributor List
+                const top3ContribOl = document.getElementById('hucTop3Contrib');
+                if (pr.top_3_contribution && pr.top_3_contribution.length > 0) {
+                    top3ContribOl.innerHTML = pr.top_3_contribution.map(item => `
+                        <li class="truncate" title="${item.industry}">
+                            <span class="font-medium text-white">${item.industry.length > 28 ? item.industry.substring(0, 28) + '...' : item.industry}</span>
+                            <span class="font-mono ${item.contribution_to_growth >= 0 ? 'text-emerald-400' : 'text-rose-400'} float-right">${item.contribution_to_growth >= 0 ? '+' : ''}${item.contribution_to_growth.toFixed(2)} pp</span>
+                        </li>
+                    `).join('');
+                }
+
+                // Top 3 Fastest Growing List
+                const top3FastestOl = document.getElementById('hucTop3Fastest');
+                if (pr.top_3_fastest_growing && pr.top_3_fastest_growing.length > 0) {
+                    top3FastestOl.innerHTML = pr.top_3_fastest_growing.map(item => `
+                        <li class="truncate" title="${item.industry}">
+                            <span class="font-medium text-white">${item.industry.length > 28 ? item.industry.substring(0, 28) + '...' : item.industry}</span>
+                            <span class="font-mono ${item.growth_rate >= 0 ? 'text-emerald-400' : 'text-rose-400'} float-right">${item.growth_rate >= 0 ? '+' : ''}${item.growth_rate.toFixed(2)}%</span>
+                        </li>
+                    `).join('');
+                }
+            }
 
             lucide.createIcons();
 
