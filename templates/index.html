@@ -1129,12 +1129,12 @@
             const categories = ['Agriculture Sector', 'Industry Sector', 'Services Sector', 'All Industries (Total GDP)'];
             return categories.map(cat => {
                 const isTotal = cat.startsWith('All Industries');
-                let html = `<tr class="hover:bg-slate-50 transition ${isTotal ? 'bg-blue-50/80 font-extrabold border-t-2 border-b-2 border-blue-200 text-slate-900' : ''}"><td class="p-3 font-semibold text-slate-900">${cat}</td>`;
+                let html = `<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/60 transition ${isTotal ? 'bg-blue-50/80 dark:bg-blue-950/40 font-extrabold border-t-2 border-b-2 border-blue-200 dark:border-blue-800 text-slate-900 dark:text-slate-100' : 'text-slate-900 dark:text-slate-100'}"><td class="p-3 font-semibold text-slate-900 dark:text-slate-100">${cat}</td>`;
                 years.forEach(y => {
                     const val = majorData[cat] && majorData[cat][metricKey] ? majorData[cat][metricKey][y] : null;
                     const formatted = formatValOrDash(val, isPct);
                     const isNeg = val !== null && val < 0;
-                    html += `<td class="p-3 text-right font-mono font-bold ${isNeg ? 'text-rose-600' : 'text-emerald-700'}">${formatted}</td>`;
+                    html += `<td class="p-3 text-right font-mono font-bold ${isNeg ? 'text-rose-600 dark:text-rose-400' : 'text-emerald-700 dark:text-emerald-400'}">${formatted}</td>`;
                 });
                 html += '</tr>';
                 return html;
@@ -1157,29 +1157,29 @@
             return codes.map((code, index) => {
                 const item = allData[code];
                 let categoryBadge = '';
-                if (item.category === 'Agriculture') categoryBadge = '<span class="text-amber-700 font-bold">Agriculture</span>';
-                else if (item.category === 'Industry') categoryBadge = '<span class="text-purple-700 font-bold">Industry</span>';
-                else categoryBadge = '<span class="text-blue-700 font-bold">Services</span>';
+                if (item.category === 'Agriculture') categoryBadge = '<span class="text-amber-700 dark:text-amber-400 font-bold">Agriculture</span>';
+                else if (item.category === 'Industry') categoryBadge = '<span class="text-purple-700 dark:text-purple-400 font-bold">Industry</span>';
+                else categoryBadge = '<span class="text-blue-700 dark:text-blue-400 font-bold">Services</span>';
 
                 let rankBadge = '';
                 if (currentSortMetric || metricKey) {
                     const rankNum = index + 1;
-                    if (rankNum === 1) rankBadge = '<span class="ml-2 px-1.5 py-0.5 bg-amber-100 text-amber-800 border border-amber-300 rounded text-[10px] font-bold">#1 Top</span>';
-                    else if (rankNum === 2) rankBadge = '<span class="ml-2 px-1.5 py-0.5 bg-slate-100 text-slate-800 border border-slate-300 rounded text-[10px] font-bold">#2</span>';
-                    else if (rankNum === 3) rankBadge = '<span class="ml-2 px-1.5 py-0.5 bg-amber-50 text-amber-900 border border-amber-200 rounded text-[10px] font-bold">#3</span>';
+                    if (rankNum === 1) rankBadge = '<span class="ml-2 px-1.5 py-0.5 bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border border-amber-300 dark:border-amber-700 rounded text-[10px] font-bold">#1 Top</span>';
+                    else if (rankNum === 2) rankBadge = '<span class="ml-2 px-1.5 py-0.5 bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-300 dark:border-slate-700 rounded text-[10px] font-bold">#2</span>';
+                    else if (rankNum === 3) rankBadge = '<span class="ml-2 px-1.5 py-0.5 bg-amber-50 dark:bg-amber-950/40 text-amber-900 dark:text-amber-200 border border-amber-200 dark:border-amber-800 rounded text-[10px] font-bold">#3</span>';
                 }
 
                 let html = `
-                    <tr class="hover:bg-slate-50 transition">
-                        <td class="p-3 font-mono text-xs text-slate-500 font-semibold">${code}</td>
-                        <td class="p-3 font-semibold text-slate-900 flex items-center">${item.industry}${rankBadge}</td>
+                    <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/60 transition text-slate-900 dark:text-slate-100">
+                        <td class="p-3 font-mono text-xs text-slate-500 dark:text-slate-400 font-semibold">${code}</td>
+                        <td class="p-3 font-semibold text-slate-900 dark:text-slate-100 flex items-center">${item.industry}${rankBadge}</td>
                         <td class="p-3">${categoryBadge}</td>
                 `;
                 years.forEach(y => {
                     const val = item[metricKey] ? item[metricKey][y] : null;
                     const formatted = formatValOrDash(val, isPct);
                     const isNeg = val !== null && val < 0;
-                    html += `<td class="p-3 text-right font-mono font-bold ${isNeg ? 'text-rose-600' : 'text-emerald-700'}">${formatted}</td>`;
+                    html += `<td class="p-3 text-right font-mono font-bold ${isNeg ? 'text-rose-600 dark:text-rose-400' : 'text-emerald-700 dark:text-emerald-400'}">${formatted}</td>`;
                 });
                 html += '</tr>';
                 return html;
@@ -1237,8 +1237,8 @@
                 if (pr.top_3_contribution && pr.top_3_contribution.length > 0) {
                     top3ContribOl.innerHTML = pr.top_3_contribution.map(item => `
                         <li class="truncate" title="${item.industry}">
-                            <span class="font-semibold text-slate-800">${item.industry.length > 28 ? item.industry.substring(0, 28) + '...' : item.industry}</span>
-                            <span class="font-mono ${item.contribution_to_growth >= 0 ? 'text-emerald-700' : 'text-rose-600'} font-bold float-right">${item.contribution_to_growth >= 0 ? '+' : ''}${item.contribution_to_growth.toFixed(2)} pp</span>
+                            <span class="font-semibold text-slate-800 dark:text-slate-100">${item.industry.length > 28 ? item.industry.substring(0, 28) + '...' : item.industry}</span>
+                            <span class="font-mono ${item.contribution_to_growth >= 0 ? 'text-emerald-700 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'} font-bold float-right">${item.contribution_to_growth >= 0 ? '+' : ''}${item.contribution_to_growth.toFixed(2)} pp</span>
                         </li>
                     `).join('');
                 }
@@ -1248,8 +1248,8 @@
                 if (pr.top_3_fastest_growing && pr.top_3_fastest_growing.length > 0) {
                     top3FastestOl.innerHTML = pr.top_3_fastest_growing.map(item => `
                         <li class="truncate" title="${item.industry}">
-                            <span class="font-semibold text-slate-800">${item.industry.length > 28 ? item.industry.substring(0, 28) + '...' : item.industry}</span>
-                            <span class="font-mono ${item.growth_rate >= 0 ? 'text-emerald-700' : 'text-rose-600'} font-bold float-right">${item.growth_rate >= 0 ? '+' : ''}${item.growth_rate.toFixed(2)}%</span>
+                            <span class="font-semibold text-slate-800 dark:text-slate-100">${item.industry.length > 28 ? item.industry.substring(0, 28) + '...' : item.industry}</span>
+                            <span class="font-mono ${item.growth_rate >= 0 ? 'text-emerald-700 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'} font-bold float-right">${item.growth_rate >= 0 ? '+' : ''}${item.growth_rate.toFixed(2)}%</span>
                         </li>
                     `).join('');
                 }
@@ -1386,32 +1386,32 @@
                 const isPositive = growth >= 0;
 
                 const tr = document.createElement('tr');
-                tr.className = 'hover:bg-slate-50 transition';
+                tr.className = 'hover:bg-slate-50 dark:hover:bg-slate-800/60 transition text-slate-900 dark:text-slate-100';
 
                 let categoryBadge = '';
-                if (row.category === 'Agriculture') categoryBadge = '<span class="text-amber-700 font-bold">Agriculture</span>';
-                else if (row.category === 'Industry') categoryBadge = '<span class="text-purple-700 font-bold">Industry</span>';
-                else categoryBadge = '<span class="text-blue-700 font-bold">Services</span>';
+                if (row.category === 'Agriculture') categoryBadge = '<span class="text-amber-700 dark:text-amber-400 font-bold">Agriculture</span>';
+                else if (row.category === 'Industry') categoryBadge = '<span class="text-purple-700 dark:text-purple-400 font-bold">Industry</span>';
+                else categoryBadge = '<span class="text-blue-700 dark:text-blue-400 font-bold">Services</span>';
 
                 let rowHtml = `
-                    <td class="p-3 font-mono text-xs text-slate-500 font-semibold">${row.code}</td>
-                    <td class="p-3 font-semibold text-slate-900">${row.industry}</td>
+                    <td class="p-3 font-mono text-xs text-slate-500 dark:text-slate-400 font-semibold">${row.code}</td>
+                    <td class="p-3 font-semibold text-slate-900 dark:text-slate-100">${row.industry}</td>
                     <td class="p-3">${categoryBadge}</td>
                 `;
 
                 displayYears.forEach(y => {
                     const isLatest = y === activeYear;
-                    rowHtml += `<td class="p-3 text-right font-mono ${isLatest ? 'font-bold text-slate-900' : 'text-slate-700'}">${formatNumber(row[y])}</td>`;
+                    rowHtml += `<td class="p-3 text-right font-mono ${isLatest ? 'font-bold text-slate-900 dark:text-slate-100' : 'text-slate-700 dark:text-slate-300'}">${formatNumber(row[y])}</td>`;
                 });
 
                 rowHtml += `
-                    <td class="p-3 text-right ${isPositive ? 'text-emerald-700' : 'text-rose-600'} font-bold font-mono">
+                    <td class="p-3 text-right ${isPositive ? 'text-emerald-700 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'} font-bold font-mono">
                         ${(activeYear !== activePrevYear) ? (isPositive ? '+' : '') + growth.toFixed(2) + '%' : '-'}
                     </td>
                     <td class="p-3 text-center">
                         <div class="flex items-center justify-center space-x-2">
-                            <button onclick="editSector('${row.code}')" class="p-1.5 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded transition" title="Edit Sector"><i data-lucide="edit-3" class="w-4 h-4"></i></button>
-                            <button onclick="deleteSector('${row.code}')" class="p-1.5 text-rose-600 hover:text-rose-800 hover:bg-rose-50 rounded transition" title="Delete Sector"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                            <button onclick="editSector('${row.code}')" class="p-1.5 text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-950/50 rounded transition" title="Edit Sector"><i data-lucide="edit-3" class="w-4 h-4"></i></button>
+                            <button onclick="deleteSector('${row.code}')" class="p-1.5 text-rose-600 dark:text-rose-400 hover:text-rose-800 dark:hover:text-rose-300 hover:bg-rose-50 dark:hover:bg-rose-950/50 rounded transition" title="Delete Sector"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
                         </div>
                     </td>
                 `;
