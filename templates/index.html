@@ -760,6 +760,9 @@
             formData.append('file', file);
 
             try {
+                showNotification('CSV import requires a backend database service. This Netlify deployment is read-only.', true);
+                event.target.value = '';
+                return;
                 const response = await fetch('/api/upload', {
                     method: 'POST',
                     body: formData
@@ -861,14 +864,12 @@
         async function runForecaster() {
             try {
                 showNotification("Running ML Macroeconomic Forecaster (2026–2030)...");
-                const response = await fetch('/api/forecast');
-                const forecastData = await response.json();
-                if (response.ok) {
-                    showNotification("ML Forecaster completed! 2026–2030 predictions updated.");
-                    await loadDashboardData();
-                    openForecasterModal(forecastData);
+                const forecastData = dbData ? dbData.forecast : null;
+                if (forecastData) {
+                    showNotification("Forecast results loaded.");
+                    openForecasterModal(forecastData.forecast_total);
                 } else {
-                    showNotification(forecastData.error || "Failed to run ML Forecaster", true);
+                    showNotification("Forecast data is not available.", true);
                 }
             } catch (err) {
                 showNotification("Forecaster execution error: " + err.message, true);
@@ -878,18 +879,17 @@
         async function fetchInsights() {
             try {
                 showNotification("Generating AI Narrative Insights & Advisory...");
-                const response = await fetch('/api/insights');
-                const insightsData = await response.json();
-                if (response.ok) {
+                const insightsData = dbData ? dbData.insights : null;
+                if (insightsData) {
                     if (insightsData.key_recommendations) {
                         document.getElementById('aiRecommendationText').innerText = insightsData.key_recommendations.join(' ');
                     } else if (insightsData.executive_summary) {
                         document.getElementById('aiRecommendationText').innerText = insightsData.executive_summary;
                     }
-                    showNotification("AI Executive Insights generated successfully!");
+                    showNotification("AI Executive Insights loaded.");
                     openInsightsModal(insightsData);
                 } else {
-                    showNotification(insightsData.error || "Failed to generate AI Insights", true);
+                    showNotification("AI insights are not available.", true);
                 }
             } catch (err) {
                 showNotification("AI Insights error: " + err.message, true);
@@ -898,12 +898,10 @@
 
         async function loadDashboardData(selectedYear = null) {
             try {
-                let url = '/api/data';
-                if (selectedYear && selectedYear !== 'all') {
-                    url += `?year=${selectedYear}`;
-                }
-                const response = await fetch(url);
+                const response = await fetch('/data/dashboard.json', { cache: 'no-store' });
+                if (!response.ok) throw new Error(`Dashboard data request failed: ${response.status}`);
                 dbData = await response.json();
+                dbData.selected_year = (selectedYear && selectedYear !== 'all') ? String(selectedYear) : null;
 
                 populateYearFilterDropdown(dbData.processed.years);
                 renderOverview(dbData);
