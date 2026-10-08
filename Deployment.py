@@ -34,6 +34,15 @@ def create_app():
     """
     app = Flask(__name__)
 
+    @app.after_request
+    def add_header(response):
+        response.headers['Access-Control-Allow-Origin'] = '*'
+        response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization'
+        response.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, DELETE, OPTIONS'
+        response.headers['X-Frame-Options'] = 'ALLOWALL'
+        response.headers['Content-Security-Policy'] = "frame-ancestors 'self' https://sites.google.com https://*.google.com;"
+        return response
+
     @app.route('/')
     def index():
         return render_template('index.html', metadata=PROVINCE_METADATA)
