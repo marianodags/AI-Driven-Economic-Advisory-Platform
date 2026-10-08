@@ -5,6 +5,7 @@
 
 [functions]
   node_bundler = "esbuild"
+  included_files = ["gdp_database.db", "data/**"]
 
 [[redirects]]
   from = "/*"

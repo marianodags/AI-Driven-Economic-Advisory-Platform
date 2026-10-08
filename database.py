@@ -3,8 +3,9 @@ import pandas as pd
 import os
 import io
 
-DB_PATH = 'gdp_database.db'
-CSV_PATH = 'zamboanga_gdp.csv'
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DB_PATH = os.path.join(BASE_DIR, 'gdp_database.db')
+CSV_PATH = os.path.join(BASE_DIR, 'data', 'zamboanga_gdp.csv')
 
 def get_year_columns_from_db(conn):
     cursor = conn.cursor()

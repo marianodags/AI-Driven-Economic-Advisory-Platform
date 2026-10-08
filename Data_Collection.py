@@ -2,7 +2,12 @@ import pandas as pd
 import os
 from database import fetch_gdp_by_industry_db, init_db
 
-def load_data(db_path='gdp_database.db', csv_path='zamboanga_gdp.csv'):
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DEFAULT_DB_PATH = os.path.join(BASE_DIR, 'gdp_database.db')
+DEFAULT_CSV_PATH = os.path.join(BASE_DIR, 'data', 'zamboanga_gdp.csv')
+DEFAULT_ECONOMIC_CSV_PATH = os.path.join(BASE_DIR, 'data', 'economic_data.csv')
+
+def load_data(db_path=DEFAULT_DB_PATH, csv_path=DEFAULT_CSV_PATH):
     """
     Loads Zamboanga del Norte PPA GDP dataset from SQLite database.
     Falls back to CSV if database connection or fetch fails.
@@ -17,8 +22,8 @@ def load_data(db_path='gdp_database.db', csv_path='zamboanga_gdp.csv'):
 
     if os.path.exists(csv_path):
         return pd.read_csv(csv_path)
-    elif os.path.exists('economic_data.csv'):
-        return pd.read_csv('economic_data.csv')
+    elif os.path.exists(DEFAULT_ECONOMIC_CSV_PATH):
+        return pd.read_csv(DEFAULT_ECONOMIC_CSV_PATH)
     else:
         raise FileNotFoundError("Neither database nor CSV files could be loaded.")
 
